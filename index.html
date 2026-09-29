@@ -5,868 +5,201 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blequistove | Barbearia Delivery VIP</title>
   
-  <!-- Fontes do Google -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
-    /* RESET E VARIÁVEIS GLÓBAIS */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      scroll-behavior: smooth;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
     :root {
-      --bg-dark: #0a0e13;
-      --bg-card: #121921;
-      --bg-accent: #1a2430;
-      --gold-primary: #d4af37;
-      --gold-light: #f4ebd0;
-      --green-whatsapp: #25d366;
-      --text-main: #e5dfd3;
-      --text-muted: #8c9ba5;
-      --border-color: #1e2c3a;
-    }
-
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: 'Montserrat', sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* CANVAS DE PARTÍCULAS NO FUNDO */
-    #bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      pointer-events: none;
-      opacity: 0.35;
-    }
-
-    /* TYPOGRAPHY */
-    h1, h2, h3, h4 {
-      font-family: 'Cinzel', serif;
-      color: var(--gold-light);
-      letter-spacing: 1px;
-    }
-
-    /* NAVBAR */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 8%;
-      background: rgba(6, 9, 12, 0.9);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .logo-container {
-      text-align: left;
-    }
-
-    .logo-container h1 {
-      font-size: 1.6rem;
-      line-height: 1;
-      background: linear-gradient(135deg, #fff 0%, var(--gold-primary) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .logo-container span {
-      font-size: 0.6rem;
-      letter-spacing: 2.5px;
-      color: var(--gold-primary);
-      display: block;
-      margin-top: 3px;
-      font-weight: 600;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 25px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--text-main);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.3s;
-      position: relative;
-    }
-
-    .nav-links a:hover {
-      color: var(--gold-primary);
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      width: 0%;
-      height: 2px;
-      bottom: -4px;
-      left: 0;
-      background-color: var(--gold-primary);
-      transition: width 0.3s;
-    }
-
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-
-    /* HERO SECTION */
-    .hero {
-      min-height: 85vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 3rem 20px;
-      background: radial-gradient(circle, rgba(26, 36, 48, 0.6) 0%, rgba(10, 14, 19, 0.95) 100%);
-    }
-
-    .badge-hero {
-      display: inline-block;
-      border: 1px solid var(--gold-primary);
-      color: var(--gold-primary);
-      background: rgba(212, 175, 55, 0.1);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 8px 20px;
-      border-radius: 30px;
-      margin-bottom: 20px;
-      letter-spacing: 1.5px;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-      70% { box-shadow: 0 0 0 12px rgba(212, 175, 55, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-    }
-
-    .hero h2 {
-      font-size: 2.8rem;
-      margin-bottom: 15px;
-      max-width: 800px;
-      line-height: 1.2;
-    }
-
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin-bottom: 30px;
-    }
-
-    .btn-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background-color: var(--green-whatsapp);
-      color: #fff;
-      padding: 16px 36px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      text-decoration: none;
-      border-radius: 6px;
-      box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
-      transition: all 0.3s ease;
-    }
-
-    .btn-action:hover {
-      background-color: #1ebc57;
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px rgba(37, 211, 102, 0.4);
-    }
-
-    /* DIFERENCIAL CARD */
-    .diferencial-section {
-      padding: 0 5% 4rem 5%;
-      margin-top: -40px;
-      position: relative;
-      z-index: 10;
-    }
-
-    .diferencial-box {
-      max-width: 850px;
-      margin: 0 auto;
-      background: linear-gradient(135deg, #16202c 0%, #0d141b 100%);
-      border: 2px solid var(--gold-primary);
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    }
-
-    .diferencial-box h3 {
-      color: var(--gold-primary);
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-    }
-
-    .diferencial-box p {
-      font-size: 1rem;
-      color: var(--text-main);
-    }
-
-    /* SEÇÕES EM GERAL */
-    .section-title {
-      text-align: center;
-      font-size: 2.2rem;
-      margin-bottom: 2.5rem;
-      position: relative;
-    }
-
-    .section-title::after {
-      content: '';
-      display: block;
-      width: 60px;
-      height: 3px;
-      background-color: var(--gold-primary);
-      margin: 10px auto 0 auto;
-      border-radius: 2px;
-    }
-
-    /* CALCULADORA INTERATIVA */
-    .calculator-section {
-      padding: 4rem 5%;
-      background-color: rgba(18, 25, 33, 0.8);
-      border-top: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .calc-container {
-      max-width: 950px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      background-color: var(--bg-dark);
-      padding: 2.5rem;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-    }
-
-    .calc-options h3 {
-      font-size: 1.2rem;
-      margin-bottom: 15px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-    }
-
-    .location-selector {
-      margin-bottom: 20px;
-    }
-
-    .location-selector select {
-      width: 100%;
-      padding: 12px;
-      background-color: var(--bg-card);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .location-selector select:focus {
-      border-color: var(--gold-primary);
-    }
-
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-height: 280px;
-      overflow-y: auto;
-      padding-right: 5px;
-    }
-
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: var(--bg-card);
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: border 0.2s;
-    }
-
-    .checkbox-item:hover {
-      border-color: var(--border-color);
-    }
-
-    .checkbox-item input {
-      margin-right: 10px;
-      accent-color: var(--gold-primary);
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-    }
-
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      flex-grow: 1;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .checkbox-price {
-      color: var(--gold-primary);
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    /* RESUMO DO PEDIDO */
-    .calc-summary {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background-color: var(--bg-card);
-      padding: 1.8rem;
-      border-radius: 8px;
-      border: 1px dashed var(--gold-primary);
-    }
-
-    .summary-title {
-      font-size: 1.1rem;
-      color: var(--gold-primary);
-      margin-bottom: 15px;
-    }
-
-    .summary-list {
-      list-style: none;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      flex-grow: 1;
-    }
-
-    .summary-list li {
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px rgba(255,255,255,0.05) solid;
-      padding-bottom: 4px;
-    }
-
-    .summary-total {
-      border-top: 1px solid var(--border-color);
-      padding-top: 15px;
-      margin-bottom: 20px;
-    }
-
-    .summary-total span {
-      display: block;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .summary-total h4 {
-      font-size: 1.8rem;
-      color: var(--gold-primary);
-    }
-
-    /* SERVIÇOS & COMBOS GRID */
-    .services-section {
-      padding: 5rem 5%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-    }
-
-    .card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1.8rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: var(--gold-primary);
-    }
-
-    .card.highlight {
-      border: 1px solid var(--gold-primary);
-      background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, var(--bg-card) 100%);
-    }
-
-    .card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .card .price {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--gold-primary);
-    }
-
-    /* COBERTURA & REGRAS */
-    .coverage-section {
-      padding: 4rem 5%;
-      background-color: #070a0d;
-    }
-
-    .coverage-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 25px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .info-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 2rem;
-      border-radius: 8px;
-    }
-
-    .info-card h3 {
-      margin-bottom: 15px;
-      font-size: 1.15rem;
-    }
-
-    .info-card ul {
-      list-style: none;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .info-card ul li {
-      margin-bottom: 8px;
-    }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background-color: #040608;
-      border-top: 1px solid var(--border-color);
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    /* REVELAÇÃO AO ROLAR (SCROLL REVEAL) */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s ease;
-    }
-
-    .reveal.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* RESPONSIVIDADE MOBILE */
-    @media (max-width: 850px) {
-      .calc-container {
-        grid-template-columns: 1fr;
-      }
-      .navbar {
-        flex-direction: column;
-        gap: 15px;
-      }
-      .hero h2 {
-        font-size: 1.9rem;
-      }
-    }
+      --bg-dark: #0a0e13; --bg-card: #121921; --gold-primary: #d4af37;
+      --gold-light: #f4ebd0; --green-whatsapp: #25d366; --text-main: #e5dfd3;
+      --text-muted: #8c9ba5; --border-color: #1e2c3a;
+    }
+    body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Montserrat', sans-serif; line-height: 1.6; }
+    h1, h2, h3, h4 { font-family: 'Cinzel', serif; color: var(--gold-light); }
+    
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 8%; background: rgba(6, 9, 12, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; }
+    .logo-container h1 { font-size: 1.6rem; background: linear-gradient(135deg, #fff 0%, var(--gold-primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-container span { font-size: 0.6rem; letter-spacing: 2.5px; color: var(--gold-primary); display: block; font-weight: 600; }
+    
+    .hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 3rem 20px; }
+    .badge-hero { border: 1px solid var(--gold-primary); color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); font-size: 0.75rem; font-weight: 700; padding: 8px 20px; border-radius: 30px; margin-bottom: 20px; }
+    .hero h2 { font-size: 2.5rem; margin-bottom: 15px; }
+    .hero p { font-size: 1rem; color: var(--text-muted); max-width: 600px; margin-bottom: 30px; }
+    
+    .btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background-color: var(--green-whatsapp); color: #fff; padding: 16px 36px; font-size: 1.1rem; font-weight: 700; text-decoration: none; border-radius: 6px; border: none; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-top: 15px; }
+    .btn-action:hover { background-color: #1ebc57; transform: translateY(-2px); }
+    
+    .calculator-section { padding: 3rem 5%; background-color: rgba(18, 25, 33, 0.8); }
+    .calc-container { max-width: 950px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background-color: var(--bg-dark); padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border-color); }
+    
+    .input-field { width: 100%; padding: 12px; background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Montserrat', sans-serif; margin-bottom: 15px; outline: none; }
+    .input-field:focus { border-color: var(--gold-primary); }
+    
+    .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .checkbox-item { display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-card); padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
+    .checkbox-item input { accent-color: var(--gold-primary); width: 18px; height: 18px; margin-right: 10px; }
+    
+    .calc-summary { display: flex; flex-direction: column; justify-content: space-between; background-color: var(--bg-card); padding: 1.8rem; border-radius: 8px; border: 1px dashed var(--gold-primary); }
+    .summary-total { border-top: 1px solid var(--border-color); padding-top: 15px; margin-bottom: 20px; }
+    .summary-total h4 { font-size: 1.8rem; color: var(--gold-primary); }
+    
+    @media (max-width: 850px) { .calc-container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <!-- CANVAS DE PARTÍCULAS EM BACKGROUND -->
-  <canvas id="bg-canvas"></canvas>
-
-  <!-- BARRA DE NAVEGAÇÃO -->
   <header class="navbar">
     <div class="logo-container">
       <h1>BLEQUISTOVE</h1>
       <span>DESPERTE SEU ESTILO</span>
     </div>
-    <ul class="nav-links">
-      <li><a href="#inicio">Início</a></li>
-      <li><a href="#calculadora">Agendar / Simular</a></li>
-      <li><a href="#servicos">Tabela de Serviços</a></li>
-      <li><a href="#cobertura">Regiões</a></li>
-    </ul>
   </header>
 
-  <!-- HERO SECTION -->
-  <section id="inicio" class="hero">
+  <section class="hero">
     <span class="badge-hero">ATENDIMENTO PREMIUM NO SEU ENDEREÇO</span>
     <h2>A EXPERIÊNCIA VIP NA SUA CASA</h2>
-    <p>Sem filas • Sem trânsito • Conforto total e ZERO sujeira na sua casa ou escritório.</p>
-    <a href="https://wa.me/5548992071556?text=Olá!%20Gostaria%20de%20agendar%20um%20horário%20com%20a%20Blequistove." target="_blank" class="btn-action">
-      📲 Agendar pelo WhatsApp
-    </a>
+    <p>Sem filas • Sem trânsito • Conforto total na sua casa ou escritório.</p>
   </section>
 
-  <!-- DIFERENCIAL EXCLUSIVO -->
-  <div class="diferencial-section reveal">
-    <div class="diferencial-box">
-      <h3>🧹 DIFERENCIAL EXCLUSIVO</h3>
-      <p>Atendimento finalizado com <strong>ASPIRADOR DE PÓ PRÓPRIO</strong>. Sua casa ou escritório continua 100% limpo, sem sujeira e sem fios espalhados no chão!</p>
-    </div>
-  </div>
-
-  <!-- CALCULADORA DE SERVIÇOS E AGENDAMENTO -->
-  <section id="calculadora" class="calculator-section reveal">
-    <h2 class="section-title">Monte seu Atendimento</h2>
+  <section id="calculadora" class="calculator-section">
+    <h2 style="text-align:center; margin-bottom: 2rem;">Agende Seu Atendimento</h2>
     
     <div class="calc-container">
-      <!-- Opções -->
       <div class="calc-options">
-        <h3>1. Selecione sua Cidade</h3>
-        <div class="location-selector">
-          <select id="location-select" onchange="calculateTotal()">
-            <option value="arroio" data-fee="0">Balneário Arroio do Silva (Sem taxa extra)</option>
-            <option value="ararangua_single" data-fee="50">Araranguá - Individual (R$ 50,00 base)</option>
-            <option value="ararangua_pair" data-fee="80">Araranguá - Dupla / Combo 2 Cortes (R$ 80,00 base)</option>
-          </select>
-        </div>
+        <h3>1. Seus Dados</h3>
+        <input type="text" id="client-name" class="input-field" placeholder="Seu Nome Completo" required>
+        <input type="tel" id="client-phone" class="input-field" placeholder="Seu Telefone / WhatsApp" required>
+        <input type="text" id="client-address" class="input-field" placeholder="Endereço Completo (Rua, Número, Bairro)" required>
+        <input type="datetime-local" id="client-datetime" class="input-field" required>
 
-        <h3>2. Escolha os Serviços</h3>
+        <h3>2. Selecione sua Cidade</h3>
+        <select id="location-select" class="input-field" onchange="calculateTotal()">
+          <option value="arroio">Balneário Arroio do Silva (Sem taxa extra)</option>
+          <option value="ararangua_single">Araranguá - Individual (R$ 50,00 base)</option>
+          <option value="ararangua_pair">Araranguá - Dupla / Combo 2 Cortes (R$ 80,00 base)</option>
+        </select>
+
+        <h3>3. Escolha os Serviços</h3>
         <div class="checkbox-group">
-          <label class="checkbox-item">
-            <span class="checkbox-label"><input type="checkbox" value="40" data-name="Corte Social / Tesoura" onchange="calculateTotal()"> Corte Social / Tesoura</span>
-            <span class="checkbox-price">R$ 40,00</span>
-          </label>
-          <label class="checkbox-item">
-            <span class="checkbox-label"><input type="checkbox" value="45" data-name="Corte Navalhado / Fade" onchange="calculateTotal()"> Corte Navalhado / Fade</span>
-            <span class="checkbox-price">R$ 45,00</span>
-          </label>
-          <label class="checkbox-item">
-            <span class="checkbox-label"><input type="checkbox" value="35" data-name="Barba VIP Completa" onchange="calculateTotal()"> Barba VIP Completa</span>
-            <span class="checkbox-price">R$ 35,00</span>
-          </label>
-          <label class="checkbox-item">
-            <span class="checkbox-label"><input type="checkbox" value="20" data-name="Pezinho (Acabamento)" onchange="calculateTotal()"> Pezinho (Acabamento)</span>
-            <span class="checkbox-price">R$ 20,00</span>
-          </label>
-          <label class="checkbox-item">
-            <span class="checkbox-label"><input type="checkbox" value="20" data-name="Sobrancelha Masculina" onchange="calculateTotal()"> Sobrancelha Masculina</span>
-            <span class="checkbox-price">R$ 20,00</span>
-          </label>
-          <label class="checkbox-item">
-            <span class="checkbox-label"><input type="checkbox" value="20" data-name="Depilação Nasal / Orelha" onchange="calculateTotal()"> Depilação Nasal / Orelha</span>
-            <span class="checkbox-price">R$ 20,00</span>
-          </label>
+          <label class="checkbox-item"><span><input type="checkbox" value="40" data-name="Corte Social / Tesoura" onchange="calculateTotal()"> Corte Social / Tesoura</span><span style="color:var(--gold-primary);">R$ 40,00</span></label>
+          <label class="checkbox-item"><span><input type="checkbox" value="45" data-name="Corte Navalhado / Fade" onchange="calculateTotal()"> Corte Navalhado / Fade</span><span style="color:var(--gold-primary);">R$ 45,00</span></label>
+          <label class="checkbox-item"><span><input type="checkbox" value="35" data-name="Barba VIP Completa" onchange="calculateTotal()"> Barba VIP Completa</span><span style="color:var(--gold-primary);">R$ 35,00</span></label>
+          <label class="checkbox-item"><span><input type="checkbox" value="20" data-name="Pezinho (Acabamento)" onchange="calculateTotal()"> Pezinho (Acabamento)</span><span style="color:var(--gold-primary);">R$ 20,00</span></label>
+          <label class="checkbox-item"><span><input type="checkbox" value="20" data-name="Sobrancelha Masculina" onchange="calculateTotal()"> Sobrancelha Masculina</span><span style="color:var(--gold-primary);">R$ 20,00</span></label>
         </div>
       </div>
 
-      <!-- Resumo -->
       <div class="calc-summary">
         <div>
-          <div class="summary-title">Resumo da Seleção</div>
-          <ul id="summary-items" class="summary-list">
+          <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Resumo do Pedido</h3>
+          <ul id="summary-items" style="list-style: none; color: var(--text-muted); font-size: 0.9rem;">
             <li>Nenhum serviço selecionado.</li>
           </ul>
         </div>
 
         <div>
           <div class="summary-total">
-            <span>Estimativa Total:</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">Estimativa Total:</span>
             <h4 id="total-price">R$ 0,00</h4>
           </div>
-          <a id="whatsapp-calc-btn" href="#" target="_blank" class="btn-action" style="width: 100%; justify-content: center;">
-            Enviar Pedido via WhatsApp
-          </a>
+          <button onclick="submitBooking()" class="btn-action">
+            📲 Confirmar & Agendar
+          </button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TABELA COMPLETA DE SERVIÇOS & COMBOS -->
-  <section id="servicos" class="services-section reveal">
-    <h2 class="section-title">Serviços Exclusivos</h2>
-    <div class="services-grid">
-      <div class="card">
-        <div>
-          <h3>Corte Social / Tesoura</h3>
-          <p>Acabamento refinado e caimento perfeito para o dia a dia.</p>
-        </div>
-        <div class="card-footer">
-          <span class="price">R$ 40,00</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div>
-          <h3>Corte Navalhado / Fade</h3>
-          <p>Degradê de precisão cirúrgica com acabamento na lâmina.</p>
-        </div>
-        <div class="card-footer">
-          <span class="price">R$ 45,00</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div>
-          <h3>Barba VIP Completa</h3>
-          <p>Modelagem, alinhamento, toalha e finalização premium.</p>
-        </div>
-        <div class="card-footer">
-          <span class="price">R$ 35,00</span>
-        </div>
-      </div>
-
-      <div class="card highlight">
-        <div>
-          <h3>Combo Cabelo + Barba</h3>
-          <p>O visual completo na comodidade da sua residência.</p>
-        </div>
-        <div class="card-footer">
-          <span class="price">R$ 70,00</span>
-        </div>
-      </div>
-
-      <div class="card highlight">
-        <div>
-          <h3>Combo Higiene</h3>
-          <p>Remoção de pelos no nariz e orelha com cera própria.</p>
-        </div>
-        <div class="card-footer">
-          <span class="price">R$ 35,00</span>
-        </div>
-      </div>
-
-      <div class="card highlight">
-        <div>
-          <h3>Combo Família (Pai & Filho)</h3>
-          <p>Dois cortes no mesmo endereço pelo melhor preço.</p>
-        </div>
-        <div class="card-footer">
-          <span class="price">R$ 75,00</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- COBERTURA & HIGIENE -->
-  <section id="cobertura" class="coverage-section reveal">
-    <h2 class="section-title">Cobertura & Segurança</h2>
-    <div class="coverage-grid">
-      <div class="info-card">
-        <h3>📍 Balneário Arroio do Silva</h3>
-        <ul>
-          <li>• Preço único fechado.</li>
-          <li>• Sem cobrança de taxas de deslocamento em nenhum bairro.</li>
-        </ul>
-      </div>
-
-      <div class="info-card">
-        <h3>🏙️ Atendimento em Araranguá</h3>
-        <ul>
-          <li>• Atendimento Individual: R$ 50,00.</li>
-          <li>• Traga +1 pessoa: Apenas R$ 40,00 por corte!</li>
-        </ul>
-      </div>
-
-      <div class="info-card">
-        <h3>🛡️ Higiene e Biossegurança</h3>
-        <ul>
-          <li>• Lâminas descartáveis abertas na sua frente.</li>
-          <li>• Equipamentos 100% higienizados a cada cliente.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- RODAPÉ -->
-  <footer>
-    <p>&copy; 2026 Blequistove Barbearia Delivery. Todos os direitos reservados.</p>
-    <p style="margin-top: 5px; color: var(--gold-primary);">WhatsApp: (48) 99207-1556</p>
-  </footer>
-
-  <!-- JAVASCRIPT: CALCULADORA & ANIMAÇÕES -->
   <script>
-    /* 1. LÓGICA DA CALCULADORA */
+    // CONFIGURAÇÃO DO SEU FIREBASE (JÁ CONFIGURADO!)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDdb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
+      authDomain: "barbeariablequistove-c0349.firebaseapp.com",
+      projectId: "barbeariablequistove-c0349",
+      storageBucket: "barbeariablequistove-c0349.firebasestorage.app",
+      messagingSenderId: "159742381988",
+      appId: "1:159742381988:web:06c2138f7881e75900bb31",
+      measurementId: "G-WLSZGB1K1C"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let globalTotal = 0;
+    let selectedServices = [];
+
     function calculateTotal() {
       const locationSelect = document.getElementById('location-select');
-      const selectedLocationText = locationSelect.options[locationSelect.selectedIndex].text;
       const locationValue = locationSelect.value;
-      
       const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
       const summaryList = document.getElementById('summary-items');
-      const totalPriceEl = document.getElementById('total-price');
-      const whatsappBtn = document.getElementById('whatsapp-calc-btn');
-
+      
       summaryList.innerHTML = '';
-      let total = 0;
-      let selectedItemsText = [];
+      globalTotal = 0;
+      selectedServices = [];
 
-      if (locationValue === 'ararangua_single') {
-        total += 50;
-        let li = document.createElement('li');
-        li.innerHTML = `<span>Taxa Base Araranguá (Individual)</span> <span>R$ 50,00</span>`;
-        summaryList.appendChild(li);
-      } else if (locationValue === 'ararangua_pair') {
-        total += 80;
-        let li = document.createElement('li');
-        li.innerHTML = `<span>Base Araranguá (Dupla)</span> <span>R$ 80,00</span>`;
-        summaryList.appendChild(li);
-      }
+      if (locationValue === 'ararangua_single') globalTotal += 50;
+      if (locationValue === 'ararangua_pair') globalTotal += 80;
 
       checkboxes.forEach(cb => {
         const itemPrice = parseFloat(cb.value);
         const itemName = cb.getAttribute('data-name');
-        
-        total += itemPrice;
-        selectedItemsText.push(itemName);
+        globalTotal += itemPrice;
+        selectedServices.push(itemName);
 
         let li = document.createElement('li');
-        li.innerHTML = `<span>${itemName}</span> <span>R$ ${itemPrice.toFixed(2)}</span>`;
+        li.innerHTML = `${itemName} - R$ ${itemPrice.toFixed(2)}`;
         summaryList.appendChild(li);
       });
 
-      if (checkboxes.length === 0 && locationValue === 'arroio') {
-        summaryList.innerHTML = '<li>Nenhum serviço selecionado.</li>';
+      document.getElementById('total-price').innerText = `R$ ${globalTotal.toFixed(2)}`;
+    }
+
+    async function submitBooking() {
+      const name = document.getElementById('client-name').value;
+      const phone = document.getElementById('client-phone').value;
+      const address = document.getElementById('client-address').value;
+      const datetime = document.getElementById('client-datetime').value;
+      const location = document.getElementById('location-select').options[document.getElementById('location-select').selectedIndex].text;
+
+      if (!name || !phone || !address || !datetime) {
+        alert("Por favor, preencha todos os campos do formulário.");
+        return;
       }
 
-      totalPriceEl.innerText = `R$ ${total.toFixed(2)}`;
+      const bookingData = {
+        name,
+        phone,
+        address,
+        datetime,
+        location,
+        services: selectedServices,
+        total: globalTotal,
+        status: 'fila',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
-      // Gerar link do WhatsApp
-      let msg = `Olá! Gostaria de agendar um horário na Blequistove.%0A%0A`;
-      msg += `📍 *Local:* ${selectedLocationText}%0A`;
-      if (selectedItemsText.length > 0) {
-        msg += `✂️ *Serviços:* ${selectedItemsText.join(', ')}%0A`;
-      }
-      msg += `💰 *Valor Total Estimado:* R$ ${total.toFixed(2)}`;
+      try {
+        await db.collection('agendamentos').add(bookingData);
 
-      whatsappBtn.href = `https://wa.me/5548992071556?text=${msg}`;
-    }
+        let msg = `Olá! Meu nome é *${name}*.%0A%0A`;
+        msg += `📍 *Endereço:* ${address} (${location})%0A`;
+        msg += `📅 *Data/Hora:* ${datetime}%0A`;
+        msg += `✂️ *Serviços:* ${selectedServices.join(', ')}%0A`;
+        msg += `💰 *Total:* R$ ${globalTotal.toFixed(2)}`;
 
-    // Inicializar calculadora ao carregar
-    calculateTotal();
-
-    /* 2. ANIMAÇÃO SCROLL REVEAL */
-    function revealOnScroll() {
-      const reveals = document.querySelectorAll('.reveal');
-      for (let i = 0; i < reveals.length; i++) {
-        const windowHeight = window.innerHeight;
-        const elementTop = reveals[i].getBoundingClientRect().top;
-        const elementVisible = 100;
-
-        if (elementTop < windowHeight - elementVisible) {
-          reveals[i].classList.add('active');
-        }
+        window.open(`https://wa.me/5548992071556?text=${msg}`, '_blank');
+      } catch (error) {
+        console.error("Erro ao agendar:", error);
+        alert("Ocorreu um erro ao registrar o agendamento. Tente novamente.");
       }
     }
-    window.addEventListener('scroll', revealOnScroll);
-    revealOnScroll();
-
-    /* 3. PARTICLES & SCISSORS CANVAS BACKGROUND */
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const particles = [];
-    const numParticles = 25;
-
-    for (let i = 0; i < numParticles; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 15 + 10,
-        speedX: (Math.random() - 0.5) * 0.8,
-        speedY: (Math.random() - 0.5) * 0.8,
-        opacity: Math.random() * 0.5 + 0.2,
-        rotation: Math.random() * Math.PI * 2
-      });
-    }
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach(p => {
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = '#d4af37';
-        
-        // Desenha uma forma minimalista de tesoura
-        ctx.beginPath();
-        ctx.arc(-5, -5, 4, 0, Math.PI * 2);
-        ctx.arc(5, -5, 4, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.moveTo(-3, -2);
-        ctx.lineTo(6, 12);
-        ctx.moveTo(3, -2);
-        ctx.lineTo(-6, 12);
-        ctx.strokeStyle = '#d4af37';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        ctx.restore();
-
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.rotation += 0.01;
-
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-      });
-
-      requestAnimationFrame(drawParticles);
-    }
-    drawParticles();
   </script>
 </body>
 </html>
