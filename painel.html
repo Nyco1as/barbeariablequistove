@@ -13,7 +13,7 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen">
 
-  <!-- Tela de Login / PIN -->
+  <!-- Tela de Login Segura (Sem dica de PIN visível) -->
   <div id="login-modal" class="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4">
     <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl max-w-sm w-full space-y-4 text-center">
       <div class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto text-xl">
@@ -21,12 +21,17 @@
       </div>
       <div>
         <h2 class="font-bold text-lg">Acesso Restrito</h2>
-        <p class="text-xs text-zinc-400">Digite a senha de acesso ao painel do barbeiro</p>
+        <p class="text-xs text-zinc-400">Entre com as suas credenciais do Firebase</p>
       </div>
-      <input type="password" id="pin-input" placeholder="Senha PIN (Padrão: 1234)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-amber-500">
-      <button onclick="autenticar()" class="w-full bg-amber-500 text-zinc-950 font-bold py-3 rounded-xl hover:bg-amber-400 transition">
-        Entrar no Painel
-      </button>
+      
+      <form id="login-form" onsubmit="autenticarFirebase(event)" class="space-y-3">
+        <input type="email" id="auth-email" placeholder="E-mail" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+        <input type="password" id="auth-password" placeholder="Palavra-passe" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+        
+        <button type="submit" id="btn-login" class="w-full bg-amber-500 text-zinc-950 font-bold py-3 rounded-xl hover:bg-amber-400 transition flex items-center justify-center gap-2">
+          <span>Entrar no Painel</span>
+        </button>
+      </form>
     </div>
   </div>
 
@@ -42,7 +47,7 @@
           <p class="text-xs text-zinc-400">Barbearia Lequistove</p>
         </div>
       </div>
-      <button onclick="logout()" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 px-3 rounded-lg flex items-center gap-1.5 transition">
+      <button onclick="fazerLogout()" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 px-3 rounded-lg flex items-center gap-1.5 transition">
         <i class="fa-solid fa-right-from-bracket"></i> Sair
       </button>
     </div>
@@ -72,6 +77,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -86,24 +92,40 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getDatabase(app);
 
     let agendamentosData = {};
     let filtroAtual = 'todos';
 
-    window.autenticar = function() {
-      const pin = document.getElementById('pin-input').value;
-      if(pin === '1234') { // Você pode alterar essa senha padrão
+    // Verificar se o utilizador já está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
         document.getElementById('login-modal').classList.add('hidden');
         carregarDados();
       } else {
-        alert("Senha incorreta!");
+        document.getElementById('login-modal').classList.remove('hidden');
       }
+    });
+
+    window.autenticarFirebase = function(event) {
+      event.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById('login-modal').classList.add('hidden');
+        })
+        .catch((error) => {
+          alert("Falha na autenticação: E-mail ou palavra-passe incorretos.");
+        });
     };
 
-    window.logout = function() {
-      document.getElementById('login-modal').classList.remove('hidden');
-      document.getElementById('pin-input').value = '';
+    window.fazerLogout = function() {
+      signOut(auth).then(() => {
+        document.getElementById('login-modal').classList.remove('hidden');
+      });
     };
 
     function carregarDados() {
@@ -184,7 +206,6 @@
               </div>
             </div>
 
-            <!-- Ações -->
             <div class="flex gap-2 pt-2 border-t border-zinc-800">
               <button onclick="mudarStatus('${key}', 'Concluído')" class="flex-1 py-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-lg text-xs font-semibold transition">
                 Concluir
