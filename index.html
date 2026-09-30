@@ -1,300 +1,138 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Barbearia Local & Delivery VIP</title>
-  <!-- Tailwind CSS CDN -->
+  <title>Barbearia Lequistove - Agendamento & Serviços</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            gold: {
-              300: '#fde047',
-              400: '#facc15',
-              500: '#eab308',
-              600: '#ca8a04',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    /* Custom scrollbar styling */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #09090b; }
-    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Poppins', sans-serif; }
+    .gold-gradient { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); }
+    .gold-text { background: linear-gradient(135deg, #f1c40f, #e67e22); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans flex flex-col antialiased selection:bg-gold-500 selection:text-zinc-950">
+<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col justify-between">
 
-  <!-- PUBLIC HEADER -->
-  <header class="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80">
-    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-600 via-gold-400 to-amber-300 text-zinc-950 flex items-center justify-center font-black text-xl shadow-lg shadow-gold-500/20">
-          <i data-lucide="scissors" class="w-5 h-5"></i>
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-zinc-900/80 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-zinc-950 font-black text-xl">
+          <i class="fa-solid fa-scissors"></i>
         </div>
         <div>
-          <span class="font-black text-base md:text-lg tracking-wider block leading-none text-white">BARBEARIA</span>
-          <span class="text-[10px] md:text-xs text-gold-400 font-bold tracking-widest uppercase">VIP & Delivery</span>
+          <h1 class="font-bold text-lg leading-tight">Barbearia Lequistove</h1>
+          <p class="text-xs text-zinc-400">Atendimento Fixo & Delivery VIP</p>
         </div>
       </div>
-
-      <div class="flex items-center gap-2">
-        <a href="https://wa.me/5548992071556" target="_blank" class="px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-xs md:text-sm font-bold bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 transition flex items-center gap-2">
-          <i data-lucide="phone" class="w-4 h-4"></i>
-          <span>(48) 99207-1556</span>
-        </a>
-      </div>
+      <a href="https://wa.me/5548992071556" target="_blank" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-3 rounded-lg flex items-center gap-2 transition">
+        <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+      </a>
     </div>
   </header>
 
-  <!-- PUBLIC CLIENT VIEW -->
-  <main id="view-client" class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-8">
-    
-    <!-- Hero / Service Mode Selection -->
-    <section class="text-center space-y-4 pt-2">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/20 text-gold-400 text-xs font-bold uppercase tracking-wider">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Agendamento Simples e Rápido
-      </div>
-      <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
-        Escolha onde prefere ser <span class="bg-gradient-to-r from-gold-300 via-gold-400 to-amber-500 bg-clip-text text-transparent">Atendido</span>
-      </h1>
-      <p class="text-zinc-400 max-w-xl mx-auto text-xs md:text-sm">
-        Dispomos de estrutura em nosso endereço fixo ou levamos o atendimento VIP completo até a sua casa.
-      </p>
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8 w-full space-y-8">
 
-      <!-- Toggle Mode Tabs -->
-      <div class="inline-flex p-1.5 bg-zinc-900 rounded-2xl border border-zinc-800 max-w-md w-full mt-2 shadow-xl">
-        <button id="tab-presencial" onclick="setServiceType('presencial')" class="flex-1 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 to-amber-500 text-zinc-950 shadow-lg shadow-gold-500/20">
-          <i data-lucide="map-pin" class="w-4 h-4"></i> Local Fixo
-        </button>
-        <button id="tab-delivery" onclick="setServiceType('delivery')" class="flex-1 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-white">
-          <i data-lucide="truck" class="w-4 h-4"></i> Delivery VIP
-        </button>
+    <!-- Modalidade Selector -->
+    <div class="bg-zinc-900 p-2 rounded-2xl border border-zinc-800 flex gap-2">
+      <button id="btn-fixo" onclick="setModalidade('fixo')" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg">
+        <i class="fa-solid fa-store"></i> Local Fixo (Arroio do Silva)
+      </button>
+      <button id="btn-delivery" onclick="setModalidade('delivery')" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-zinc-200">
+        <i class="fa-solid fa-motorcycle"></i> Atendimento Delivery VIP
+      </button>
+    </div>
+
+    <!-- Banner Informativo -->
+    <div id="info-banner" class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-2xl flex items-start gap-4">
+      <div id="info-icon" class="text-amber-500 text-2xl pt-1">
+        <i class="fa-solid fa-location-dot"></i>
+      </div>
+      <div>
+        <h3 id="info-title" class="font-bold text-zinc-200">Local Fixo</h3>
+        <p id="info-desc" class="text-sm text-zinc-400">Rua Santa Rosa, 857 - Cidade Balneário Arroio do Silva</p>
+      </div>
+    </div>
+
+    <!-- Tabela de Serviços e Combos -->
+    <section>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-list-check gold-text"></i> Escolha os Serviços
+      </h2>
+      <div id="services-list" class="grid sm:grid-cols-2 gap-3">
+        <!-- Renderizado dinamicamente via JS -->
       </div>
     </section>
 
-    <!-- Info Banner based on selection -->
-    <div id="info-banner" class="bg-gradient-to-r from-zinc-900 via-zinc-900/90 to-zinc-900 border border-zinc-800 rounded-2xl p-4 md:p-6 shadow-xl flex flex-col md:flex-row gap-4 items-center justify-between">
-      <!-- Dynamic content via JS -->
-    </div>
+    <!-- Formulário de Agendamento -->
+    <section class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
+      <h2 class="text-xl font-bold flex items-center gap-2 text-amber-500">
+        <i class="fa-solid fa-calendar-check"></i> Dados do Agendamento
+      </h2>
 
-    <!-- Main Booking Section: Menu + Form -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      
-      <!-- Catalog / Menu Prices (7 Cols) -->
-      <div class="lg:col-span-7 space-y-5">
-        <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3">
-          <h2 class="text-lg md:text-xl font-bold flex items-center gap-2 text-white">
-            <i data-lucide="scissors" class="text-gold-400 w-5 h-5"></i>
-            <span>Tabela de Serviços</span>
-          </h2>
-          <span id="badge-mode" class="text-[11px] font-bold px-3 py-1 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20">
-            Local Fixo
-          </span>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Seu Nome *</label>
+          <input type="text" id="cli-nome" placeholder="Digite seu nome" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
         </div>
-
-        <!-- Differential Card (For Delivery) -->
-        <div id="delivery-differential" class="hidden bg-gradient-to-r from-gold-500/10 via-zinc-900 to-zinc-900 border border-gold-500/30 rounded-xl p-4 text-xs md:text-sm space-y-1.5 shadow-md">
-          <div class="flex items-center gap-2 text-gold-400 font-bold">
-            <i data-lucide="sparkles" class="w-4 h-4"></i> Diferencial Exclusivo Delivery VIP
-          </div>
-          <p class="text-zinc-300 leading-relaxed">
-            Atendimento finalizado com <strong>ASPIRADOR DE PÓ PRÓPRIO</strong>. Sua casa ou escritório continua 100% limpo, sem sujeira e sem fios espalhados no chão!
-          </p>
-        </div>
-
-        <!-- Services Grid -->
-        <div class="space-y-2.5" id="services-container">
-          <!-- Populated by JS -->
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Telefone / WhatsApp *</label>
+          <input type="tel" id="cli-fone" placeholder="(48) 99999-9999" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
         </div>
       </div>
 
-      <!-- Booking Form (5 Cols) -->
-      <div class="lg:col-span-5">
-        <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 md:p-6 sticky top-20 shadow-2xl space-y-4">
-          <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3">
-            <h3 class="text-base md:text-lg font-bold text-white flex items-center gap-2">
-              <i data-lucide="calendar" class="w-5 h-5 text-gold-400"></i> Agendar Horário
-            </h3>
-            <span id="total-price" class="text-gold-400 font-black text-xl">R$ 0,00</span>
-          </div>
-
-          <form id="booking-form" onsubmit="handleBookingSubmit(event)" class="space-y-3.5">
-            
-            <!-- Selected Services Summary -->
-            <div>
-              <label class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">Serviços Selecionados</label>
-              <div id="selected-summary" class="bg-zinc-950/80 p-3 rounded-xl border border-zinc-800 text-xs text-zinc-400 min-h-[46px]">
-                Nenhum serviço selecionado.
-              </div>
-            </div>
-
-            <!-- Client Info -->
-            <div class="space-y-3">
-              <div>
-                <label for="client-name" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">Seu Nome *</label>
-                <input type="text" id="client-name" required placeholder="Ex: João Silva" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-gold-500 transition">
-              </div>
-
-              <div>
-                <label for="client-phone" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">WhatsApp / Telefone *</label>
-                <input type="tel" id="client-phone" required placeholder="(48) 99999-9999" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-gold-500 transition">
-              </div>
-            </div>
-
-            <!-- Dynamic Location Fields for Delivery -->
-            <div id="address-field-wrapper" class="hidden space-y-3 bg-zinc-950/50 p-3.5 rounded-xl border border-zinc-800">
-              <div>
-                <label for="client-city" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">Cidade / Região *</label>
-                <select id="client-city" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-gold-500 transition">
-                  <option value="Balneário Arroio do Silva">Balneário Arroio do Silva (Preço Único Fechado)</option>
-                  <option value="Araranguá">Araranguá (Individual R$ 50 | Duplo R$ 40/cada)</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="client-address" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">Endereço Completo de Atendimento *</label>
-                <textarea id="client-address" rows="2" placeholder="Rua, Número, Bairro e Ponto de Referência" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-gold-500 transition"></textarea>
-              </div>
-            </div>
-
-            <!-- Date & Time -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label for="booking-date" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">Data *</label>
-                <input type="date" id="booking-date" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-gold-500 transition">
-              </div>
-
-              <div>
-                <label for="booking-time" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">Horário *</label>
-                <input type="time" id="booking-time" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-gold-500 transition">
-              </div>
-            </div>
-
-            <!-- Notes -->
-            <div>
-              <label for="booking-obs" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-1">Observações (Opcional)</label>
-              <input type="text" id="booking-obs" placeholder="Ex: Cabelo mais baixo na lateral..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-gold-500 transition">
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-900/30 transition flex items-center justify-center gap-2 text-sm mt-2">
-              <i data-lucide="message-square" class="w-4 h-4"></i> Agendar pelo WhatsApp
-            </button>
-            <p class="text-center text-[10px] text-zinc-500">Ao clicar, seu pedido será registrado e enviado diretamente para nosso WhatsApp.</p>
-          </form>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Data *</label>
+          <input type="date" id="cli-data" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-zinc-100">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Horário Desejado *</label>
+          <input type="time" id="cli-hora" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-zinc-100">
         </div>
       </div>
 
-    </div>
-  </main>
-
-  <!-- SECRET BARBER ADMIN PANEL (Hidden by Default) -->
-  <main id="view-admin" class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6 hidden">
-    
-    <!-- Admin Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 p-5 rounded-2xl shadow-xl">
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-gold-500/20 text-gold-400 border border-gold-500/30">Área Privada</span>
-          <span id="sync-status" class="text-[10px] text-emerald-400 font-bold flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Ao Vivo</span>
+      <!-- Campos Exclusivos para Delivery -->
+      <div id="field-delivery-extra" class="hidden space-y-4 pt-2 border-t border-zinc-800">
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Região de Atendimento *</label>
+          <select id="cli-regiao" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+            <option value="Balneário Arroio do Silva">Balneário Arroio do Silva (Sem taxa extra)</option>
+            <option value="Araranguá - Individual">Araranguá (Atendimento Individual - R$ 50,00 min)</option>
+            <option value="Araranguá - Combo 2 Pessoas">Araranguá (Traga +1 pessoa - R$ 40,00 por corte)</option>
+          </select>
         </div>
-        <h1 class="text-xl md:text-2xl font-black text-white mt-1 flex items-center gap-2">
-          <i data-lucide="layout-dashboard" class="text-gold-400 w-6 h-6"></i> Painel de Gestão de Atendimentos
-        </h1>
+        <div>
+          <label class="block text-xs font-semibold text-zinc-400 mb-1">Endereço Completo de Entrega/Atendimento *</label>
+          <input type="text" id="cli-endereco" placeholder="Rua, número, bairro e ponto de referência" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+        </div>
       </div>
 
-      <!-- Stats & Lock Action -->
-      <div class="flex items-center gap-3">
-        <div class="bg-zinc-950 border border-zinc-800 px-3.5 py-1.5 rounded-xl text-center">
-          <span class="text-[10px] text-zinc-500 uppercase font-bold block">Total Agendamentos</span>
-          <span id="stat-total" class="text-base font-black text-white">0</span>
+      <!-- Resumo do Valor Total -->
+      <div class="pt-4 border-t border-zinc-800 flex justify-between items-center">
+        <div>
+          <span class="text-xs text-zinc-400 block">Total Estimado</span>
+          <span id="total-val" class="text-2xl font-black text-amber-500">R$ 0,00</span>
         </div>
-        <div class="bg-zinc-950 border border-zinc-800 px-3.5 py-1.5 rounded-xl text-center">
-          <span class="text-[10px] text-zinc-500 uppercase font-bold block">Delivery VIP</span>
-          <span id="stat-delivery" class="text-base font-black text-gold-400">0</span>
-        </div>
-        <button onclick="lockAdminPanel()" title="Sair / Trancar Painel" class="p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 transition ml-2">
-          <i data-lucide="lock" class="w-5 h-5"></i>
+        <button onclick="finalizarAgendamento()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-950">
+          <i class="fa-brands fa-whatsapp text-lg"></i> Confirmar Agendamento
         </button>
       </div>
-    </div>
-
-    <!-- Filters Bar -->
-    <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-zinc-900/60 border border-zinc-800 p-4 rounded-xl">
-      <div class="flex flex-wrap items-center gap-1.5">
-        <button onclick="filterAdmin('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-gold-500 text-zinc-950">Todos</button>
-        <button onclick="filterAdmin('today')" id="filter-today" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 text-zinc-300 hover:bg-zinc-700">Hoje</button>
-        <button onclick="filterAdmin('delivery')" id="filter-delivery" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 text-zinc-300 hover:bg-zinc-700">Apenas Delivery</button>
-        <button onclick="filterAdmin('presencial')" id="filter-presencial" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 text-zinc-300 hover:bg-zinc-700">Apenas Local Fixo</button>
-      </div>
-
-      <div class="text-xs text-zinc-400 flex items-center justify-between md:justify-end gap-2">
-        <span>Sincronizado via Firebase</span>
-        <button onclick="loadAdminDataManual()" class="text-gold-400 underline font-bold hover:text-gold-300">Atualizar</button>
-      </div>
-    </div>
-
-    <!-- Appointments Cards Grid -->
-    <div id="admin-appointments-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <!-- Cards rendered dynamically -->
-    </div>
-
+    </section>
   </main>
 
-  <!-- SECRET AUTH MODAL -->
-  <div id="secret-pin-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-zinc-900 border border-zinc-800 w-full max-w-xs rounded-2xl p-6 shadow-2xl text-center space-y-4 relative">
-      <button onclick="closePinModal()" class="absolute top-3 right-3 text-zinc-500 hover:text-zinc-300 p-1">
-        <i data-lucide="x" class="w-4 h-4"></i>
-      </button>
-
-      <div class="w-12 h-12 bg-gold-500/10 text-gold-400 rounded-full flex items-center justify-center mx-auto border border-gold-500/20">
-        <i data-lucide="shield-lock" class="w-6 h-6"></i>
-      </div>
-
-      <div>
-        <h3 class="text-base font-bold text-white">Acesso Restrito</h3>
-        <p class="text-xs text-zinc-400 mt-1">Digite a senha PIN de 4 dígitos do Barbeiro.</p>
-      </div>
-
-      <form onsubmit="verifyAdminPin(event)" class="space-y-3">
-        <input type="password" id="pin-input" maxlength="8" required autofocus placeholder="****" class="w-full text-center tracking-widest text-xl font-bold bg-zinc-950 border border-zinc-800 rounded-xl py-2.5 text-white focus:outline-none focus:border-gold-500">
-        <p id="pin-error" class="text-[11px] text-red-400 font-semibold hidden">PIN incorreto. Tente novamente.</p>
-        <button type="submit" class="w-full bg-gold-500 hover:bg-gold-400 text-zinc-950 font-bold py-2.5 rounded-xl transition text-xs">
-          Acessar Painel
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- PUBLIC FOOTER -->
-  <footer class="border-t border-zinc-800/80 bg-zinc-950 mt-auto py-6">
-    <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
-      <p class="text-xs text-zinc-400 font-medium">Barbearia Local Fixo & Service Delivery VIP</p>
-      <!-- SECRET TRIGGER: Triple click on "Todos os direitos reservados" triggers secret login -->
-      <p id="secret-footer-trigger" onclick="handleSecretClick()" class="text-[11px] text-zinc-600 select-none cursor-default transition hover:text-zinc-500">
-        © <span id="year-copy">2026</span> Barbearia Belquis Tove. <span class="hover:underline">Todos os direitos reservados</span>.
-      </p>
-    </div>
+  <footer class="border-t border-zinc-900 bg-zinc-950 py-6 text-center text-xs text-zinc-600">
+    <p>© Barbearia Lequistove. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- Firebase & Application Script -->
+  <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Suas Configurações do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBdDb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
       authDomain: "barbeariablequistove-c0349.firebaseapp.com",
@@ -306,465 +144,181 @@
       measurementId: "G-EL0MYVYHMR"
     };
 
-    // Inicialização do Firebase Realtime Database
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const appointmentsRef = ref(db, 'agendamentos');
 
-    // PIN Secreto Padrão (Pode ser ajustado)
-    const SECRET_PIN = "1234";
+    // Dados das Tabelas das Imagens
+    const tabelaFixo = [
+      { id: 'f1', nome: 'Corte Normal', preco: 30 },
+      { id: 'f2', nome: 'Corte Navalhado', preco: 35 },
+      { id: 'f3', nome: 'Barba', preco: 30 },
+      { id: 'f4', nome: 'Pezinho', preco: 15 },
+      { id: 'f5', nome: 'Sobrancelha', preco: 15 },
+      { id: 'f6', nome: 'Cabelo + Barba', preco: 55 },
+      { id: 'f7', nome: 'Depilação Nasal', preco: 20 },
+      { id: 'f8', nome: 'Depilação na Orelha', preco: 20 },
+      { id: 'f9', nome: 'Combo Nariz + Orelha', preco: 35 }
+    ];
 
-    // Estado Geral da Aplicação
-    window.appState = {
-      mode: 'presencial', // 'presencial' ou 'delivery'
-      selectedServices: [],
-      currentFilter: 'all',
-      appointments: [],
-      isAdminAuthenticated: false,
-      clickCount: 0,
-      clickTimer: null
-    };
+    const tabelaDelivery = [
+      { id: 'd1', nome: 'Corte Social / Tesoura', preco: 40, desc: 'Acabamento refinado e caimento perfeito' },
+      { id: 'd2', nome: 'Corte Navalhado / Fade', preco: 45, desc: 'Degradê de precisão com acabamento na lâmina' },
+      { id: 'd3', nome: 'Barba VIP Completa', preco: 35, desc: 'Modelagem, alinhamento e finalização premium' },
+      { id: 'd4', nome: 'Pezinho (Acabamento)', preco: 20, desc: 'Contorno preciso para manter o corte em dia' },
+      { id: 'd5', nome: 'Sobrancelha Masculina', preco: 20, desc: 'Design natural e alinhamento na navalha' },
+      { id: 'd6', nome: 'Depilação Nasal / Orelha', preco: 20, desc: 'Remoção prática e rápida com cera própria (cada)' },
+      { id: 'd7', nome: 'Combo Cabelo + Barba', preco: 70, desc: 'Visual completo no seu conforto (Economia R$ 10)' },
+      { id: 'd8', nome: 'Combo Higiene (Nariz + Orelha)', preco: 35, desc: 'Cuidado pessoal completo sem complicações' },
+      { id: 'd9', nome: 'Combo Família (Pai + Filho)', preco: 75, desc: '2 Cortes no mesmo endereço pelo melhor preço' }
+    ];
 
-    // TABELA DE PREÇOS COMPLETA
-    const PRICES = {
-      presencial: [
-        { id: 'p1', name: 'Corte Normal', price: 30, desc: 'Corte tradicional de cabelo' },
-        { id: 'p2', name: 'Corte Navalhado', price: 35, desc: 'Degradê preciso na navalha' },
-        { id: 'p3', name: 'Barba', price: 30, desc: 'Modelagem e alinhamento da barba' },
-        { id: 'p4', name: 'Pezinho', price: 15, desc: 'Contorno de acabamento' },
-        { id: 'p5', name: 'Sobrancelha', price: 15, desc: 'Design natural na navalha' },
-        { id: 'p6', name: 'Cabelo + Barba', price: 55, desc: 'Combo tradicional completo', isCombo: true },
-        { id: 'p7', name: 'Depilação Nasal', price: 20, desc: 'Remoção higiênica com cera' },
-        { id: 'p8', name: 'Depilação na Orelha', price: 20, desc: 'Remoção higiênica com cera' },
-        { id: 'p9', name: 'Combo Nariz + Orelha', price: 35, desc: 'Higienização facial dupla', isCombo: true }
-      ],
-      delivery: [
-        { id: 'd1', name: 'Corte Social / Tesoura', price: 40, desc: 'Acabamento refinado no seu conforto' },
-        { id: 'd2', name: 'Corte Navalhado / Fade', price: 45, desc: 'Degradê de precisão com acabamento na lâmina' },
-        { id: 'd3', name: 'Barba VIP Completa', price: 35, desc: 'Modelagem, alinhamento e finalização premium' },
-        { id: 'd4', name: 'Pezinho (Acabamento)', price: 20, desc: 'Contorno preciso para manter o corte em dia' },
-        { id: 'd5', name: 'Sobrancelha Masculina', price: 20, desc: 'Design natural e alinhamento na navalha' },
-        { id: 'd6', name: 'Depilação Nasal / Orelha', price: 20, desc: 'Remoção prática com cera própria (cada)' },
-        { id: 'd7', name: 'Combo Cabelo + Barba', price: 70, desc: 'Visual completo no seu conforto (Economize R$ 10)', isCombo: true },
-        { id: 'd8', name: 'Combo Higiene (Nariz + Orelha)', price: 35, desc: 'Cuidado pessoal completo sem complicações', isCombo: true },
-        { id: 'd9', name: 'Combo Família (Pai & Filho)', price: 75, desc: '2 Cortes no mesmo endereço pelo melhor preço', isCombo: true }
-      ]
-    };
+    let modalidadeAtual = 'fixo';
+    let servicosSelecionados = [];
 
-    // Alternar Modalidade (Presencial x Delivery)
-    window.setServiceType = function(mode) {
-      window.appState.mode = mode;
-      window.appState.selectedServices = [];
+    window.setModalidade = function(tipo) {
+      modalidadeAtual = tipo;
+      servicosSelecionados = [];
+      
+      const btnFixo = document.getElementById('btn-fixo');
+      const btnDelivery = document.getElementById('btn-delivery');
+      const infoBanner = document.getElementById('info-banner');
+      const deliveryExtra = document.getElementById('field-delivery-extra');
 
-      const btnPres = document.getElementById('tab-presencial');
-      const btnDeliv = document.getElementById('tab-delivery');
-      const addressWrapper = document.getElementById('address-field-wrapper');
-      const diffBanner = document.getElementById('delivery-differential');
-      const badgeMode = document.getElementById('badge-mode');
-
-      if (mode === 'presencial') {
-        btnPres.className = "flex-1 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 to-amber-500 text-zinc-950 shadow-lg shadow-gold-500/20";
-        btnDeliv.className = "flex-1 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-white";
-        addressWrapper.classList.add('hidden');
-        diffBanner.classList.add('hidden');
-        badgeMode.innerText = "Local Fixo";
-      } else {
-        btnDeliv.className = "flex-1 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 to-amber-500 text-zinc-950 shadow-lg shadow-gold-500/20";
-        btnPres.className = "flex-1 py-3 px-4 rounded-xl font-bold text-xs md:text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-white";
-        addressWrapper.classList.remove('hidden');
-        diffBanner.classList.remove('hidden');
-        badgeMode.innerText = "Delivery VIP";
-      }
-
-      renderInfoBanner();
-      renderServicesList();
-      updateCartSummary();
-    };
-
-    // Render Banner Informativo Superior
-    function renderInfoBanner() {
-      const banner = document.getElementById('info-banner');
-      if (window.appState.mode === 'presencial') {
-        banner.innerHTML = `
-          <div class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-gold-500/10 text-gold-400 flex items-center justify-center shrink-0 border border-gold-500/20">
-              <i data-lucide="map-pin" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h4 class="font-bold text-white text-sm md:text-base">Atendimento em Local Fixo</h4>
-              <p class="text-xs text-zinc-400">Rua Santa Rosa, 857 - Cidade Balneário Arroio do Silva</p>
-            </div>
-          </div>
-          <div class="text-[11px] bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-lg text-zinc-300 font-medium">
-            Atendimento sob agendamento prévio
+      if(tipo === 'fixo') {
+        btnFixo.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg";
+        btnDelivery.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-zinc-200";
+        
+        infoBanner.innerHTML = `
+          <div class="text-amber-500 text-2xl pt-1"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <h3 class="font-bold text-zinc-200">Local Fixo</h3>
+            <p class="text-sm text-zinc-400">Rua Santa Rosa, 857 - Cidade Balneário Arroio do Silva</p>
           </div>
         `;
+        deliveryExtra.classList.add('hidden');
       } else {
-        banner.innerHTML = `
-          <div class="flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-gold-500/10 text-gold-400 flex items-center justify-center shrink-0 border border-gold-500/20">
-              <i data-lucide="car" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h4 class="font-bold text-white text-sm md:text-base">Atendimento VIP no seu Endereço</h4>
-              <p class="text-xs text-zinc-400">Balneário Arroio do Silva (Preço Único) • Araranguá e Região</p>
-            </div>
-          </div>
-          <div class="text-[11px] bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-lg text-zinc-300 font-medium">
-            Lâminas descartáveis e 100% higienizado
+        btnDelivery.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg";
+        btnFixo.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-zinc-200";
+        
+        infoBanner.innerHTML = `
+          <div class="text-amber-500 text-2xl pt-1"><i class="fa-solid fa-wind"></i></div>
+          <div>
+            <h3 class="font-bold text-zinc-200">A EXPERIÊNCIA VIP NA SUA CASA</h3>
+            <p class="text-xs text-zinc-400 mt-1">Sem filas • Sem trânsito • Conforto total e ZERO sujeira (Atendimento finalizado com <b>ASPIRADOR DE PÓ PRÓPRIO</b>).</p>
           </div>
         `;
+        deliveryExtra.classList.remove('hidden');
       }
-      lucide.createIcons();
+
+      renderServicos();
+      updateTotal();
+    };
+
+    function renderServicos() {
+      const container = document.getElementById('services-list');
+      const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
+      
+      container.innerHTML = lista.map(s => `
+        <label class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex items-start gap-3 cursor-pointer hover:border-zinc-700 transition">
+          <input type="checkbox" value="${s.id}" onchange="toggleServico('${s.id}')" class="mt-1 w-4 h-4 accent-amber-500 rounded">
+          <div class="flex-1">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-sm text-zinc-200">${s.nome}</span>
+              <span class="font-bold text-amber-500 text-sm">R$ ${s.preco.toFixed(2).replace('.', ',')}</span>
+            </div>
+            ${s.desc ? `<p class="text-xs text-zinc-500 mt-0.5">${s.desc}</p>` : ''}
+          </div>
+        </label>
+      `).join('');
     }
 
-    // Render Lista de Serviços
-    function renderServicesList() {
-      const container = document.getElementById('services-container');
-      const list = PRICES[window.appState.mode];
-
-      container.innerHTML = list.map(item => {
-        const isSelected = window.appState.selectedServices.some(s => s.id === item.id);
-        return `
-          <div onclick="toggleSelectService('${item.id}')" class="cursor-pointer bg-zinc-900/80 border ${isSelected ? 'border-gold-500 ring-1 ring-gold-500/50 bg-gold-500/5' : 'border-zinc-800 hover:border-zinc-700'} p-3.5 rounded-xl transition flex items-center justify-between group">
-            <div class="space-y-0.5 pr-3">
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-white text-xs md:text-sm">${item.name}</span>
-                ${item.isCombo ? '<span class="text-[9px] font-black uppercase bg-gold-500/20 text-gold-400 px-1.5 py-0.5 rounded border border-gold-500/30">Combo</span>' : ''}
-              </div>
-              <p class="text-[11px] text-zinc-400 leading-tight">${item.desc}</p>
-            </div>
-            <div class="text-right shrink-0">
-              <span class="text-gold-400 font-black text-sm md:text-base block">R$ ${item.price.toFixed(2)}</span>
-              <span class="text-[10px] font-bold ${isSelected ? 'text-gold-400' : 'text-zinc-500 group-hover:text-zinc-300'}">
-                ${isSelected ? '✓ Selecionado' : '+ Adicionar'}
-              </span>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // Alternar Seleção
-    window.toggleSelectService = function(serviceId) {
-      const list = PRICES[window.appState.mode];
-      const service = list.find(s => s.id === serviceId);
-
-      const existsIndex = window.appState.selectedServices.findIndex(s => s.id === serviceId);
-      if (existsIndex > -1) {
-        window.appState.selectedServices.splice(existsIndex, 1);
+    window.toggleServico = function(id) {
+      const idx = servicosSelecionados.indexOf(id);
+      if(idx > -1) {
+        servicosSelecionados.splice(idx, 1);
       } else {
-        window.appState.selectedServices.push(service);
+        servicosSelecionados.push(id);
       }
-
-      renderServicesList();
-      updateCartSummary();
+      updateTotal();
     };
 
-    // Atualizar Resumo no Formulário
-    function updateCartSummary() {
-      const summaryContainer = document.getElementById('selected-summary');
-      const totalDisplay = document.getElementById('total-price');
+    function updateTotal() {
+      const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
+      const total = servicosSelecionados.reduce((acc, id) => {
+        const item = lista.find(s => s.id === id);
+        return acc + (item ? item.preco : 0);
+      }, 0);
 
-      const total = window.appState.selectedServices.reduce((acc, curr) => acc + curr.price, 0);
-      totalDisplay.innerText = `R$ ${total.toFixed(2)}`;
+      document.getElementById('total-val').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    }
 
-      if (window.appState.selectedServices.length === 0) {
-        summaryContainer.innerHTML = `<span class="text-zinc-500">Nenhum serviço selecionado. Selecione na lista ao lado.</span>`;
+    window.finalizarAgendamento = function() {
+      const nome = document.getElementById('cli-nome').value.trim();
+      const fone = document.getElementById('cli-fone').value.trim();
+      const data = document.getElementById('cli-data').value;
+      const hora = document.getElementById('cli-hora').value;
+
+      if(!nome || !fone || !data || !hora) {
+        alert("Por favor, preencha todos os campos obrigatórios (Nome, Telefone, Data e Horário).");
         return;
       }
 
-      summaryContainer.innerHTML = `
-        <ul class="space-y-1">
-          ${window.appState.selectedServices.map(s => `
-            <li class="flex justify-between items-center text-xs text-zinc-200">
-              <span>• ${s.name}</span>
-              <span class="font-bold text-gold-400">R$ ${s.price.toFixed(2)}</span>
-            </li>
-          `).join('')}
-        </ul>
-      `;
-    }
-
-    // Submeter Agendamento
-    window.handleBookingSubmit = function(e) {
-      e.preventDefault();
-
-      if (window.appState.selectedServices.length === 0) {
-        alert("Por favor, escolha pelo menos um serviço da lista antes de continuar.");
+      if(servicosSelecionados.length === 0) {
+        alert("Selecione pelo menos um serviço.");
         return;
       }
 
-      const name = document.getElementById('client-name').value;
-      const phone = document.getElementById('client-phone').value;
-      const date = document.getElementById('booking-date').value;
-      const time = document.getElementById('booking-time').value;
-      const obs = document.getElementById('booking-obs').value;
-      const mode = window.appState.mode;
+      const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
+      const itensEscolhidos = servicosSelecionados.map(id => lista.find(s => s.id === id));
+      const total = itensEscolhidos.reduce((acc, i) => acc + i.preco, 0);
 
-      let address = "Atendimento no Local Fixo (Rua Santa Rosa, 857)";
-      let city = "Balneário Arroio do Silva";
-
-      if (mode === 'delivery') {
-        city = document.getElementById('client-city').value;
-        address = document.getElementById('client-address').value;
-        if (!address.trim()) {
-          alert("Por favor, digite o seu endereço completo para o atendimento Delivery.");
-          return;
-        }
-      }
-
-      const total = window.appState.selectedServices.reduce((acc, curr) => acc + curr.price, 0);
-      const servicesText = window.appState.selectedServices.map(s => s.name).join(', ');
-
-      const bookingData = {
-        name,
-        phone,
-        date,
-        time,
-        obs,
-        mode,
-        city,
-        address,
-        services: servicesText,
-        total,
+      let dadosAgendamento = {
+        cliente: nome,
+        telefone: fone,
+        data: data,
+        horario: hora,
+        tipo: modalidadeAtual,
+        servicos: itensEscolhidos.map(i => i.nome).join(', '),
+        total: total,
         status: 'Pendente',
-        createdAt: new Date().toISOString()
+        criadoEm: new Date().toISOString()
       };
 
-      // 1. Salvar no Firebase Realtime Database
-      push(appointmentsRef, bookingData)
-        .then(() => {
-          // 2. Preparar e enviar mensagem pelo WhatsApp
-          let msg = `*NOVO AGENDAMENTO DE CORTE*\n\n`;
-          msg += `*Cliente:* ${name}\n`;
-          msg += `*Telefone:* ${phone}\n`;
-          msg += `*Tipo:* ${mode === 'delivery' ? '🚗 DELIVERY VIP (Em Casa)' : '💈 LOCAL FIXO'}\n`;
-          if (mode === 'delivery') {
-            msg += `*Cidade:* ${city}\n`;
-            msg += `*Endereço:* ${address}\n`;
-          }
-          msg += `*Data:* ${date.split('-').reverse().join('/')}\n`;
-          msg += `*Horário:* ${time}\n`;
-          msg += `*Serviços:* ${servicesText}\n`;
-          msg += `*Valor Total:* R$ ${total.toFixed(2)}\n`;
-          if (obs) msg += `*Obs:* ${obs}\n`;
-
-          const whatsappUrl = `https://wa.me/5548992071556?text=${encodeURIComponent(msg)}`;
-          
-          alert("Agendamento efetuado! Clique em OK para enviar a confirmação no WhatsApp.");
-          window.open(whatsappUrl, '_blank');
-
-          // Limpar Formulário
-          document.getElementById('booking-form').reset();
-          window.appState.selectedServices = [];
-          renderServicesList();
-          updateCartSummary();
-        })
-        .catch(err => {
-          console.error("Erro ao salvar agendamento:", err);
-          alert("Erro ao conectar com o banco de dados. Verifique sua conexão.");
-        });
-    };
-
-    // SISTEMA SECRETO DE ACESSO AO PAINEL DO BARBEIRO
-    window.handleSecretClick = function() {
-      window.appState.clickCount++;
-      
-      clearTimeout(window.appState.clickTimer);
-      window.appState.clickTimer = setTimeout(() => {
-        window.appState.clickCount = 0;
-      }, 1000);
-
-      // Clique triplo para abrir caixa de PIN
-      if (window.appState.clickCount >= 3) {
-        window.appState.clickCount = 0;
-        document.getElementById('secret-pin-modal').classList.remove('hidden');
-        document.getElementById('pin-input').value = '';
-        document.getElementById('pin-input').focus();
-      }
-    };
-
-    window.closePinModal = function() {
-      document.getElementById('secret-pin-modal').classList.add('hidden');
-      document.getElementById('pin-error').classList.add('hidden');
-    };
-
-    window.verifyAdminPin = function(e) {
-      e.preventDefault();
-      const inputPin = document.getElementById('pin-input').value;
-
-      if (inputPin === SECRET_PIN) {
-        window.appState.isAdminAuthenticated = true;
-        closePinModal();
-        showAdminPanel();
-      } else {
-        document.getElementById('pin-error').classList.remove('hidden');
-      }
-    };
-
-    function showAdminPanel() {
-      document.getElementById('view-client').classList.add('hidden');
-      document.getElementById('view-admin').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      loadAdminDataManual();
-    }
-
-    window.lockAdminPanel = function() {
-      window.appState.isAdminAuthenticated = false;
-      document.getElementById('view-admin').classList.add('hidden');
-      document.getElementById('view-client').classList.remove('hidden');
-    };
-
-    // ESCUTAR BANCO DE DADOS EM TEMPO REAL
-    onValue(appointmentsRef, (snapshot) => {
-      const data = snapshot.val();
-      const appointments = [];
-      if (data) {
-        Object.keys(data).forEach(key => {
-          appointments.push({ id: key, ...data[key] });
-        });
-      }
-      // Ordenação cronológica invertida (novos primeiro)
-      appointments.sort((a, b) => new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`));
-      window.appState.appointments = appointments;
-      
-      if (window.appState.isAdminAuthenticated) {
-        updateAdminStats();
-        renderAdminAppointments();
-      }
-    });
-
-    window.loadAdminDataManual = function() {
-      updateAdminStats();
-      renderAdminAppointments();
-    };
-
-    // Estatísticas do Painel
-    function updateAdminStats() {
-      const total = window.appState.appointments.length;
-      const delivery = window.appState.appointments.filter(a => a.mode === 'delivery').length;
-
-      document.getElementById('stat-total').innerText = total;
-      document.getElementById('stat-delivery').innerText = delivery;
-    }
-
-    // Filtragem no Painel
-    window.filterAdmin = function(type) {
-      window.appState.currentFilter = type;
-
-      const buttons = ['all', 'today', 'delivery', 'presencial'];
-      buttons.forEach(b => {
-        const el = document.getElementById(`filter-${b}`);
-        if (b === type) {
-          el.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-gold-500 text-zinc-950";
-        } else {
-          el.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 text-zinc-300 hover:bg-zinc-700";
+      if(modalidadeAtual === 'delivery') {
+        const regiao = document.getElementById('cli-regiao').value;
+        const endereco = document.getElementById('cli-endereco').value.trim();
+        if(!endereco) {
+          alert("Por favor, informe o endereço para atendimento delivery.");
+          return;
         }
-      });
+        dadosAgendamento.regiao = regiao;
+        dadosAgendamento.endereco = endereco;
+      }
 
-      renderAdminAppointments();
+      // Enviar ao Firebase
+      push(ref(db, 'agendamentos'), dadosAgendamento).then(() => {
+        // Formatar mensagem para o WhatsApp
+        let msg = `*NOVO AGENDAMENTO - BARBEARIA LEQUISTOVE*\n\n`;
+        msg += `👤 *Cliente:* ${nome}\n`;
+        msg += `📞 *Contato:* ${fone}\n`;
+        msg += `📅 *Data:* ${data} às ${hora}\n`;
+        msg += `💈 *Tipo:* ${modalidadeAtual === 'fixo' ? 'Local Fixo (Rua Santa Rosa, 857)' : 'Delivery VIP'}\n`;
+        if(modalidadeAtual === 'delivery') {
+          msg += `📍 *Região:* ${dadosAgendamento.regiao}\n`;
+          msg += `🏠 *Endereço:* ${dadosAgendamento.endereco}\n`;
+        }
+        msg += `✂️ *Serviços:* ${dadosAgendamento.servicos}\n`;
+        msg += `💰 *Total Estimado:* R$ ${total.toFixed(2).replace('.', ',')}`;
+
+        const urlWhats = `https://wa.me/5548992071556?text=${encodeURIComponent(msg)}`;
+        window.open(urlWhats, '_blank');
+      }).catch(err => {
+        alert("Erro ao gravar agendamento: " + err.message);
+      });
     };
 
-    // Renderizar Cards de Agendamentos no Painel do Barbeiro
-    function renderAdminAppointments() {
-      const container = document.getElementById('admin-appointments-list');
-      let filtered = [...window.appState.appointments];
-
-      const todayStr = new Date().toISOString().split('T')[0];
-
-      if (window.appState.currentFilter === 'today') {
-        filtered = filtered.filter(a => a.date === todayStr);
-      } else if (window.appState.currentFilter === 'delivery') {
-        filtered = filtered.filter(a => a.mode === 'delivery');
-      } else if (window.appState.currentFilter === 'presencial') {
-        filtered = filtered.filter(a => a.mode === 'presencial');
-      }
-
-      if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full py-12 text-center text-zinc-500 bg-zinc-900/40 rounded-2xl border border-zinc-800">
-            <i data-lucide="calendar-x" class="mx-auto w-8 h-8 mb-2 opacity-40"></i>
-            <p class="text-xs font-semibold">Nenhum agendamento encontrado para este filtro.</p>
-          </div>
-        `;
-        lucide.createIcons();
-        return;
-      }
-
-      container.innerHTML = filtered.map(app => {
-        const isDelivery = app.mode === 'delivery';
-        const formattedDate = app.date ? app.date.split('-').reverse().join('/') : 'N/I';
-        const phoneClean = app.phone ? app.phone.replace(/\D/g, '') : '';
-        const mapsQuery = isDelivery ? encodeURIComponent(`${app.address}, ${app.city}`) : '';
-
-        return `
-          <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 md:p-5 space-y-4 shadow-xl flex flex-col justify-between">
-            <div class="space-y-3">
-              <!-- Top Header -->
-              <div class="flex items-start justify-between gap-2 border-b border-zinc-800 pb-3">
-                <div>
-                  <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${isDelivery ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}">
-                    ${isDelivery ? '🚚 Delivery VIP' : '💈 Local Fixo'}
-                  </span>
-                  <h3 class="text-base font-bold text-white mt-1">${app.name}</h3>
-                </div>
-                <span class="text-gold-400 font-black text-base">R$ ${(app.total || 0).toFixed(2)}</span>
-              </div>
-
-              <!-- Details -->
-              <div class="space-y-2 text-xs text-zinc-300">
-                <div class="flex items-center gap-2">
-                  <i data-lucide="calendar" class="w-4 h-4 text-zinc-500 shrink-0"></i>
-                  <span><strong>Data:</strong> ${formattedDate} às <strong>${app.time}</strong></span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <i data-lucide="phone" class="w-4 h-4 text-zinc-500 shrink-0"></i>
-                  <a href="https://wa.me/55${phoneClean}" target="_blank" class="text-gold-400 font-bold hover:underline flex items-center gap-1">
-                    ${app.phone} <i data-lucide="external-link" class="w-3 h-3"></i>
-                  </a>
-                </div>
-
-                ${isDelivery ? `
-                  <div class="bg-zinc-950 p-2.5 rounded-xl border border-zinc-800 space-y-1">
-                    <div class="flex items-center justify-between">
-                      <span class="text-amber-400 font-bold text-[11px] flex items-center gap-1">
-                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Endereço
-                      </span>
-                      <a href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" class="text-[10px] text-zinc-400 hover:text-white underline">
-                        Abrir no GPS
-                      </a>
-                    </div>
-                    <p class="text-zinc-300 text-[11px] leading-relaxed">${app.address} - <strong>${app.city}</strong></p>
-                  </div>
-                ` : ''}
-
-                <div class="bg-zinc-950 p-2.5 rounded-xl border border-zinc-800">
-                  <span class="text-zinc-500 text-[10px] font-bold block uppercase mb-0.5">Serviços:</span>
-                  <p class="text-white font-medium">${app.services}</p>
-                </div>
-
-                ${app.obs ? `<p class="text-[11px] text-zinc-400 italic">"Obs: ${app.obs}"</p>` : ''}
-              </div>
-            </div>
-
-            <!-- Actions Bar -->
-            <div class="pt-3 border-t border-zinc-800 flex items-center justify-between gap-2">
-              <select onchange="updateStatus('${app.id}', this.value)" class="bg-zinc-950 border border-zinc-800 text-xs rounded-xl px-2.5 py-1.5 text-zinc-200 focus:outline-none focus:border-gold-500 font-medium">
-                <option value="Pendente" ${app.status === 'Pendente' ? 'selected' : ''}>⏳ Pendente</option>
-                <option value="Confirmado" ${app.status === 'Confirmado' ? 'selected' : ''}>👍 Confirmado</option>
-                <option value="Em Andamento" ${app.status === 'Em Andamento' ? 'selected' : ''}>✂️ Em Andamento</option>
-                <option value="Concluído" ${app.status === 'Concluído' ? 'selected' : ''}>✅ Concluído</option>
-                <option value="Cancelado" ${app.status === 'Cancelado' ? 'selected' : ''}>❌ Cancelado</option>
-              </select>
-
-              <button onclick="deleteAppointment('${app.id}')" title="Excluir Agendamento" class="text-red-400 hover:text-red-300 p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      lucide.createIcons();
+    // Inicialização
+    renderServicos();
+  </script>
+</body>
+</html>
