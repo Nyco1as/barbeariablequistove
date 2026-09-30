@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Barbeiro - Barbearia Lequistove</title>
+  <title>Painel do Barbeiro - Barbearia Blequistove</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -11,154 +11,141 @@
     body { font-family: 'Poppins', sans-serif; }
     .gold-gradient { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); }
     .gold-text { background: linear-gradient(135deg, #f1c40f, #e67e22); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .glass-card { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(63, 63, 70, 0.5); }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-zinc-950">
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
 
-  <header class="border-b border-zinc-800 bg-zinc-900/90 sticky top-0 z-40 backdrop-blur-md">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl gold-gradient flex items-center justify-center text-zinc-950 font-black text-xl shadow-lg shadow-amber-900/20">
-          <i class="fa-solid fa-crown"></i>
-        </div>
-        <div>
-          <h1 class="font-bold text-base leading-tight">Painel de Gestão</h1>
-          <p class="text-xs text-amber-500 font-medium">Barbearia Lequistove</p>
-        </div>
+  <!-- Tela de Autenticação / Login -->
+  <div id="login-modal" class="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl max-w-sm w-full space-y-5 text-center shadow-2xl">
+      <div class="w-16 h-16 rounded-full gold-gradient text-zinc-950 flex items-center justify-center mx-auto text-2xl font-black">
+        <i class="fa-solid fa-scissors"></i>
       </div>
-
-      <div id="auth-actions" class="flex items-center gap-2">
-        <span id="user-display" class="text-xs text-zinc-400 hidden sm:inline"></span>
-        <button id="btn-logout" onclick="fazerLogout()" class="hidden bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border border-zinc-700">
-          <i class="fa-solid fa-right-from-bracket"></i> Sair
-        </button>
+      <div>
+        <h2 class="font-bold text-xl text-zinc-100">Painel do Barbeiro</h2>
+        <p class="text-xs text-zinc-400 mt-1">Insira suas credenciais para gerenciar os agendamentos</p>
       </div>
-    </div>
-  </header>
-
-  <div id="login-modal" class="fixed inset-0 bg-zinc-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8 max-w-md w-full space-y-6 shadow-2xl">
-      <div class="text-center space-y-2">
-        <div class="w-16 h-16 rounded-2xl gold-gradient mx-auto flex items-center justify-center text-zinc-950 text-3xl font-black shadow-xl shadow-amber-950/50">
-          <i class="fa-solid fa-scissors"></i>
-        </div>
-        <h2 class="text-2xl font-black tracking-tight">Acesso do Barbeiro</h2>
-        <p class="text-xs text-zinc-400">Entre com seu e-mail e senha cadastrados no Firebase</p>
-      </div>
-
-      <form id="form-login" onsubmit="fazerLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">E-mail</label>
-          <div class="relative">
-            <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i>
-            <input type="email" id="login-email" required placeholder="barbeiro@lequistove.com" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 text-zinc-100 transition">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">Senha</label>
-          <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i>
-            <input type="password" id="login-senha" required placeholder="••••••••" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 text-zinc-100 transition">
-          </div>
-        </div>
-
-        <div id="login-error" class="hidden text-xs text-red-400 bg-red-950/50 border border-red-800/50 p-3 rounded-xl flex items-center gap-2">
-          <i class="fa-solid fa-circle-exclamation"></i> <span id="login-error-msg">Credenciais inválidas.</span>
-        </div>
-
-        <button type="submit" id="btn-submit-login" class="w-full gold-gradient text-zinc-950 font-bold py-3 px-4 rounded-xl shadow-lg transition hover:brightness-110 flex items-center justify-center gap-2">
-          <span>Entrar no Painel</span> <i class="fa-solid fa-arrow-right text-sm"></i>
+      
+      <form id="login-form" onsubmit="autenticarFirebase(event)" class="space-y-3">
+        <input type="email" id="auth-email" placeholder="E-mail cadastrado" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+        <input type="password" id="auth-password" placeholder="Palavra-passe" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+        
+        <button type="submit" class="w-full gold-gradient text-zinc-950 font-bold py-3 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2 shadow-lg shadow-amber-950/30">
+          <i class="fa-solid fa-right-to-bracket"></i> Entrar no Painel
         </button>
       </form>
     </div>
   </div>
 
-  <main id="app-content" class="max-w-6xl mx-auto px-4 py-6 w-full space-y-6 hidden">
-
-    <!-- Top Dashboard Cards / Metrics -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-      <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center justify-center text-lg shrink-0">
-          <i class="fa-solid fa-clock"></i>
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-zinc-900/80 sticky top-0 backdrop-blur-md z-40">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl gold-gradient text-zinc-950 flex items-center justify-center font-bold text-lg">
+          <i class="fa-solid fa-user-gear"></i>
         </div>
         <div>
-          <p class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">A Atender Hoje</p>
-          <h3 id="stat-pendentes-hoje" class="text-2xl font-black text-amber-400">0</h3>
+          <h1 class="font-bold text-base leading-tight">Painel de Gestão</h1>
+          <p class="text-xs text-zinc-400">Barbearia Blequistove</p>
+        </div>
+      </div>
+      <button onclick="fazerLogout()" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 px-3 rounded-lg flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-right-from-bracket"></i> Sair
+      </button>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- Métricas Gerais -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <!-- Total A Atender -->
+      <div class="bg-zinc-900 border border-amber-500/30 p-4 rounded-2xl flex flex-col justify-between">
+        <div class="flex items-center justify-between text-amber-500">
+          <span class="text-xs font-semibold uppercase tracking-wider text-amber-400/80">A Atender</span>
+          <i class="fa-solid fa-clock text-lg"></i>
+        </div>
+        <div class="mt-3">
+          <span id="metric-pendentes" class="text-3xl font-black text-amber-500">0</span>
+          <span class="text-xs text-zinc-500 block mt-0.5">clientes na fila</span>
         </div>
       </div>
 
-      <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center justify-center text-lg shrink-0">
-          <i class="fa-solid fa-check-double"></i>
+      <!-- Total Concluídos -->
+      <div class="bg-zinc-900 border border-emerald-500/30 p-4 rounded-2xl flex flex-col justify-between">
+        <div class="flex items-center justify-between text-emerald-400">
+          <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400/80">Atendidos</span>
+          <i class="fa-solid fa-circle-check text-lg"></i>
         </div>
-        <div>
-          <p class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Atendidos Hoje</p>
-          <h3 id="stat-atendidos-hoje" class="text-2xl font-black text-emerald-400">0</h3>
-        </div>
-      </div>
-
-      <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 flex items-center justify-center text-lg shrink-0">
-          <i class="fa-solid fa-dollar-sign"></i>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Faturamento Hoje</p>
-          <h3 id="stat-faturamento-hoje" class="text-xl font-black text-cyan-400">R$ 0</h3>
+        <div class="mt-3">
+          <span id="metric-concluidos" class="text-3xl font-black text-emerald-400">0</span>
+          <span class="text-xs text-zinc-500 block mt-0.5">cortes finalizados</span>
         </div>
       </div>
 
-      <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center text-lg shrink-0">
-          <i class="fa-solid fa-calendar-days"></i>
+      <!-- Atendimentos Local Fixo -->
+      <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-col justify-between">
+        <div class="flex items-center justify-between text-blue-400">
+          <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Local Fixo</span>
+          <i class="fa-solid fa-store text-lg"></i>
         </div>
-        <div>
-          <p class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Total Geral</p>
-          <h3 id="stat-total-geral" class="text-2xl font-black text-purple-400">0</h3>
+        <div class="mt-3">
+          <span id="metric-fixo" class="text-3xl font-black text-blue-400">0</span>
+          <span class="text-xs text-zinc-500 block mt-0.5">agendamentos na barbearia</span>
+        </div>
+      </div>
+
+      <!-- Atendimentos Delivery -->
+      <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-col justify-between">
+        <div class="flex items-center justify-between text-purple-400">
+          <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Delivery VIP</span>
+          <i class="fa-solid fa-motorcycle text-lg"></i>
+        </div>
+        <div class="mt-3">
+          <span id="metric-delivery" class="text-3xl font-black text-purple-400">0</span>
+          <span class="text-xs text-zinc-500 block mt-0.5">atendimentos em domicílio</span>
         </div>
       </div>
     </div>
 
-    <!-- Filters and Search Bar -->
-    <div class="glass-card p-4 rounded-2xl border border-zinc-800 space-y-4">
-      <div class="flex flex-col sm:flex-row justify-between gap-3">
-        
-        <!-- Filter Tabs -->
-        <div class="flex bg-zinc-950 p-1 rounded-xl border border-zinc-800 overflow-x-auto text-xs font-semibold">
-          <button id="tab-pendentes" onclick="setAba('pendentes')" class="px-4 py-2 rounded-lg transition flex items-center gap-2 whitespace-nowrap bg-amber-500 text-zinc-950 shadow font-bold">
-            <i class="fa-solid fa-user-clock"></i> A Atender <span id="badge-count-pendentes" class="bg-zinc-950 text-amber-400 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
-          </button>
-          <button id="tab-concluidos" onclick="setAba('concluidos')" class="px-4 py-2 rounded-lg transition flex items-center gap-2 whitespace-nowrap text-zinc-400 hover:text-zinc-200">
-            <i class="fa-solid fa-circle-check"></i> Já Atendidos <span id="badge-count-concluidos" class="bg-zinc-800 text-zinc-300 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
-          </button>
-          <button id="tab-cancelados" onclick="setAba('cancelados')" class="px-4 py-2 rounded-lg transition flex items-center gap-2 whitespace-nowrap text-zinc-400 hover:text-zinc-200">
-            <i class="fa-solid fa-ban"></i> Cancelados <span id="badge-count-cancelados" class="bg-zinc-800 text-zinc-300 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
-          </button>
-        </div>
-
-        <!-- Date & Search Controls -->
-        <div class="flex items-center gap-2">
-          <input type="date" id="filtro-data" onchange="renderizarCards()" class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500 text-zinc-200">
-          <button onclick="limparFiltroData()" title="Limpar data" class="bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 p-2 rounded-xl text-xs text-zinc-400 transition">
-            <i class="fa-solid fa-rotate-left"></i>
-          </button>
-        </div>
+    <!-- Barra de Filtros e Categorias -->
+    <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between bg-zinc-900/60 p-3 rounded-2xl border border-zinc-800">
+      
+      <!-- Abas de Estado (Pendente / Concluído / Todos) -->
+      <div class="flex gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80">
+        <button onclick="setFiltroStatus('pendente')" id="tab-pendente" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-zinc-950 transition">
+          <i class="fa-solid fa-clock"></i> A Atender (<span id="cnt-tab-pendente">0</span>)
+        </button>
+        <button onclick="setFiltroStatus('concluido')" id="tab-concluido" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
+          <i class="fa-solid fa-check"></i> Atendidos (<span id="cnt-tab-concluido">0</span>)
+        </button>
+        <button onclick="setFiltroStatus('todos')" id="tab-todos" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
+          Todos (<span id="cnt-tab-todos">0</span>)
+        </button>
       </div>
+
+      <!-- Filtro por Modalidade (Fixo vs Delivery) -->
+      <div class="flex gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80">
+        <button onclick="setFiltroTipo('todos')" id="ftip-todos" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-100 transition">
+          Todas Modalidades
+        </button>
+        <button onclick="setFiltroTipo('fixo')" id="ftip-fixo" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
+          <i class="fa-solid fa-store text-blue-400"></i> Fixo
+        </button>
+        <button onclick="setFiltroTipo('delivery')" id="ftip-delivery" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
+          <i class="fa-solid fa-motorcycle text-amber-500"></i> Delivery
+        </button>
+      </div>
+
     </div>
 
-    <div id="cards-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <!-- Loading Placeholder -->
-      <div class="col-span-full py-16 text-center space-y-3">
-        <i class="fa-solid fa-circle-notch fa-spin text-3xl text-amber-500"></i>
-        <p class="text-sm text-zinc-400">Carregando agendamentos do Firebase...</p>
-      </div>
+    <!-- Lista de Cards -->
+    <div id="cards-container" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Conteúdo inserido dinamicamente pelo Firebase -->
     </div>
+
   </main>
-
-  <!-- Footer -->
-  <footer class="border-t border-zinc-900 bg-zinc-950 py-4 text-center text-xs text-zinc-600 mt-auto">
-    <p>© Barbearia Lequistove • Painel de Controle Exclusivo</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -180,321 +167,211 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let listaAgendamentos = {};
-    let abaAtiva = 'pendentes'; // 'pendentes', 'concluidos', 'cancelados'
+    let agendamentosData = {};
+    let filtroStatus = 'pendente'; // 'pendente', 'concluido', 'todos'
+    let filtroTipo = 'todos';     // 'todos', 'fixo', 'delivery'
 
-    // Formatar data local de hoje (AAAA-MM-DD)
-    const tzoffset = (new Date()).getTimezoneOffset() * 60000;
-    const hojeStr = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
-
-    // Auth Listener
+    // Autenticação
     onAuthStateChanged(auth, (user) => {
-      const loginModal = document.getElementById('login-modal');
-      const appContent = document.getElementById('app-content');
-      const btnLogout = document.getElementById('btn-logout');
-      const userDisplay = document.getElementById('user-display');
-
       if (user) {
-        loginModal.classList.add('hidden');
-        appContent.classList.remove('hidden');
-        btnLogout.classList.remove('hidden');
-        userDisplay.innerText = user.email;
-        conectarFirebaseDB();
+        document.getElementById('login-modal').classList.add('hidden');
+        carregarDados();
       } else {
-        loginModal.classList.remove('hidden');
-        appContent.classList.add('hidden');
-        btnLogout.classList.add('hidden');
+        document.getElementById('login-modal').classList.remove('hidden');
       }
     });
 
-    // Login Action
-    window.fazerLogin = async function(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const senha = document.getElementById('login-senha').value;
-      const errBox = document.getElementById('login-error');
-      const btn = document.getElementById('btn-submit-login');
+    window.autenticarFirebase = function(event) {
+      event.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
 
-      errBox.classList.add('hidden');
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Autenticando...`;
-
-      try {
-        await signInWithEmailAndPassword(auth, email, senha);
-      } catch (error) {
-        errBox.classList.remove('hidden');
-        document.getElementById('login-error-msg').innerText = "Erro no login: " + error.message;
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<span>Entrar no Painel</span> <i class="fa-solid fa-arrow-right text-sm"></i>`;
-      }
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById('login-modal').classList.add('hidden');
+        })
+        .catch(() => {
+          alert("Erro: E-mail ou palavra-passe incorretos.");
+        });
     };
 
-    // Logout Action
     window.fazerLogout = function() {
       signOut(auth);
     };
 
-    // Realtime Database Sync
-    function conectarFirebaseDB() {
+    function carregarDados() {
       const dbRef = ref(db, 'agendamentos');
       onValue(dbRef, (snapshot) => {
-        listaAgendamentos = snapshot.val() || {};
-        atualizarMetricas();
-        renderizarCards();
+        agendamentosData = snapshot.val() || {};
+        renderizarPainel();
       });
     }
 
-    window.setAba = function(aba) {
-      abaAtiva = aba;
-      
-      const btnPend = document.getElementById('tab-pendentes');
-      const btnConc = document.getElementById('tab-concluidos');
-      const btnCanc = document.getElementById('tab-cancelados');
-
-      const styleActive = "px-4 py-2 rounded-lg transition flex items-center gap-2 whitespace-nowrap bg-amber-500 text-zinc-950 shadow font-bold";
-      const styleInactive = "px-4 py-2 rounded-lg transition flex items-center gap-2 whitespace-nowrap text-zinc-400 hover:text-zinc-200";
-
-      btnPend.className = aba === 'pendentes' ? styleActive : styleInactive;
-      btnConc.className = aba === 'concluidos' ? styleActive : styleInactive;
-      btnCanc.className = aba === 'cancelados' ? styleActive : styleInactive;
-
-      renderizarCards();
-    };
-
-    window.limparFiltroData = function() {
-      document.getElementById('filtro-data').value = '';
-      renderizarCards();
-    };
-
-    function atualizarMetricas() {
-      let pendentesHoje = 0;
-      let atendidosHoje = 0;
-      let faturamentoHoje = 0;
-      let totalGeral = Object.keys(listaAgendamentos).length;
-
-      let countPend = 0;
-      let countConc = 0;
-      let countCanc = 0;
-
-      Object.values(listaAgendamentos).forEach(item => {
-        const st = (item.status || 'Pendente').toLowerCase();
-        
-        if (st === 'pendente' || st === 'em andamento') countPend++;
-        else if (st === 'concluído' || st === 'concluido') countConc++;
-        else if (st === 'cancelado') countCanc++;
-
-        if (item.data === hojeStr) {
-          if (st === 'pendente' || st === 'em andamento') {
-            pendentesHoje++;
-          } else if (st === 'concluído' || st === 'concluido') {
-            atendidosHoje++;
-            faturamentoHoje += Number(item.total || 0);
-          }
+    window.setFiltroStatus = function(st) {
+      filtroStatus = st;
+      ['pendente', 'concluido', 'todos'].forEach(s => {
+        const btn = document.getElementById(`tab-${s}`);
+        if (s === st) {
+          btn.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-zinc-950 transition shadow";
+        } else {
+          btn.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition";
         }
       });
+      renderizarPainel();
+    };
 
-      document.getElementById('stat-pendentes-hoje').innerText = pendentesHoje;
-      document.getElementById('stat-atendidos-hoje').innerText = atendidosHoje;
-      document.getElementById('stat-faturamento-hoje').innerText = `R$ ${faturamentoHoje.toFixed(2).replace('.', ',')}`;
-      document.getElementById('stat-total-geral').innerText = totalGeral;
+    window.setFiltroTipo = function(tp) {
+      filtroTipo = tp;
+      ['todos', 'fixo', 'delivery'].forEach(t => {
+        const btn = document.getElementById(`ftip-${t}`);
+        if (t === tp) {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-100 transition shadow";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition";
+        }
+      });
+      renderizarPainel();
+    };
 
-      document.getElementById('badge-count-pendentes').innerText = countPend;
-      document.getElementById('badge-count-concluidos').innerText = countConc;
-      document.getElementById('badge-count-cancelados').innerText = countCanc;
-    }
-
-    window.renderizarCards = function() {
+    function renderizarPainel() {
       const container = document.getElementById('cards-container');
-      const filtroData = document.getElementById('filtro-data').value;
+      const keys = Object.keys(agendamentosData);
 
-      const chaves = Object.keys(listaAgendamentos);
+      let countPendentes = 0;
+      let countConcluidos = 0;
+      let countFixo = 0;
+      let countDelivery = 0;
 
-      if (chaves.length === 0) {
+      keys.forEach(k => {
+        const item = agendamentosData[k];
+        const isConcluido = item.status === 'Concluído';
+        
+        if (isConcluido) countConcluidos++;
+        else countPendentes++;
+
+        if (item.tipo === 'delivery') countDelivery++;
+        else countFixo++;
+      });
+
+      // Atualizar contadores no topo
+      document.getElementById('metric-pendentes').innerText = countPendentes;
+      document.getElementById('metric-concluidos').innerText = countConcluidos;
+      document.getElementById('metric-fixo').innerText = countFixo;
+      document.getElementById('metric-delivery').innerText = countDelivery;
+
+      document.getElementById('cnt-tab-pendente').innerText = countPendentes;
+      document.getElementById('cnt-tab-concluido').innerText = countConcluidos;
+      document.getElementById('cnt-tab-todos').innerText = keys.length;
+
+      if (keys.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full py-16 text-center space-y-2 glass-card rounded-2xl">
-            <i class="fa-solid fa-calendar-xmark text-4xl text-zinc-600"></i>
-            <p class="text-zinc-400 text-sm font-medium">Nenhum agendamento encontrado no banco de dados.</p>
+          <div class="col-span-full py-12 text-center text-zinc-500 space-y-2">
+            <i class="fa-regular fa-calendar-xmark text-4xl"></i>
+            <p class="text-sm">Nenhum agendamento registado no momento.</p>
           </div>
         `;
         return;
       }
 
-      // Ordenar por Data e Horário
-      const itensFiltrados = chaves.map(key => ({ id: key, ...listaAgendamentos[key] }))
-        .filter(item => {
-          const st = (item.status || 'Pendente').toLowerCase();
-          
-          // Filtro por Aba
-          if (abaAtiva === 'pendentes' && !(st === 'pendente' || st === 'em andamento')) return false;
-          if (abaAtiva === 'concluidos' && !(st === 'concluído' || st === 'concluido')) return false;
-          if (abaAtiva === 'cancelados' && !(st === 'cancelado')) return false;
-
-          // Filtro por Data selecionada
-          if (filtroData && item.data !== filtroData) return false;
-
-          return true;
-        })
-        .sort((a, b) => {
-          const dtA = `${a.data}T${a.horario}`;
-          const dtB = `${b.data}T${b.horario}`;
-          return dtA.localeCompare(dtB);
-        });
-
-      if (itensFiltrados.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full py-12 text-center space-y-2 glass-card rounded-2xl border border-zinc-800/80">
-            <i class="fa-solid fa-folder-open text-3xl text-zinc-600"></i>
-            <p class="text-zinc-400 text-sm">Nenhum agendamento nesta categoria${filtroData ? ' para a data selecionada' : ''}.</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = itensFiltrados.map(item => {
+      let html = '';
+      keys.reverse().forEach(key => {
+        const item = agendamentosData[key];
+        const isConcluido = item.status === 'Concluído';
         const isDelivery = item.tipo === 'delivery';
-        const st = item.status || 'Pendente';
-        const foneLimpo = (item.telefone || '').replace(/\D/g, '');
-        const foneFormatado = item.telefone || 'Não informado';
 
-        // Badges de Status
-        let badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
-        if (st === 'Em Andamento') badgeClass = "bg-sky-500/10 text-sky-400 border-sky-500/30";
-        if (st === 'Concluído' || st === 'Concluido') badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-        if (st === 'Cancelado') badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30";
+        // Filtragem por Estado
+        if (filtroStatus === 'pendente' && isConcluido) return;
+        if (filtroStatus === 'concluido' && !isConcluido) return;
 
-        // Formatação de data em BR
-        const partsData = (item.data || '').split('-');
-        const dataBR = partsData.length === 3 ? `${partsData[2]}/${partsData[1]}/${partsData[0]}` : item.data;
+        // Filtragem por Tipo
+        if (filtroTipo !== 'todos' && item.tipo !== filtroTipo) return;
 
-        // Botão Google Maps se for delivery
-        let mapsUrl = '';
-        if (isDelivery && item.endereco) {
-          mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.endereco + ', ' + (item.regiao || 'Arroio do Silva'))}`;
-        }
-
-        return `
-          <div class="glass-card rounded-2xl border border-zinc-800 p-5 flex flex-col justify-between space-y-4 shadow-lg hover:border-zinc-700 transition">
+        html += `
+          <div class="bg-zinc-900 border ${isConcluido ? 'border-zinc-800 opacity-75' : 'border-zinc-800 hover:border-zinc-700'} rounded-2xl p-5 space-y-4 flex flex-col justify-between transition">
             
             <div class="space-y-3">
-              <!-- Top bar inside card -->
+              <!-- Cabeçalho do Card -->
               <div class="flex justify-between items-start gap-2">
-                <div>
-                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${badgeClass}">
-                    <i class="fa-solid fa-circle text-[6px]"></i> ${st}
-                  </span>
-                  ${isDelivery ? `
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 ml-1">
-                      <i class="fa-solid fa-motorcycle"></i> Delivery
-                    </span>
-                  ` : `
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-zinc-700 ml-1">
-                      <i class="fa-solid fa-store"></i> Fixo
-                    </span>
-                  `}
-                </div>
-                
-                <span class="text-xs font-bold text-zinc-400 bg-zinc-950 px-2.5 py-1 rounded-lg border border-zinc-800">
-                  <i class="fa-regular fa-calendar"></i> ${dataBR}
+                <span class="text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1.5 ${isDelivery ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}">
+                  ${isDelivery ? '<i class="fa-solid fa-motorcycle"></i> DELIVERY VIP' : '<i class="fa-solid fa-store"></i> LOCAL FIXO'}
+                </span>
+
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-md ${isConcluido ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
+                  ${isConcluido ? '<i class="fa-solid fa-check"></i> Atendido' : '<i class="fa-solid fa-clock"></i> Pendente'}
                 </span>
               </div>
 
-              <!-- Client Info -->
+              <!-- Informações do Cliente -->
               <div>
-                <h3 class="text-lg font-bold text-zinc-100 leading-snug flex items-center gap-2">
-                  ${item.cliente || 'Cliente Sem Nome'}
-                </h3>
-                
-                <a href="https://wa.me/55${foneLimpo}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:underline mt-1 font-medium">
-                  <i class="fa-brands fa-whatsapp text-sm"></i> ${foneFormatado}
+                <h3 class="font-bold text-lg text-zinc-100 leading-snug">${item.cliente}</h3>
+                <a href="https://wa.me/55${item.telefone.replace(/\D/g,'')}" target="_blank" class="text-xs text-emerald-400 hover:underline inline-flex items-center gap-1.5 mt-1 font-medium">
+                  <i class="fa-brands fa-whatsapp text-sm"></i> ${item.telefone}
                 </a>
               </div>
 
-              <!-- Time & Service details -->
-              <div class="bg-zinc-950/80 rounded-xl p-3 border border-zinc-800/80 space-y-1.5 text-xs">
-                <div class="flex justify-between items-center text-zinc-300">
-                  <span class="text-zinc-500 font-medium"><i class="fa-regular fa-clock"></i> Horário:</span>
-                  <span class="font-bold text-amber-400 text-sm">${item.horario || '--:--'}</span>
+              <!-- Detalhes do Serviço -->
+              <div class="bg-zinc-950 p-3.5 rounded-xl border border-zinc-800/80 text-xs space-y-2 text-zinc-300">
+                <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
+                  <span class="text-zinc-400"><i class="fa-regular fa-calendar"></i> ${item.data}</span>
+                  <span class="font-bold text-amber-500 text-sm"><i class="fa-regular fa-clock"></i> ${item.horario}</span>
                 </div>
-                <div class="flex justify-between items-start text-zinc-300 pt-1 border-t border-zinc-900">
-                  <span class="text-zinc-500 font-medium"><i class="fa-solid fa-scissors"></i> Serviços:</span>
-                  <span class="font-semibold text-right text-zinc-200 max-w-[180px]">${item.servicos || 'Geral'}</span>
+
+                <div>
+                  <span class="text-zinc-400 block mb-0.5">Serviços:</span>
+                  <span class="font-semibold text-zinc-200">${item.servicos}</span>
                 </div>
-                <div class="flex justify-between items-center text-zinc-300 pt-1 border-t border-zinc-900">
-                  <span class="text-zinc-500 font-medium"><i class="fa-solid fa-tag"></i> Total:</span>
-                  <span class="font-black text-emerald-400 text-sm">R$ ${Number(item.total || 0).toFixed(2).replace('.', ',')}</span>
+
+                ${isDelivery ? `
+                  <div class="pt-2 border-t border-zinc-800/80 text-amber-400">
+                    <span class="block font-semibold"><i class="fa-solid fa-location-dot"></i> Endereço Delivery:</span>
+                    <span class="text-zinc-300">${item.endereco} (${item.regiao})</span>
+                  </div>
+                ` : ''}
+
+                <div class="pt-2 border-t border-zinc-800/80 flex justify-between items-center text-sm">
+                  <span class="text-zinc-400">Valor Total:</span>
+                  <span class="font-extrabold text-emerald-400">R$ ${parseFloat(item.total).toFixed(2).replace('.', ',')}</span>
                 </div>
               </div>
-
-              <!-- Address if Delivery -->
-              ${isDelivery && item.endereco ? `
-                <div class="bg-amber-950/20 border border-amber-900/30 rounded-xl p-3 text-xs space-y-2">
-                  <div class="flex items-start gap-2 text-amber-200">
-                    <i class="fa-solid fa-location-dot text-amber-500 mt-0.5"></i>
-                    <div>
-                      <p class="font-bold text-amber-300">${item.regiao || 'Delivery'}</p>
-                      <p class="text-zinc-300 text-[11px] leading-tight mt-0.5">${item.endereco}</p>
-                    </div>
-                  </div>
-                  <a href="${mapsUrl}" target="_blank" class="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold py-1.5 px-3 rounded-lg border border-amber-500/30 text-[11px] flex items-center justify-center gap-1.5 transition">
-                    <i class="fa-solid fa-route"></i> Abrir Rota no Google Maps
-                  </a>
-                </div>
-              ` : ''}
             </div>
 
-            <div class="pt-3 border-t border-zinc-800/80 flex flex-wrap gap-2">
-              ${st === 'Pendente' ? `
-                <button onclick="alterarStatus('${item.id}', 'Em Andamento')" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1 shadow">
-                  <i class="fa-solid fa-play text-[10px]"></i> Iniciar
+            <!-- Ações -->
+            <div class="flex gap-2 pt-2 border-t border-zinc-800/80">
+              ${!isConcluido ? `
+                <button onclick="mudarStatus('${key}', 'Concluído')" class="flex-1 py-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-check"></i> Marcar Atendido
                 </button>
-                <button onclick="alterarStatus('${item.id}', 'Concluído')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1 shadow">
-                  <i class="fa-solid fa-check text-[10px]"></i> Concluir
+              ` : `
+                <button onclick="mudarStatus('${key}', 'Pendente')" class="flex-1 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold transition">
+                  Reabrir
                 </button>
+              `}
+
+              ${isDelivery ? `
+                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.endereco)}" target="_blank" title="Abrir no Google Maps" class="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-amber-400 rounded-xl text-xs flex items-center justify-center transition">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </a>
               ` : ''}
 
-              ${st === 'Em Andamento' ? `
-                <button onclick="alterarStatus('${item.id}', 'Concluído')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1 shadow">
-                  <i class="fa-solid fa-check-double text-[10px]"></i> Finalizar Atendimento
-                </button>
-              ` : ''}
-
-              ${st === 'Concluído' || st === 'Concluido' ? `
-                <button onclick="alterarStatus('${item.id}', 'Pendente')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-2 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1 border border-zinc-700">
-                  <i class="fa-solid fa-rotate-left text-[10px]"></i> Voltar a Atender
-                </button>
-              ` : ''}
-
-              ${st !== 'Cancelado' ? `
-                <button onclick="alterarStatus('${item.id}', 'Cancelado')" title="Cancelar Agendamento" class="bg-zinc-800 hover:bg-rose-950/80 text-zinc-400 hover:text-rose-300 font-bold p-2 rounded-xl text-xs transition border border-zinc-700/60">
-                  <i class="fa-solid fa-ban"></i>
-                </button>
-              ` : ''}
-
-              <button onclick="excluirAgendamento('${item.id}')" title="Excluir Permanentemente" class="bg-zinc-800 hover:bg-red-900/80 text-zinc-500 hover:text-red-200 font-bold p-2 rounded-xl text-xs transition border border-zinc-700/60">
-                <i class="fa-solid fa-trash-can"></i>
+              <button onclick="deletarItem('${key}')" title="Excluir agendamento" class="px-3.5 py-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-xl text-xs transition">
+                <i class="fa-solid fa-trash"></i>
               </button>
             </div>
 
           </div>
         `;
-      }).join('');
-    };
-
-    // Firebase Database Mutations
-    window.alterarStatus = function(id, novoStatus) {
-      const dbRef = ref(db, `agendamentos/${id}`);
-      update(dbRef, { status: novoStatus }).catch(err => {
-        alert("Erro ao atualizar status: " + err.message);
       });
+
+      container.innerHTML = html || `<p class="col-span-full text-center py-8 text-zinc-500 text-sm">Nenhum agendamento nesta categoria.</p>`;
+    }
+
+    window.mudarStatus = function(key, novoStatus) {
+      update(ref(db, `agendamentos/${key}`), { status: novoStatus });
     };
 
-    window.excluirAgendamento = function(id) {
-      if (confirm("Tem certeza que deseja excluir este agendamento permanentemente?")) {
-        const dbRef = ref(db, `agendamentos/${id}`);
-        remove(dbRef).catch(err => {
-          alert("Erro ao excluir agendamento: " + err.message);
-        });
+    window.deletarItem = function(key) {
+      if(confirm("Tem certeza que deseja apagar este agendamento?")) {
+        remove(ref(db, `agendamentos/${key}`));
       }
     };
   </script>
