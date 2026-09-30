@@ -439,3 +439,21 @@
         msg += `💈 *Tipo:* ${modalidadeAtual === 'fixo' ? 'Local Fixo (Rua Santa Rosa, 857)' : 'Delivery VIP'}\n`;
         if(modalidadeAtual === 'delivery') {
           msg += `📍 *Região:* ${dadosAgendamento.regiao}\n`;
+          msg += `🏠 *Endereço:* ${dadosAgendamento.endereco}\n`;
+        }
+        msg += `✂️ *Serviços:* ${dadosAgendamento.servicos}\n`;
+        msg += `💰 *Total Estimado:* R$ ${total.toFixed(2).replace('.', ',')}`;
+
+        const urlWhats = `https://wa.me/5548992071556?text=${encodeURIComponent(msg)}`;
+        window.open(urlWhats, '_blank');
+        location.reload();
+      }).catch(err => {
+        alert("Erro ao gravar agendamento: " + err.message);
+      });
+    };
+
+    // Inicialização
+    renderServicos();
+  </script>
+</body>
+</html>
