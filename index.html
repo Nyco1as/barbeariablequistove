@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Barbearia Lequistove - Agendamento Online</title>
+  <title>Barbearia Blequistove - Agendamento Inteligente</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -15,10 +15,11 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col justify-between">
 
+  <!-- Header -->
   <header class="border-b border-zinc-800 bg-zinc-900/80 sticky top-0 z-50 backdrop-blur-md">
     <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-zinc-950 font-black text-xl shadow-lg shadow-amber-900/30">
+        <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-zinc-950 font-black text-xl">
           <i class="fa-solid fa-scissors"></i>
         </div>
         <div>
@@ -32,9 +33,10 @@
     </div>
   </header>
 
+  <!-- Conteúdo Principal -->
   <main class="max-w-4xl mx-auto px-4 py-8 w-full space-y-8">
 
-    <!-- Modalidade Selector -->
+    <!-- Seletor de Modalidade -->
     <div class="bg-zinc-900 p-2 rounded-2xl border border-zinc-800 flex gap-2">
       <button id="btn-fixo" onclick="setModalidade('fixo')" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg">
         <i class="fa-solid fa-store"></i> Local Fixo (Arroio do Silva)
@@ -53,6 +55,7 @@
       </div>
     </div>
 
+    <!-- Tabela de Serviços -->
     <section>
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
         <i class="fa-solid fa-list-check gold-text"></i> Escolha os Serviços
@@ -60,9 +63,10 @@
       <div id="services-list" class="grid sm:grid-cols-2 gap-3"></div>
     </section>
 
+    <!-- Formulário de Agendamento -->
     <section class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
       <h2 class="text-xl font-bold flex items-center gap-2 text-amber-500">
-        <i class="fa-solid fa-calendar-check"></i> Escolha a Data e Horário
+        <i class="fa-solid fa-calendar-check"></i> Detalhes do Agendamento
       </h2>
 
       <div class="grid sm:grid-cols-2 gap-4">
@@ -76,8 +80,14 @@
         </div>
       </div>
 
+      <!-- Campo de Detalhes do Corte (Obrigatório) -->
       <div>
-        <label class="block text-xs font-semibold text-zinc-400 mb-1">Data do Atendimento * (Terça e Domingo fechado)</label>
+        <label class="block text-xs font-semibold text-zinc-400 mb-1">Como deseja o seu corte / serviço? *</label>
+        <textarea id="cli-estilo" rows="2" placeholder="Ex: Degradê navalhado, aparar as pontas, barba desenhada..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 resize-none"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-zinc-400 mb-1">Data do Atendimento * (Terça-feira e Domingo fechado)</label>
         <input type="date" id="cli-data" onchange="carregarHorariosDisponiveis()" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-zinc-100">
       </div>
 
@@ -93,7 +103,7 @@
       <div id="field-delivery-extra" class="hidden space-y-4 pt-4 border-t border-zinc-800">
         <div>
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Região de Atendimento *</label>
-          <select id="cli-regiao" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-zinc-200">
+          <select id="cli-regiao" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
             <option value="Balneário Arroio do Silva">Balneário Arroio do Silva (Sem taxa extra)</option>
             <option value="Araranguá - Individual">Araranguá (Atendimento Individual - R$ 50,00 min)</option>
             <option value="Araranguá - Combo 2 Pessoas">Araranguá (Traga +1 pessoa - R$ 40,00 por corte)</option>
@@ -105,7 +115,7 @@
         </div>
       </div>
 
-      <!-- Resumo e Confirmação (Sem o tempo total visível) -->
+      <!-- Resumo e Confirmação -->
       <div class="pt-4 border-t border-zinc-800 flex flex-wrap justify-between items-center gap-4">
         <div>
           <span class="text-xs text-zinc-400 block">Total Estimado:</span>
@@ -122,6 +132,7 @@
     <p>© Barbearia Blequistove. Todos os direitos reservados.</p>
   </footer>
 
+  <!-- Integração Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -140,23 +151,23 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Serviços e Tempos Internos (minutos usados apenas para bloqueio de agenda no Firebase)
+    // Serviços sem a menção de toalha quente
     const tabelaFixo = [
-      { id: 'f1', nome: 'Corte Normal', preco: 30, tempo: 45 },
-      { id: 'f2', nome: 'Corte Navalhado', preco: 35, tempo: 50 },
-      { id: 'f3', nome: 'Barba', preco: 30, tempo: 30, desc: 'Modelagem e alinhamento' },
-      { id: 'f4', nome: 'Pezinho', preco: 15, tempo: 20 },
-      { id: 'f5', nome: 'Sobrancelha', preco: 15, tempo: 10 },
-      { id: 'f6', nome: 'Cabelo + Barba', preco: 55, tempo: 75, desc: 'Visual completo' },
-      { id: 'f7', nome: 'Depilação Nasal', preco: 20, tempo: 5 },
-      { id: 'f8', nome: 'Depilação na Orelha', preco: 20, tempo: 5 },
-      { id: 'f9', nome: 'Combo Nariz + Orelha', preco: 35, tempo: 10 }
+      { id: 'f1', nome: 'Corte Normal', preco: 30, tempo: 45, desc: 'Corte tradicional com acabamento' },
+      { id: 'f2', nome: 'Corte Navalhado', preco: 35, tempo: 50, desc: 'Degradê na navalha de precisão' },
+      { id: 'f3', nome: 'Barba', preco: 30, tempo: 30, desc: 'Modelagem e alinhamento do fio' },
+      { id: 'f4', nome: 'Pezinho', preco: 15, tempo: 20, desc: 'Acabamento e contorno' },
+      { id: 'f5', nome: 'Sobrancelha', preco: 15, tempo: 10, desc: 'Design masculino natural' },
+      { id: 'f6', nome: 'Cabelo + Barba', preco: 55, tempo: 75, desc: 'Combo completo de alinhamento' },
+      { id: 'f7', nome: 'Depilação Nasal', preco: 20, tempo: 5, desc: 'Remoção rápida com cera' },
+      { id: 'f8', nome: 'Depilação na Orelha', preco: 20, tempo: 5, desc: 'Remoção prática com cera' },
+      { id: 'f9', nome: 'Combo Nariz + Orelha', preco: 35, tempo: 10, desc: 'Higienização completa' }
     ];
 
     const tabelaDelivery = [
       { id: 'd1', nome: 'Corte Social / Tesoura', preco: 40, tempo: 45, desc: 'Acabamento refinado' },
       { id: 'd2', nome: 'Corte Navalhado / Fade', preco: 45, tempo: 50, desc: 'Degradê de precisão' },
-      { id: 'd3', nome: 'Barba VIP Completa', preco: 35, tempo: 30, desc: 'Modelagem e alinhamento' },
+      { id: 'd3', nome: 'Barba VIP Completa', preco: 35, tempo: 30, desc: 'Modelagem e alinhamento no local' },
       { id: 'd4', nome: 'Pezinho (Acabamento)', preco: 20, tempo: 20, desc: 'Contorno preciso' },
       { id: 'd5', nome: 'Sobrancelha Masculina', preco: 20, tempo: 10, desc: 'Design natural' },
       { id: 'd6', nome: 'Depilação Nasal / Orelha', preco: 20, tempo: 5, desc: 'Remoção prática com cera' },
@@ -169,7 +180,6 @@
     let servicosSelecionados = [];
     let horarioSelecionado = null;
 
-    // Configurar data mínima (hoje)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('cli-data').setAttribute('min', today);
 
@@ -218,13 +228,13 @@
       
       container.innerHTML = lista.map(s => `
         <label class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex items-start gap-3 cursor-pointer hover:border-zinc-700 transition">
-          <input type="checkbox" value="${s.id}" ${servicosSelecionados.includes(s.id) ? 'checked' : ''} onchange="toggleServico('${s.id}')" class="mt-1 w-4 h-4 accent-amber-500 rounded">
+          <input type="checkbox" value="${s.id}" onchange="toggleServico('${s.id}')" class="mt-1 w-4 h-4 accent-amber-500 rounded">
           <div class="flex-1">
             <div class="flex justify-between items-center">
               <span class="font-semibold text-sm text-zinc-200">${s.nome}</span>
               <span class="font-bold text-amber-500 text-sm">R$ ${s.preco.toFixed(2).replace('.', ',')}</span>
             </div>
-            ${s.desc ? `<p class="text-xs text-zinc-500 mt-0.5">${s.desc}</p>` : ''}
+            <p class="text-xs text-zinc-500 mt-0.5">${s.desc ? s.desc : 'Serviço profissional'}</p>
           </div>
         </label>
       `).join('');
@@ -241,17 +251,15 @@
       carregarHorariosDisponiveis();
     };
 
-    // Função interna para cálculo do slot de tempo reservado na agenda
-    function calcularTempoTotalInterno() {
+    function calcularTempoTotal() {
       const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
       let tempo = servicosSelecionados.reduce((acc, id) => {
         const item = lista.find(s => s.id === id);
         return acc + (item ? item.tempo : 0);
       }, 0);
 
-      // Adiciona 40 minutos de deslocamento no delivery para cálculo interno de agenda
       if(modalidadeAtual === 'delivery' && tempo > 0) {
-        tempo += 40;
+        tempo += 40; // 40 minutos de deslocamento no delivery
       }
       return tempo;
     }
@@ -275,21 +283,20 @@
         return;
       }
 
-      // Validar Dia da Semana (0: Dom, 1: Seg, 2: Ter, 3: Qua, 4: Qui, 5: Sex, 6: Sáb)
       const dataObj = new Date(dataInput + 'T00:00:00');
       const diaSemana = dataObj.getDay();
 
-      if (diaSemana === 2) { // Terça-feira
+      if (diaSemana === 2) { 
         container.innerHTML = `<p class="col-span-full text-xs text-red-400 font-bold">Fechado às Terças-feiras. Por favor, escolha outra data.</p>`;
         return;
       }
 
-      if (diaSemana === 0) { // Domingo
+      if (diaSemana === 0) {
         container.innerHTML = `<p class="col-span-full text-xs text-red-400 font-bold">Fechado aos Domingos. Por favor, escolha outra data.</p>`;
         return;
       }
 
-      const tempoNecessario = calcularTempoTotalInterno();
+      const tempoNecessario = calcularTempoTotal();
       if (tempoNecessario === 0) {
         container.innerHTML = `<p class="col-span-full text-xs text-amber-400">Selecione pelo menos um serviço acima primeiro.</p>`;
         return;
@@ -297,39 +304,30 @@
 
       container.innerHTML = `<p class="col-span-full text-xs text-zinc-400">Buscando horários vagos...</p>`;
 
-      let bloqueios = [];
+      const snapshot = await get(ref(db, 'agendamentos'));
+      const agendamentos = snapshot.val() || {};
+      
+      const bloqueios = [];
+      Object.values(agendamentos).forEach(a => {
+        if (a.data === dataInput && a.status !== 'Cancelado') {
+          const inicioMin = timeToMinutes(a.horario);
+          const duracao = a.duracaoMinutos || 45;
+          bloqueios.push({ inicio: inicioMin, fim: inicioMin + duracao });
+        }
+      });
 
-      try {
-        // Buscar agendamentos existentes no Firebase para esse dia
-        const snapshot = await get(ref(db, 'agendamentos'));
-        const agendamentos = snapshot.val() || {};
-        
-        Object.values(agendamentos).forEach(a => {
-          if (a.data === dataInput && a.status !== 'Cancelado') {
-            const inicioMin = timeToMinutes(a.horario);
-            const duracao = a.duracaoMinutos || 45;
-            bloqueios.push({ inicio: inicioMin, fim: inicioMin + duracao });
-          }
-        });
-      } catch (err) {
-        console.warn("Realtime DB não acessível no momento. Exibindo horários livres do expediente.", err);
-      }
-
-      // Gerar intervalos disponíveis
       let slots = [];
-      if (diaSemana === 6) { // Sábado: 08:00 - 12:00 e 13:00 - 17:00
+      if (diaSemana === 6) { 
         slots = [...gerarSlots('08:00', '12:00'), ...gerarSlots('13:00', '17:00')];
-      } else { // Seg, Qua, Qui, Sex: 15:00 - 20:00
+      } else { 
         slots = gerarSlots('15:00', '20:00');
       }
 
-      // Filtrar conflitos
       let html = '';
       slots.forEach(horarioStr => {
         const slotInicio = timeToMinutes(horarioStr);
         const slotFim = slotInicio + tempoNecessario;
 
-        // Verifica se o slot atinge fora do expediente
         let dentroDoExpediente = false;
         if (diaSemana === 6) {
           dentroDoExpediente = (slotInicio >= 480 && slotFim <= 720) || (slotInicio >= 780 && slotFim <= 1020);
@@ -337,7 +335,6 @@
           dentroDoExpediente = (slotInicio >= 900 && slotFim <= 1200);
         }
 
-        // Verifica se colide com outro agendamento
         const temConflito = bloqueios.some(b => (slotInicio < b.fim && slotFim > b.inicio));
 
         if (dentroDoExpediente && !temConflito) {
@@ -351,7 +348,7 @@
       });
 
       if (!html) {
-        container.innerHTML = `<p class="col-span-full text-xs text-red-400">Nenhum horário livre nesta data para essa combinação de serviços.</p>`;
+        container.innerHTML = `<p class="col-span-full text-xs text-red-400">Nenhum horário livre para essa quantidade de serviços nesta data.</p>`;
       } else {
         container.innerHTML = html;
       }
@@ -371,7 +368,7 @@
         const h = Math.floor(cur / 60).toString().padStart(2, '0');
         const m = (cur % 60).toString().padStart(2, '0');
         res.push(`${h}:${m}`);
-        cur += 30; // Intervalos de 30 minutos
+        cur += 30; 
       }
       return res;
     }
@@ -384,10 +381,11 @@
     window.finalizarAgendamento = function() {
       const nome = document.getElementById('cli-nome').value.trim();
       const fone = document.getElementById('cli-fone').value.trim();
+      const estilo = document.getElementById('cli-estilo').value.trim();
       const data = document.getElementById('cli-data').value;
 
-      if(!nome || !fone || !data) {
-        alert("Por favor, preencha o Nome, Telefone e Data.");
+      if(!nome || !fone || !estilo || !data) {
+        alert("Por favor, preencha todos os campos obrigatórios (Nome, Telefone, Como deseja o corte e a Data).");
         return;
       }
 
@@ -404,11 +402,12 @@
       const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
       const itensEscolhidos = servicosSelecionados.map(id => lista.find(s => s.id === id));
       const total = itensEscolhidos.reduce((acc, i) => acc + i.preco, 0);
-      const tempoTotal = calcularTempoTotalInterno();
+      const tempoTotal = calcularTempoTotal();
 
       let dadosAgendamento = {
         cliente: nome,
         telefone: fone,
+        estilo: estilo,
         data: data,
         horario: horarioSelecionado,
         duracaoMinutos: tempoTotal,
@@ -430,9 +429,8 @@
         dadosAgendamento.endereco = endereco;
       }
 
-      // Salvar no Firebase Realtime Database
       push(ref(db, 'agendamentos'), dadosAgendamento).then(() => {
-        let msg = `*NOVO AGENDAMENTO - BARBEARIA LEQUISTOVE*\n\n`;
+        let msg = `*NOVO AGENDAMENTO - BARBEARIA BLEQUISTOVE*\n\n`;
         msg += `👤 *Cliente:* ${nome}\n`;
         msg += `📞 *Contato:* ${fone}\n`;
         msg += `📅 *Data:* ${data} às ${horarioSelecionado}\n`;
@@ -442,6 +440,7 @@
           msg += `🏠 *Endereço:* ${dadosAgendamento.endereco}\n`;
         }
         msg += `✂️ *Serviços:* ${dadosAgendamento.servicos}\n`;
+        msg += `📝 *Detalhes do Corte:* ${estilo}\n`;
         msg += `💰 *Total Estimado:* R$ ${total.toFixed(2).replace('.', ',')}`;
 
         const urlWhats = `https://wa.me/5548992071556?text=${encodeURIComponent(msg)}`;
@@ -452,7 +451,6 @@
       });
     };
 
-    // Inicialização
     renderServicos();
   </script>
 </body>
