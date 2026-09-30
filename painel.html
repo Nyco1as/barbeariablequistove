@@ -14,10 +14,10 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
     body { background-color: #0a0e13; color: #e5dfd3; padding: 20px; }
     
-    .login-box { max-width: 400px; margin: 80px auto; background: #121921; padding: 2rem; border-radius: 8px; border: 1px solid #d4af37; text-align: center; }
-    .input-field { width: 100%; padding: 12px; margin: 10px 0; background: #0a0e13; border: 1px solid #1e2c3a; color: #fff; border-radius: 4px; outline: none; }
+    .login-box { max-width: 380px; margin: 80px auto; background: #121921; padding: 2rem; border-radius: 8px; border: 1px solid #d4af37; text-align: center; }
+    .input-field { width: 100%; padding: 12px; margin: 10px 0; background: #0a0e13; border: 1px solid #1e2c3a; color: #fff; border-radius: 4px; outline: none; font-size: 0.95rem; }
     .input-field:focus { border-color: #d4af37; }
-    .btn { background: #d4af37; color: #000; border: none; padding: 12px 20px; font-weight: bold; width: 100%; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+    .btn { background: #d4af37; color: #000; border: none; padding: 12px 20px; font-weight: bold; width: 100%; cursor: pointer; border-radius: 4px; transition: 0.2s; font-size: 1rem; margin-top: 10px; }
     .btn:hover { background: #c59f2e; }
     
     #admin-content { display: none; }
@@ -39,12 +39,15 @@
 </head>
 <body>
 
-  <!-- TELA DE LOGIN -->
+  <!-- TELA DE LOGIN AUTENTICADA -->
   <div id="login-screen" class="login-box">
-    <h2 style="color: #d4af37; font-family: 'Cinzel'; margin-bottom: 20px;">Blequistove Admin</h2>
-    <input type="email" id="admin-email" class="input-field" placeholder="E-mail de acesso">
-    <input type="password" id="admin-password" class="input-field" placeholder="Sua Senha">
-    <button onclick="login()" class="btn">Entrar no Painel</button>
+    <h2 style="color: #d4af37; font-family: 'Cinzel'; margin-bottom: 10px;">Blequistove VIP</h2>
+    <p style="color: #8c9ba5; font-size: 0.85rem; margin-bottom: 15px;">Acesso ao Painel Administrativo</p>
+    <form id="login-form">
+      <input type="email" id="admin-email" class="input-field" placeholder="E-mail do Administrador" required>
+      <input type="password" id="admin-pass" class="input-field" placeholder="Sua Senha" required>
+      <button type="submit" class="btn">Entrar no Painel</button>
+    </form>
   </div>
 
   <!-- CONTEÚDO DO PAINEL -->
@@ -79,30 +82,21 @@
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBDdb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
+      apiKey: "AIzaSyBdDb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
       authDomain: "barbeariablequistove-c0349.firebaseapp.com",
+      databaseURL: "https://barbeariablequistove-c0349-default-rtdb.firebaseio.com",
       projectId: "barbeariablequistove-c0349",
       storageBucket: "barbeariablequistove-c0349.firebasestorage.app",
       messagingSenderId: "159742381988",
-      appId: "1:159742381988:web:06c2138f7881e75900bb31",
-      measurementId: "G-WLSZGB1K1C"
+      appId: "1:159742381988:web:6e14d74afa581b9f00bb31",
+      measurementId: "G-EL0MYVYHMR"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function login() {
-      const email = document.getElementById('admin-email').value;
-      const pass = document.getElementById('admin-password').value;
-      auth.signInWithEmailAndPassword(email, pass)
-        .catch(err => alert("Acesso negado: " + err.message));
-    }
-
-    function logout() {
-      auth.signOut();
-    }
-
+    // Verifica sessão ativa
     auth.onAuthStateChanged(user => {
       if (user) {
         document.getElementById('login-screen').style.display = 'none';
@@ -113,6 +107,22 @@
         document.getElementById('admin-content').style.display = 'none';
       }
     });
+
+    // Login via Firebase Auth
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('admin-email').value;
+      const pass = document.getElementById('admin-pass').value;
+
+      auth.signInWithEmailAndPassword(email, pass)
+        .catch(error => {
+          alert("E-mail ou senha inválidos: " + error.message);
+        });
+    });
+
+    function logout() {
+      auth.signOut();
+    }
 
     function loadBookings() {
       db.collection('agendamentos').orderBy('createdAt', 'desc')
