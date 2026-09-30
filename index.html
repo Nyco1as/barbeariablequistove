@@ -3,226 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blequistove | Barbearia Delivery VIP</title>
+  <title>Barbearia Blequistove | Agendamento VIP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-    :root {
-      --bg-dark: #0a0e13; --bg-card: #121921; --gold-primary: #d4af37;
-      --gold-light: #f4ebd0; --green-whatsapp: #25d366; --text-main: #e5dfd3;
-      --text-muted: #8c9ba5; --border-color: #1e2c3a;
-    }
-    body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Montserrat', sans-serif; line-height: 1.6; }
-    h1, h2, h3, h4 { font-family: 'Cinzel', serif; color: var(--gold-light); }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+    body { background-color: #0a0e13; color: #e5dfd3; padding: 20px; }
+    .container { max-width: 500px; margin: 0 auto; background: #121921; padding: 25px; border-radius: 10px; border: 1px solid #1e2c3a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    h1 { font-family: 'Cinzel', serif; color: #d4af37; text-align: center; margin-bottom: 5px; font-size: 1.8rem; }
+    p.subtitle { text-align: center; color: #8c9ba5; font-size: 0.85rem; margin-bottom: 25px; }
     
-    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 8%; background: rgba(6, 9, 12, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; }
-    .logo-container h1 { font-size: 1.6rem; background: linear-gradient(135deg, #fff 0%, var(--gold-primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .logo-container span { font-size: 0.6rem; letter-spacing: 2.5px; color: var(--gold-primary); display: block; font-weight: 600; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; margin-bottom: 6px; color: #d4af37; font-weight: 600; font-size: 0.9rem; }
+    input, select { width: 100%; padding: 12px; background: #0a0e13; border: 1px solid #1e2c3a; color: #fff; border-radius: 6px; outline: none; font-size: 0.95rem; }
+    input:focus, select:focus { border-color: #d4af37; }
     
-    .hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 3rem 20px; }
-    .badge-hero { border: 1px solid var(--gold-primary); color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); font-size: 0.75rem; font-weight: 700; padding: 8px 20px; border-radius: 30px; margin-bottom: 20px; }
-    .hero h2 { font-size: 2.5rem; margin-bottom: 15px; }
-    .hero p { font-size: 1rem; color: var(--text-muted); max-width: 600px; margin-bottom: 30px; }
+    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .service-item { background: #0a0e13; border: 1px solid #1e2c3a; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+    .service-item input { width: auto; }
     
-    .btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background-color: var(--green-whatsapp); color: #fff; padding: 16px 36px; font-size: 1.1rem; font-weight: 700; text-decoration: none; border-radius: 6px; border: none; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-top: 15px; }
-    .btn-action:hover { background-color: #1ebc57; transform: translateY(-2px); }
-    
-    .calculator-section { padding: 3rem 5%; background-color: rgba(18, 25, 33, 0.8); }
-    .calc-container { max-width: 950px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background-color: var(--bg-dark); padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border-color); }
-    
-    .input-field { width: 100%; padding: 12px; background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Montserrat', sans-serif; margin-bottom: 15px; outline: none; }
-    .input-field:focus { border-color: var(--gold-primary); }
-    
-    .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-    .checkbox-item { display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-card); padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
-    .checkbox-item input { accent-color: var(--gold-primary); width: 18px; height: 18px; margin-right: 10px; }
-    
-    .calc-summary { display: flex; flex-direction: column; justify-content: space-between; background-color: var(--bg-card); padding: 1.8rem; border-radius: 8px; border: 1px dashed var(--gold-primary); }
-    .summary-total { border-top: 1px solid var(--border-color); padding-top: 15px; margin-bottom: 20px; }
-    .summary-total h4 { font-size: 1.8rem; color: var(--gold-primary); }
-    
-    @media (max-width: 850px) { .calc-container { grid-template-columns: 1fr; } }
+    .total-box { background: #0a0e13; border: 1px solid #d4af37; padding: 12px; border-radius: 6px; text-align: center; margin: 20px 0; color: #d4af37; font-size: 1.1rem; font-weight: bold; }
+    .btn-submit { width: 100%; background: #d4af37; color: #000; border: none; padding: 14px; font-weight: bold; font-size: 1rem; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+    .btn-submit:hover { background: #c59f2e; }
   </style>
 </head>
 <body>
 
-  <header class="navbar">
-    <div class="logo-container">
-      <h1>BLEQUISTOVE</h1>
-      <span>DESPERTE SEU ESTILO</span>
-    </div>
-  </header>
+  <div class="container">
+    <h1>BLEQUISTOVE</h1>
+    <p class="subtitle">Agendamento de Atendimento ao Domicílio</p>
 
-  <section class="hero">
-    <span class="badge-hero">ATENDIMENTO PREMIUM NO SEU ENDEREÇO</span>
-    <h2>A EXPERIÊNCIA VIP NA SUA CASA</h2>
-    <p>Sem filas • Sem trânsito • Conforto total na sua casa ou escritório.</p>
-  </section>
+    <form id="booking-form">
+      <div class="form-group">
+        <label>Seu Nome</label>
+        <input type="text" id="name" placeholder="Digite seu nome completo" required>
+      </div>
 
-  <section id="calculadora" class="calculator-section">
-    <h2 style="text-align:center; margin-bottom: 2rem;">Agende Seu Atendimento</h2>
-    
-    <div class="calc-container">
-      <div class="calc-options">
-        <h3>1. Seus Dados</h3>
-        <input type="text" id="client-name" class="input-field" placeholder="Seu Nome Completo" required>
-        <input type="tel" id="client-phone" class="input-field" placeholder="Seu Telefone / WhatsApp" required>
-        <input type="text" id="client-address" class="input-field" placeholder="Endereço Completo (Rua, Número, Bairro)" required>
-        <input type="datetime-local" id="client-datetime" class="input-field" required>
+      <div class="form-group">
+        <label>WhatsApp</label>
+        <input type="tel" id="phone" placeholder="(48) 99999-9999" required>
+      </div>
 
-        <h3>2. Selecione sua Cidade</h3>
-        <select id="location-select" class="input-field" onchange="calculateTotal()">
-          <option value="arroio">Balneário Arroio do Silva (Sem taxa extra)</option>
-          <option value="ararangua_single">Araranguá - Individual (R$ 50,00 base)</option>
-          <option value="ararangua_pair">Araranguá - Dupla / Combo 2 Cortes (R$ 80,00 base)</option>
+      <div class="form-group">
+        <label>Localização / Bairro</label>
+        <select id="location" onchange="calculateTotal()" required>
+          <option value="Balneário Arroio do Silva (Sem taxa extra)">Balneário Arroio do Silva (Sem taxa extra)</option>
+          <option value="Araranguá (+ R$ 10,00)">Araranguá (+ R$ 10,00)</option>
+          <option value="Outra Região (+ R$ 20,00)">Outra Região (+ R$ 20,00)</option>
         </select>
+      </div>
 
-        <h3>3. Escolha os Serviços</h3>
-        <div class="checkbox-group">
-          <label class="checkbox-item"><span><input type="checkbox" value="40" data-name="Corte Social / Tesoura" onchange="calculateTotal()"> Corte Social / Tesoura</span><span style="color:var(--gold-primary);">R$ 40,00</span></label>
-          <label class="checkbox-item"><span><input type="checkbox" value="45" data-name="Corte Navalhado / Fade" onchange="calculateTotal()"> Corte Navalhado / Fade</span><span style="color:var(--gold-primary);">R$ 45,00</span></label>
-          <label class="checkbox-item"><span><input type="checkbox" value="35" data-name="Barba VIP Completa" onchange="calculateTotal()"> Barba VIP Completa</span><span style="color:var(--gold-primary);">R$ 35,00</span></label>
-          <label class="checkbox-item"><span><input type="checkbox" value="20" data-name="Pezinho (Acabamento)" onchange="calculateTotal()"> Pezinho (Acabamento)</span><span style="color:var(--gold-primary);">R$ 20,00</span></label>
-          <label class="checkbox-item"><span><input type="checkbox" value="20" data-name="Sobrancelha Masculina" onchange="calculateTotal()"> Sobrancelha Masculina</span><span style="color:var(--gold-primary);">R$ 20,00</span></label>
-          <label class="checkbox-item"><span><input type="checkbox" value="20" data-name="Depilação Nasal" onchange="calculateTotal()"> Depilação Nasal</span><span style="color:var(--gold-primary);">R$ 20,00</span></label>
-          <label class="checkbox-item"><span><input type="checkbox" value="20" data-name="Depilação Orelha" onchange="calculateTotal()"> Depilação Orelha</span><span style="color:var(--gold-primary);">R$ 20,00</span></label>
-          <label class="checkbox-item"><span><input type="checkbox" value="35" data-name="Combo Nariz + Orelha" onchange="calculateTotal()"> Combo Nariz + Orelha</span><span style="color:var(--gold-primary);">R$ 35,00</span></label>
+      <div class="form-group">
+        <label>Endereço Completo</label>
+        <input type="text" id="address" placeholder="Rua, número, complemento" required>
+      </div>
+
+      <div class="form-group">
+        <label>Data e Horário</label>
+        <input type="datetime-local" id="datetime" required>
+      </div>
+
+      <div class="form-group">
+        <label>Serviços Desejados</label>
+        <div class="services-grid">
+          <label class="service-item"><input type="checkbox" value="30" data-name="Corte Masculino" onchange="calculateTotal()"> Corte (R$ 30)</label>
+          <label class="service-item"><input type="checkbox" value="20" data-name="Barba Completa" onchange="calculateTotal()"> Barba (R$ 20)</label>
+          <label class="service-item"><input type="checkbox" value="10" data-name="Sobrancelha" onchange="calculateTotal()"> Sobrancelha (R$ 10)</label>
+          <label class="service-item"><input type="checkbox" value="15" data-name="Depilação Orelha/Naris" onchange="calculateTotal()"> Depilação (R$ 15)</label>
         </div>
       </div>
 
-      <div class="calc-summary">
-        <div>
-          <h3 style="color: var(--gold-primary); margin-bottom: 15px;">Resumo do Pedido</h3>
-          <ul id="summary-items" style="list-style: none; color: var(--text-muted); font-size: 0.9rem;">
-            <li>Nenhum serviço selecionado.</li>
-          </ul>
-        </div>
+      <div class="total-box" id="total-display">Total: R$ 0,00</div>
 
-        <div>
-          <div class="summary-total">
-            <span style="font-size: 0.9rem; color: var(--text-muted);">Estimativa Total:</span>
-            <h4 id="total-price">R$ 0,00</h4>
-          </div>
-          <button onclick="submitBooking()" class="btn-action">
-            📲 Confirmar & Agendar
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
+      <button type="submit" class="btn-submit">Confirmar Agendamento</button>
+    </form>
+  </div>
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBDdb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
+      apiKey: "AIzaSyBdDb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
       authDomain: "barbeariablequistove-c0349.firebaseapp.com",
+      databaseURL: "https://barbeariablequistove-c0349-default-rtdb.firebaseio.com",
       projectId: "barbeariablequistove-c0349",
       storageBucket: "barbeariablequistove-c0349.firebasestorage.app",
       messagingSenderId: "159742381988",
-      appId: "1:159742381988:web:06c2138f7881e75900bb31",
-      measurementId: "G-WLSZGB1K1C"
+      appId: "1:159742381988:web:6e14d74afa581b9f00bb31",
+      measurementId: "G-EL0MYVYHMR"
     };
-    
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let globalTotal = 0;
-    let selectedServices = [];
-
     function calculateTotal() {
-      const locationSelect = document.getElementById('location-select');
-      const locationValue = locationSelect.value;
-      const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
-      const summaryList = document.getElementById('summary-items');
-      
-      summaryList.innerHTML = '';
-      globalTotal = 0;
-      selectedServices = [];
+      let total = 0;
+      const checkboxes = document.querySelectorAll('.service-item input[type="checkbox"]:checked');
+      checkboxes.forEach(cb => total += parseFloat(cb.value));
 
-      if (locationValue === 'ararangua_single') {
-        globalTotal += 50;
-        let li = document.createElement('li');
-        li.innerHTML = `<em>Taxa Araranguá (Individual) - R$ 50,00</em>`;
-        summaryList.appendChild(li);
-      } else if (locationValue === 'ararangua_pair') {
-        globalTotal += 80;
-        let li = document.createElement('li');
-        li.innerHTML = `<em>Taxa Araranguá (Dupla/Combo) - R$ 80,00</em>`;
-        summaryList.appendChild(li);
-      }
+      const location = document.getElementById('location').value;
+      if (location.includes('Araranguá')) total += 10;
+      if (location.includes('Outra Região')) total += 20;
 
-      checkboxes.forEach(cb => {
-        const itemPrice = parseFloat(cb.value);
-        const itemName = cb.getAttribute('data-name');
-        globalTotal += itemPrice;
-        selectedServices.push(itemName);
-
-        let li = document.createElement('li');
-        li.innerHTML = `${itemName} - R$ ${itemPrice.toFixed(2)}`;
-        summaryList.appendChild(li);
-      });
-
-      if (selectedServices.length === 0 && locationValue === 'arroio') {
-        summaryList.innerHTML = '<li>Nenhum serviço selecionado.</li>';
-      }
-
-      document.getElementById('total-price').innerText = `R$ ${globalTotal.toFixed(2)}`;
+      document.getElementById('total-display').innerText = `Total: R$ ${total.toFixed(2)}`;
+      return total;
     }
 
-    async function submitBooking() {
-      const name = document.getElementById('client-name').value;
-      const phone = document.getElementById('client-phone').value;
-      const address = document.getElementById('client-address').value;
-      const datetime = document.getElementById('client-datetime').value;
-      const location = document.getElementById('location-select').options[document.getElementById('location-select').selectedIndex].text;
+    document.getElementById('booking-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-      if (!name || !phone || !address || !datetime) {
-        alert("Por favor, preencha todos os campos do formulário (Nome, Telefone, Endereço e Data/Hora).");
-        return;
-      }
+      const selectedServices = [];
+      document.querySelectorAll('.service-item input[type="checkbox"]:checked').forEach(cb => {
+        selectedServices.push(cb.getAttribute('data-name'));
+      });
 
       if (selectedServices.length === 0) {
-        alert("Por favor, selecione pelo menos um serviço antes de confirmar.");
+        alert("Por favor, selecione pelo menos um serviço!");
         return;
       }
 
       const bookingData = {
-        name,
-        phone,
-        address,
-        datetime,
-        location,
+        name: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
+        location: document.getElementById('location').value,
+        address: document.getElementById('address').value,
+        datetime: document.getElementById('datetime').value,
         services: selectedServices,
-        total: globalTotal,
+        total: calculateTotal(),
         status: 'fila',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       try {
         await db.collection('agendamentos').add(bookingData);
-
-        const textMessage = 
-          `Olá! Meu nome é *${name}*.\n\n` +
-          `📍 *Endereço:* ${address} (${location})\n` +
-          `📅 *Data/Hora:* ${datetime}\n` +
-          `✂️ *Serviços:* ${selectedServices.join(', ')}\n` +
-          `💰 *Total:* R$ ${globalTotal.toFixed(2)}`;
-
-        const whatsappUrl = `https://wa.me/5548992071556?text=${encodeURIComponent(textMessage)}`;
-
-        window.open(whatsappUrl, '_blank');
-      } catch (error) {
-        console.error("Erro ao agendar:", error);
-        alert("Ocorreu um erro ao registrar o agendamento. Tente novamente.");
+        alert("Agendamento realizado com sucesso!");
+        document.getElementById('booking-form').reset();
+        calculateTotal();
+      } catch (err) {
+        console.error("Erro ao agendar:", err);
+        alert("Erro ao gravar agendamento. Tente novamente.");
       }
-    }
+    });
   </script>
 </body>
 </html>
