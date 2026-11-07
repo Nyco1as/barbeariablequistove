@@ -171,6 +171,13 @@
     let filtroStatus = 'pendente'; // 'pendente', 'concluido', 'todos'
     let filtroTipo = 'todos';     // 'todos', 'fixo', 'delivery'
 
+    // Função utilitária para formatar a data de AAAA-MM-DD para DD/MM/AAAA
+    function formatarDataBR(dataISO) {
+      if (!dataISO) return '';
+      const [ano, mes, dia] = dataISO.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
     // Autenticação
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -273,8 +280,17 @@
         return;
       }
 
+      // Ordenar agendamentos por data e horário (crescente)
+      keys.sort((a, b) => {
+        const itemA = agendamentosData[a];
+        const itemB = agendamentosData[b];
+        const dataA = `${itemA.data || ''} ${itemA.horario || ''}`;
+        const dataB = `${itemB.data || ''} ${itemB.horario || ''}`;
+        return dataA.localeCompare(dataB);
+      });
+
       let html = '';
-      keys.reverse().forEach(key => {
+      keys.forEach(key => {
         const item = agendamentosData[key];
         const isConcluido = item.status === 'Concluído';
         const isDelivery = item.tipo === 'delivery';
@@ -285,6 +301,9 @@
 
         // Filtragem por Tipo
         if (filtroTipo !== 'todos' && item.tipo !== filtroTipo) return;
+
+        // Formata a data salva no padrão brasileiro para exibição no card
+        const dataExibicao = formatarDataBR(item.data);
 
         html += `
           <div class="bg-zinc-900 border ${isConcluido ? 'border-zinc-800 opacity-75' : 'border-zinc-800 hover:border-zinc-700'} rounded-2xl p-5 space-y-4 flex flex-col justify-between transition">
@@ -312,7 +331,7 @@
               <!-- Detalhes do Serviço -->
               <div class="bg-zinc-950 p-3.5 rounded-xl border border-zinc-800/80 text-xs space-y-2 text-zinc-300">
                 <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
-                  <span class="text-zinc-400"><i class="fa-regular fa-calendar"></i> ${item.data}</span>
+                  <span class="text-zinc-400"><i class="fa-regular fa-calendar"></i> ${dataExibicao}</span>
                   <span class="font-bold text-amber-500 text-sm"><i class="fa-regular fa-clock"></i> ${item.horario}</span>
                 </div>
 
