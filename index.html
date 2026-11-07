@@ -182,7 +182,6 @@
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('cli-data').setAttribute('min', today);
 
-    // Função utilitária para formatar a data de AAAA-MM-DD para DD/MM/AAAA
     function formatarDataBR(dataISO) {
       if (!dataISO) return '';
       const [ano, mes, dia] = dataISO.split('-');
@@ -329,6 +328,12 @@
         slots = gerarSlots('15:00', '20:00');
       }
 
+      // Descobre se a data selecionada é hoje para filtrar horários passados
+      const agora = new Date();
+      const dataHojeStr = agora.toISOString().split('T')[0];
+      const ehHoje = (dataInput === dataHojeStr);
+      const minutosAtuais = agora.getHours() * 60 + agora.getMinutes();
+
       let html = '';
       slots.forEach(horarioStr => {
         const slotInicio = timeToMinutes(horarioStr);
@@ -343,7 +348,10 @@
 
         const temConflito = bloqueios.some(b => (slotInicio < b.fim && slotFim > b.inicio));
 
-        if (dentroDoExpediente && !temConflito) {
+        // Se for hoje, oculta horários que já passaram
+        const jaPassou = ehHoje && (slotInicio <= minutosAtuais);
+
+        if (dentroDoExpediente && !temConflito && !jaPassou) {
           const isSelected = horarioSelecionado === horarioStr;
           html += `
             <button onclick="selecionarHorario('${horarioStr}')" class="py-2.5 px-3 rounded-xl border text-xs font-bold transition ${isSelected ? 'bg-amber-500 border-amber-500 text-zinc-950 shadow-md' : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-amber-500'}">
@@ -370,7 +378,7 @@
       let cur = timeToMinutes(inicioStr);
       const fim = timeToMinutes(fimStr);
 
-      while (cur < fim) {
+      while (cur <= fim) { // Alterado de < para <= para incluir o último horário limite
         const h = Math.floor(cur / 60).toString().padStart(2, '0');
         const m = (cur % 60).toString().padStart(2, '0');
         res.push(`${h}:${m}`);
@@ -414,7 +422,7 @@
         cliente: nome,
         telefone: fone,
         estilo: estilo,
-        data: data, // Mantém no padrão do banco (YYYY-MM-DD) para ordenação correta
+        data: data,
         horario: horarioSelecionado,
         duracaoMinutos: tempoTotal,
         tipo: modalidadeAtual,
@@ -436,7 +444,6 @@
       }
 
       push(ref(db, 'agendamentos'), dadosAgendamento).then(() => {
-        // Converte a data para DD/MM/AAAA para exibir bonitinho no WhatsApp
         const dataFormatadaBR = formatarDataBR(data);
 
         let msg = `*NOVO AGENDAMENTO - BARBEARIA BLEQUISTOVE*\n\n`;
@@ -445,7 +452,7 @@
         msg += `📅 *Data:* ${dataFormatadaBR} às ${horarioSelecionado}\n`;
         msg += `💈 *Tipo:* ${modalidadeAtual === 'fixo' ? 'Local Fixo (Rua Santa Rosa, 857)' : 'Delivery VIP'}\n`;
         if(modalidadeAtual === 'delivery') {
-          msg += `📍 *Regiao:* ${dadosAgendamento.regiao}\n`;
+          msg += `📍 *Região:* ${dadosAgendamento.regiao}\n`;
           msg += `🏠 *Endereço:* ${dadosAgendamento.endereco}\n`;
         }
         msg += `✂️ *Serviços:* ${dadosAgendamento.servicos}\n`;
