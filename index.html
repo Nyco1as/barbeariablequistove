@@ -151,7 +151,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Serviços sem a menção de toalha quente
     const tabelaFixo = [
       { id: 'f1', nome: 'Corte Normal', preco: 30, tempo: 45, desc: 'Corte tradicional com acabamento' },
       { id: 'f2', nome: 'Corte Navalhado', preco: 35, tempo: 50, desc: 'Degradê na navalha de precisão' },
@@ -182,6 +181,13 @@
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('cli-data').setAttribute('min', today);
+
+    // Função utilitária para formatar a data de AAAA-MM-DD para DD/MM/AAAA
+    function formatarDataBR(dataISO) {
+      if (!dataISO) return '';
+      const [ano, mes, dia] = dataISO.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
 
     window.setModalidade = function(tipo) {
       modalidadeAtual = tipo;
@@ -259,7 +265,7 @@
       }, 0);
 
       if(modalidadeAtual === 'delivery' && tempo > 0) {
-        tempo += 40; // 40 minutos de deslocamento no delivery
+        tempo += 40; 
       }
       return tempo;
     }
@@ -408,7 +414,7 @@
         cliente: nome,
         telefone: fone,
         estilo: estilo,
-        data: data,
+        data: data, // Mantém no padrão do banco (YYYY-MM-DD) para ordenação correta
         horario: horarioSelecionado,
         duracaoMinutos: tempoTotal,
         tipo: modalidadeAtual,
@@ -430,13 +436,16 @@
       }
 
       push(ref(db, 'agendamentos'), dadosAgendamento).then(() => {
+        // Converte a data para DD/MM/AAAA para exibir bonitinho no WhatsApp
+        const dataFormatadaBR = formatarDataBR(data);
+
         let msg = `*NOVO AGENDAMENTO - BARBEARIA BLEQUISTOVE*\n\n`;
         msg += `👤 *Cliente:* ${nome}\n`;
         msg += `📞 *Contato:* ${fone}\n`;
-        msg += `📅 *Data:* ${data} às ${horarioSelecionado}\n`;
+        msg += `📅 *Data:* ${dataFormatadaBR} às ${horarioSelecionado}\n`;
         msg += `💈 *Tipo:* ${modalidadeAtual === 'fixo' ? 'Local Fixo (Rua Santa Rosa, 857)' : 'Delivery VIP'}\n`;
         if(modalidadeAtual === 'delivery') {
-          msg += `📍 *Região:* ${dadosAgendamento.regiao}\n`;
+          msg += `📍 *Regiao:* ${dadosAgendamento.regiao}\n`;
           msg += `🏠 *Endereço:* ${dadosAgendamento.endereco}\n`;
         }
         msg += `✂️ *Serviços:* ${dadosAgendamento.servicos}\n`;
