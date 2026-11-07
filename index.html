@@ -3,42 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Barbearia Blequistove - Agendamento Inteligente</title>
+  <title>Barbearia Blequistove - Agendamento & Clube VIP</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Poppins', sans-serif; }
-    .gold-gradient { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); }
-    .gold-text { background: linear-gradient(135deg, #f1c40f, #e67e22); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+    body { font-family: 'Poppins', sans-serif; background-color: #09090b; color: #f4f4f5; }
+    
+    .gold-gradient { background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%); }
+    .gold-text { background: linear-gradient(135deg, #fbbf24, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    .modern-card {
+      background: linear-gradient(180deg, rgba(24, 24, 27, 0.9) 0%, rgba(9, 9, 11, 0.95) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .modern-card:hover { border-color: rgba(245, 158, 11, 0.4); }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-zinc-950">
+
+  <!-- Modal da Roleta de Prêmios -->
+  <div id="modal-roleta" class="fixed inset-0 bg-zinc-950/90 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden animate-fade">
+    <div class="modern-card p-6 rounded-3xl max-w-sm w-full text-center space-y-4 border-amber-500/40 relative shadow-2xl">
+      <button onclick="fecharRoleta()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      <div class="inline-block p-3 rounded-2xl bg-amber-500/10 text-amber-500 mb-1">
+        <i class="fa-solid fa-percent text-2xl"></i>
+      </div>
+      <h2 class="font-black text-xl text-zinc-100">Roleta de Descontos VIP</h2>
+      <p class="text-xs text-zinc-400">Gire a roleta e obtenha um cupom de desconto exclusivo para aplicar no agendamento de hoje!</p>
+
+      <div class="relative w-48 h-48 mx-auto my-4 flex items-center justify-center overflow-hidden rounded-full border-4 border-amber-500/40 bg-zinc-900 shadow-2xl">
+        <div id="roleta-wheel" class="w-full h-full rounded-full flex items-center justify-center text-xs font-bold text-amber-400 gold-gradient flex-col gap-1 shadow-inner transition-transform duration-[4000ms]">
+          <i class="fa-solid fa-tags text-3xl text-zinc-950"></i>
+          <span class="text-zinc-950 uppercase tracking-widest font-black">Girar!</span>
+        </div>
+      </div>
+
+      <button id="btn-girar-roleta" onclick="girarRoleta()" class="w-full gold-gradient text-zinc-950 font-black py-3 rounded-xl hover:brightness-110 transition shadow-lg shadow-amber-500/20">
+        SORTEAR MEU DESCONTO
+      </button>
+      <p id="roleta-resultado" class="text-xs font-bold text-emerald-400 hidden animate-pulse"></p>
+    </div>
+  </div>
 
   <!-- Header -->
-  <header class="border-b border-zinc-800 bg-zinc-900/80 sticky top-0 z-50 backdrop-blur-md">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+  <header class="border-b border-zinc-800/80 bg-zinc-900/80 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-4xl mx-auto px-4 py-3.5 flex justify-between items-center">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-zinc-950 font-black text-xl">
+        <div class="w-11 h-11 rounded-2xl gold-gradient flex items-center justify-center text-zinc-950 font-black text-xl shadow-lg shadow-amber-500/20">
           <i class="fa-solid fa-scissors"></i>
         </div>
         <div>
-          <h1 class="font-bold text-lg leading-tight">Barbearia Blequistove</h1>
-          <p class="text-xs text-zinc-400">Atendimento Fixo & Delivery VIP</p>
+          <h1 class="font-bold text-base md:text-lg leading-tight tracking-tight">Barbearia Blequistove</h1>
+          <p class="text-xs text-zinc-400 font-medium">Atendimento Fixo & Delivery VIP</p>
         </div>
       </div>
-      <a href="https://wa.me/5548992071556" target="_blank" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-3 rounded-lg flex items-center gap-2 transition">
-        <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
-      </a>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-audio" onclick="toggleAudio()" class="px-3 py-2 rounded-xl modern-card flex items-center gap-2 text-amber-500 hover:text-amber-400 transition text-xs font-semibold" title="Mutar/Desmutar Música">
+          <i id="audio-icon" class="fa-solid fa-volume-high"></i>
+          <span id="audio-label" class="hidden sm:inline">Música On</span>
+        </button>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=Rua+Santa+Rosa+857+Balneario+Arroio+do+Silva" target="_blank" class="px-3 py-2 rounded-xl modern-card flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition text-xs font-semibold">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span class="hidden sm:inline">Mapa</span>
+        </a>
+
+        <a href="https://wa.me/5548992071556" target="_blank" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-3.5 rounded-xl flex items-center gap-1.5 transition shadow-lg shadow-emerald-950/50">
+          <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+        </a>
+      </div>
     </div>
   </header>
 
+  <!-- Banner de Live Status & Escassez -->
+  <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border-b border-amber-500/20 py-2 px-4 text-center">
+    <p class="text-xs font-semibold text-amber-400 flex items-center justify-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <span>💈 Agenda Aberta para Hoje • Garanta o seu horário!</span>
+    </p>
+  </div>
+
   <!-- Conteúdo Principal -->
-  <main class="max-w-4xl mx-auto px-4 py-8 w-full space-y-8">
+  <main class="max-w-4xl mx-auto px-4 py-6 w-full space-y-6">
+
+    <!-- Cartão de Fidelidade Digital (Widget) -->
+    <div class="modern-card p-5 rounded-2xl border-amber-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="space-y-1 text-center md:text-left">
+        <span class="text-xs font-bold text-amber-500 uppercase tracking-widest"><i class="fa-solid fa-star"></i> Clube Blequistove</span>
+        <h3 class="font-bold text-base text-zinc-100">Seu Cartão de Fidelidade Digital</h3>
+        <p class="text-xs text-zinc-400">Complete cortes na barbearia e acumule selos de fidelidade!</p>
+      </div>
+      <div class="flex items-center gap-2" id="fidelidade-selos"></div>
+    </div>
+
+    <!-- Botões de Engajamento Rápido -->
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="abrirRoleta()" class="modern-card p-3.5 rounded-2xl flex items-center justify-center gap-2.5 hover:border-amber-500/50 transition text-amber-400 font-bold text-xs">
+        <i class="fa-solid fa-percent text-lg"></i>
+        <span>Roleta de Descontos</span>
+      </button>
+      <a href="#galeria-estilos" class="modern-card p-3.5 rounded-2xl flex items-center justify-center gap-2.5 hover:border-amber-500/50 transition text-zinc-300 font-bold text-xs">
+        <i class="fa-solid fa-images text-lg text-amber-500"></i>
+        <span>Galeria de Cortes</span>
+      </a>
+    </div>
 
     <!-- Seletor de Modalidade -->
-    <div class="bg-zinc-900 p-2 rounded-2xl border border-zinc-800 flex gap-2">
-      <button id="btn-fixo" onclick="setModalidade('fixo')" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg">
+    <div class="modern-card p-2 rounded-2xl flex gap-2 shadow-xl">
+      <button id="btn-fixo" onclick="setModalidade('fixo')" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg shadow-amber-500/20">
         <i class="fa-solid fa-store"></i> Local Fixo (Arroio do Silva)
       </button>
       <button id="btn-delivery" onclick="setModalidade('delivery')" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-zinc-200">
@@ -47,48 +123,69 @@
     </div>
 
     <!-- Banner Informativo -->
-    <div id="info-banner" class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-2xl flex items-start gap-4">
-      <div class="text-amber-500 text-2xl pt-1"><i class="fa-solid fa-location-dot"></i></div>
-      <div>
-        <h3 class="font-bold text-zinc-200">Local Fixo</h3>
-        <p class="text-sm text-zinc-400">Rua Santa Rosa, 857 - Cidade Balneário Arroio do Silva</p>
+    <div id="info-banner" class="modern-card p-5 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-amber-500/20">
+      <div class="flex items-start gap-4">
+        <div class="text-amber-500 text-2xl pt-0.5"><i class="fa-solid fa-location-dot"></i></div>
+        <div>
+          <h3 class="font-bold text-zinc-100">Local Fixo</h3>
+          <p class="text-sm text-zinc-400 mt-0.5">Rua Santa Rosa, 857 - Cidade Balneário Arroio do Silva</p>
+        </div>
       </div>
+      <a href="https://www.google.com/maps/search/?api=1&query=Rua+Santa+Rosa+857+Balneario+Arroio+do+Silva" target="_blank" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white text-xs font-bold py-2.5 px-4 rounded-xl transition flex items-center gap-2 border border-blue-500/30">
+        <i class="fa-solid fa-map-location-dot"></i> Abrir no Google Maps
+      </a>
     </div>
 
-    <!-- Tabela de Serviços -->
-    <section>
-      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+    <!-- Galeria de Estilos (Com as 6 fotos dos seus clientes) -->
+    <section id="galeria-estilos" class="space-y-3">
+      <h2 class="text-lg font-bold flex items-center gap-2 text-zinc-200">
+        <i class="fa-solid fa-camera gold-text"></i> Galeria de Cortes & Estilos
+      </h2>
+      <p class="text-xs text-zinc-400">Clique no corte para preencher o estilo no agendamento:</p>
+      <div id="galeria-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+    </section>
+
+    <!-- Tabela de Serviços Dinâmica -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold flex items-center gap-2.5 tracking-tight">
         <i class="fa-solid fa-list-check gold-text"></i> Escolha os Serviços
       </h2>
       <div id="services-list" class="grid sm:grid-cols-2 gap-3"></div>
     </section>
 
+    <!-- Seção de Upsell de Produtos -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold flex items-center gap-2 text-amber-500">
+        <i class="fa-solid fa-pump-soap"></i> Produtos & Cuidados (Opcional)
+      </h2>
+      <div id="produtos-list" class="grid sm:grid-cols-3 gap-3"></div>
+    </section>
+
     <!-- Formulário de Agendamento -->
-    <section class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
-      <h2 class="text-xl font-bold flex items-center gap-2 text-amber-500">
+    <section class="modern-card rounded-2xl p-6 md:p-8 space-y-5 shadow-2xl">
+      <h2 class="text-xl font-bold flex items-center gap-2.5 text-amber-500 tracking-tight">
         <i class="fa-solid fa-calendar-check"></i> Detalhes do Agendamento
       </h2>
 
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">Seu Nome *</label>
-          <input type="text" id="cli-nome" placeholder="Digite seu nome" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Seu Nome *</label>
+          <input type="text" id="cli-nome" placeholder="Digite seu nome" class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">Telefone / WhatsApp *</label>
-          <input type="tel" id="cli-fone" placeholder="(48) 99999-9999" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Telefone / WhatsApp *</label>
+          <input type="tel" id="cli-fone" placeholder="(48) 99999-9999" class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition">
         </div>
       </div>
 
-      <!-- Campo de Detalhes do Corte (Obrigatório) -->
       <div>
-        <label class="block text-xs font-semibold text-zinc-400 mb-1">Como deseja o seu corte / serviço? *</label>
-        <textarea id="cli-estilo" rows="2" placeholder="Ex: Degradê navalhado, aparar as pontas, barba desenhada..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 resize-none"></textarea>
+        <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Como deseja o seu corte / serviço? *</label>
+        <textarea id="cli-estilo" rows="2" placeholder="Ex: Degradê navalhado, aparar as pontas, barba desenhada..." class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-zinc-400 mb-1">Data do Atendimento * (Terça-feira e Domingo fechado)</label>
-        <input type="date" id="cli-data" onchange="carregarHorariosDisponiveis()" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-zinc-100">
+        <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Data do Atendimento * <span class="text-amber-500 font-normal">(Terça e Domingo fechado)</span></label>
+        <input type="date" id="cli-data" onchange="carregarHorariosDisponiveis()" class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition text-zinc-100">
       </div>
 
       <!-- Grade de Horários Livres -->
@@ -100,42 +197,43 @@
       </div>
 
       <!-- Campos Exclusivos para Delivery -->
-      <div id="field-delivery-extra" class="hidden space-y-4 pt-4 border-t border-zinc-800">
+      <div id="field-delivery-extra" class="hidden space-y-4 pt-4 border-t border-zinc-800/80">
         <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">Região de Atendimento *</label>
-          <select id="cli-regiao" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Região de Atendimento *</label>
+          <select id="cli-regiao" class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition">
             <option value="Balneário Arroio do Silva">Balneário Arroio do Silva (Sem taxa extra)</option>
             <option value="Araranguá - Individual">Araranguá (Atendimento Individual - R$ 50,00 min)</option>
             <option value="Araranguá - Combo 2 Pessoas">Araranguá (Traga +1 pessoa - R$ 40,00 por corte)</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">Endereço Completo de Entrega/Atendimento *</label>
-          <input type="text" id="cli-endereco" placeholder="Rua, número, bairro e ponto de referência" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Endereço Completo de Entrega/Atendimento *</label>
+          <input type="text" id="cli-endereco" placeholder="Rua, número, bairro e ponto de referência" class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition">
         </div>
       </div>
 
       <!-- Resumo e Confirmação -->
-      <div class="pt-4 border-t border-zinc-800 flex flex-wrap justify-between items-center gap-4">
+      <div class="pt-4 border-t border-zinc-800/80 flex flex-wrap justify-between items-center gap-4">
         <div>
-          <span class="text-xs text-zinc-400 block">Total Estimado:</span>
-          <span id="total-val" class="text-2xl font-black text-amber-500">R$ 0,00</span>
+          <span class="text-xs text-zinc-400 block font-medium">Total Estimado:</span>
+          <span id="total-val" class="text-2xl md:text-3xl font-black text-amber-500">R$ 0,00</span>
         </div>
-        <button onclick="finalizarAgendamento()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-950">
+        <button onclick="finalizarAgendamento()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-950/50 hover:scale-[1.02] active:scale-95">
           <i class="fa-brands fa-whatsapp text-lg"></i> Confirmar Agendamento
         </button>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-zinc-900 bg-zinc-950 py-6 text-center text-xs text-zinc-600">
+  <footer class="border-t border-zinc-900 bg-zinc-950/80 py-6 text-center text-xs text-zinc-600 font-medium">
     <p>© Barbearia Blequistove. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- Integração Firebase -->
+  <audio id="audio-barber" loop></audio>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, get, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBdDb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
@@ -151,7 +249,43 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const tabelaFixo = [
+    const playlist = [
+      "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3",
+      "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=lofi-girl-14197.mp3",
+      "https://cdn.pixabay.com/download/audio/2022/05/16/audio_db32c8c49a.mp3?filename=chill-lofi-song-8445.mp3"
+    ];
+    let musicaAtualIndex = 0;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const audio = document.getElementById('audio-barber');
+      audio.src = playlist[musicaAtualIndex];
+      audio.volume = 0.35;
+      
+      audio.play().then(() => atualizarEstadoAudioUI(true)).catch(() => {
+        document.body.addEventListener('click', () => {
+          if (audio.paused) { audio.play(); atualizarEstadoAudioUI(true); }
+        }, { once: true });
+      });
+
+      audio.addEventListener('ended', () => {
+        musicaAtualIndex = (musicaAtualIndex + 1) % playlist.length;
+        audio.src = playlist[musicaAtualIndex];
+        audio.play();
+      });
+    });
+
+    window.toggleAudio = function() {
+      const audio = document.getElementById('audio-barber');
+      if (audio.paused) { audio.play(); atualizarEstadoAudioUI(true); } 
+      else { audio.pause(); atualizarEstadoAudioUI(false); }
+    };
+
+    function atualizarEstadoAudioUI(ligado) {
+      document.getElementById('audio-icon').className = ligado ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+      document.getElementById('audio-label').innerText = ligado ? "Música On" : "Música Off";
+    }
+
+    let tabelaFixo = [
       { id: 'f1', nome: 'Corte Normal', preco: 30, tempo: 45, desc: 'Corte tradicional com acabamento' },
       { id: 'f2', nome: 'Corte Navalhado', preco: 35, tempo: 50, desc: 'Degradê na navalha de precisão' },
       { id: 'f3', nome: 'Barba', preco: 30, tempo: 30, desc: 'Modelagem e alinhamento do fio' },
@@ -163,7 +297,7 @@
       { id: 'f9', nome: 'Combo Nariz + Orelha', preco: 35, tempo: 10, desc: 'Higienização completa' }
     ];
 
-    const tabelaDelivery = [
+    let tabelaDelivery = [
       { id: 'd1', nome: 'Corte Social / Tesoura', preco: 40, tempo: 45, desc: 'Acabamento refinado' },
       { id: 'd2', nome: 'Corte Navalhado / Fade', preco: 45, tempo: 50, desc: 'Degradê de precisão' },
       { id: 'd3', nome: 'Barba VIP Completa', preco: 35, tempo: 30, desc: 'Modelagem e alinhamento no local' },
@@ -175,12 +309,131 @@
       { id: 'd9', nome: 'Combo Família (Pai + Filho)', preco: 75, tempo: 90, desc: '2 Cortes no mesmo endereço' }
     ];
 
+    // AS 6 FOTOS REAIS DOS SEUS CLIENTES (SUBSTITUIÇÃO TOTAL)
+    let galeriaCortes = [
+      { id: 'g1', titulo: 'Corte Texturizado Médio', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7182-jpg' },
+      { id: 'g2', titulo: 'Fade com Barba Alinhada', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7191-jpg' },
+      { id: 'g3', titulo: 'Low Fade Moderno', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7197-jpg' },
+      { id: 'g4', titulo: 'Mid Fade com Textura', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7219-jpg' },
+      { id: 'g5', titulo: 'Design de Sobrancelha Olhar Verde', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7234-jpg' },
+      { id: 'g6', titulo: 'Design de Sobrancelha Olhar Castanho', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7237-jpg' }
+    ];
+
+    let produtosUpsell = [
+      { id: 'p1', nome: 'Pomada Matte Efeito Seco (100g)', preco: 35, icon: 'fa-pump-soap' },
+      { id: 'p2', nome: 'Óleo Hidratante para Barba (30ml)', preco: 30, icon: 'fa-bottle-droplet' },
+      { id: 'p3', nome: 'Balm Modelador de Barba (90g)', preco: 35, icon: 'fa-box-open' }
+    ];
+
     let modalidadeAtual = 'fixo';
     let servicosSelecionados = [];
+    let produtosSelecionados = [];
     let horarioSelecionado = null;
+    let premioRoleta = null;
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('cli-data').setAttribute('min', today);
+
+    onValue(ref(db, 'configuracoes'), (snapshot) => {
+      const cfg = snapshot.val();
+      if (cfg) {
+        if (cfg.tabelaFixo) tabelaFixo = cfg.tabelaFixo;
+        if (cfg.tabelaDelivery) tabelaDelivery = cfg.tabelaDelivery;
+        if (cfg.galeriaCortes) galeriaCortes = cfg.galeriaCortes;
+        if (cfg.produtosUpsell) produtosUpsell = cfg.produtosUpsell;
+      }
+      renderServicos();
+      renderGaleria();
+      renderProdutos();
+    });
+
+    function renderFidelidade() {
+      const cortessFeitos = parseInt(localStorage.getItem('blequistove_fidelidade') || '2');
+      const totalSelos = 6;
+      let html = '';
+      for (let i = 1; i <= totalSelos; i++) {
+        if (i <= cortessFeitos) {
+          html += `<div class="w-8 h-8 rounded-full gold-gradient flex items-center justify-center text-zinc-950 font-bold text-xs shadow-md"><i class="fa-solid fa-scissors"></i></div>`;
+        } else if (i === totalSelos) {
+          html += `<div class="w-8 h-8 rounded-full bg-zinc-900 border-2 border-dashed border-amber-500 flex items-center justify-center text-amber-500 font-bold text-xs" title="100% OFF"><i class="fa-solid fa-gift"></i></div>`;
+        } else {
+          html += `<div class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-600 font-bold text-xs">${i}</div>`;
+        }
+      }
+      document.getElementById('fidelidade-selos').innerHTML = html;
+    }
+    renderFidelidade();
+
+    window.abrirRoleta = function() { document.getElementById('modal-roleta').classList.remove('hidden'); };
+    window.fecharRoleta = function() { document.getElementById('modal-roleta').classList.add('hidden'); };
+
+    window.girarRoleta = function() {
+      const btn = document.getElementById('btn-girar-roleta');
+      const wheel = document.getElementById('roleta-wheel');
+      const res = document.getElementById('roleta-resultado');
+      btn.disabled = true;
+      btn.classList.add('opacity-50');
+
+      const descontosSeguros = [
+        "5% de Desconto no Corte",
+        "10% de Desconto no Total",
+        "R$ 5,00 OFF no Atendimento",
+        "15% OFF no Combo Cabelo + Barba"
+      ];
+      const sorteado = descontosSeguros[Math.floor(Math.random() * descontosSeguros.length)];
+
+      wheel.style.transform = "rotate(1440deg)";
+      setTimeout(() => {
+        premioRoleta = sorteado;
+        res.innerText = `🎉 Cupom Aplicado: ${sorteado}!`;
+        res.classList.remove('hidden');
+        btn.innerText = "DESCONTO ATIVADO!";
+        updateResumo();
+      }, 4000);
+    };
+
+    function renderGaleria() {
+      const container = document.getElementById('galeria-container');
+      container.innerHTML = galeriaCortes.map(g => `
+        <div onclick="selecionarEstiloGaleria('${g.titulo}')" class="modern-card rounded-2xl overflow-hidden cursor-pointer group hover:scale-[1.03] transition shadow-lg border-zinc-800">
+          <div class="h-44 bg-zinc-900 overflow-hidden relative">
+            <img src="${g.foto}" alt="${g.titulo}" class="w-full h-full object-cover object-center group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent"></div>
+          </div>
+          <div class="p-2.5 text-center">
+            <span class="text-xs font-semibold text-zinc-200 group-hover:text-amber-400 transition block truncate">${g.titulo}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.selecionarEstiloGaleria = function(estiloNome) {
+      const area = document.getElementById('cli-estilo');
+      area.value = `Estilo escolhido da Galeria: ${estiloNome}`;
+      area.focus();
+    };
+
+    function renderProdutos() {
+      const container = document.getElementById('produtos-list');
+      container.innerHTML = produtosUpsell.map(p => `
+        <label class="modern-card p-3.5 rounded-2xl flex items-center gap-3 cursor-pointer hover:border-amber-500/40 transition">
+          <input type="checkbox" value="${p.id}" onchange="toggleProduto('${p.id}')" class="w-4 h-4 accent-amber-500 rounded">
+          <div class="flex-1">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-xs text-zinc-200">${p.nome}</span>
+              <span class="font-bold text-emerald-400 text-xs">+R$ ${p.preco.toFixed(2).replace('.', ',')}</span>
+            </div>
+          </div>
+        </label>
+      `).join('');
+    }
+
+    window.toggleProduto = function(id) {
+      const idx = produtosSelecionados.indexOf(id);
+      if (idx > -1) produtosSelecionados.splice(idx, 1);
+      else produtosSelecionados.push(id);
+      updateResumo();
+    };
 
     function formatarDataBR(dataISO) {
       if (!dataISO) return '';
@@ -199,23 +452,28 @@
       const deliveryExtra = document.getElementById('field-delivery-extra');
 
       if(tipo === 'fixo') {
-        btnFixo.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg";
+        btnFixo.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg shadow-amber-500/20";
         btnDelivery.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-zinc-200";
         infoBanner.innerHTML = `
-          <div class="text-amber-500 text-2xl pt-1"><i class="fa-solid fa-location-dot"></i></div>
-          <div>
-            <h3 class="font-bold text-zinc-200">Local Fixo</h3>
-            <p class="text-sm text-zinc-400">Rua Santa Rosa, 857 - Cidade Balneário Arroio do Silva</p>
+          <div class="flex items-start gap-4">
+            <div class="text-amber-500 text-2xl pt-0.5"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <h3 class="font-bold text-zinc-100">Local Fixo</h3>
+              <p class="text-sm text-zinc-400 mt-0.5">Rua Santa Rosa, 857 - Cidade Balneário Arroio do Silva</p>
+            </div>
           </div>
+          <a href="https://www.google.com/maps/search/?api=1&query=Rua+Santa+Rosa+857+Balneario+Arroio+do+Silva" target="_blank" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white text-xs font-bold py-2.5 px-4 rounded-xl transition flex items-center gap-2 border border-blue-500/30">
+            <i class="fa-solid fa-map-location-dot"></i> Abrir no Google Maps
+          </a>
         `;
         deliveryExtra.classList.add('hidden');
       } else {
-        btnDelivery.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg";
+        btnDelivery.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg shadow-amber-500/20";
         btnFixo.className = "flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-zinc-400 hover:text-zinc-200";
         infoBanner.innerHTML = `
-          <div class="text-amber-500 text-2xl pt-1"><i class="fa-solid fa-wind"></i></div>
+          <div class="text-amber-500 text-2xl pt-0.5"><i class="fa-solid fa-wind"></i></div>
           <div>
-            <h3 class="font-bold text-zinc-200">A EXPERIÊNCIA VIP NA SUA CASA</h3>
+            <h3 class="font-bold text-zinc-100">A EXPERIÊNCIA VIP NA SUA CASA</h3>
             <p class="text-xs text-zinc-400 mt-1">Sem filas • Sem trânsito • Conforto total e ZERO sujeira (ASPIRADOR DE PÓ PRÓPRIO).</p>
           </div>
         `;
@@ -232,14 +490,14 @@
       const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
       
       container.innerHTML = lista.map(s => `
-        <label class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex items-start gap-3 cursor-pointer hover:border-zinc-700 transition">
-          <input type="checkbox" value="${s.id}" onchange="toggleServico('${s.id}')" class="mt-1 w-4 h-4 accent-amber-500 rounded">
+        <label class="modern-card p-4 rounded-xl flex items-start gap-3 cursor-pointer hover:border-amber-500/40 transition group">
+          <input type="checkbox" value="${s.id}" onchange="toggleServico('${s.id}')" class="mt-1 w-4 h-4 accent-amber-500 rounded cursor-pointer">
           <div class="flex-1">
             <div class="flex justify-between items-center">
-              <span class="font-semibold text-sm text-zinc-200">${s.nome}</span>
+              <span class="font-semibold text-sm text-zinc-200 group-hover:text-amber-400 transition">${s.nome}</span>
               <span class="font-bold text-amber-500 text-sm">R$ ${s.preco.toFixed(2).replace('.', ',')}</span>
             </div>
-            <p class="text-xs text-zinc-500 mt-0.5">${s.desc ? s.desc : 'Serviço profissional'}</p>
+            <p class="text-xs text-zinc-500 mt-1">${s.desc ? s.desc : 'Serviço profissional'}</p>
           </div>
         </label>
       `).join('');
@@ -247,11 +505,8 @@
 
     window.toggleServico = function(id) {
       const idx = servicosSelecionados.indexOf(id);
-      if(idx > -1) {
-        servicosSelecionados.splice(idx, 1);
-      } else {
-        servicosSelecionados.push(id);
-      }
+      if(idx > -1) servicosSelecionados.splice(idx, 1);
+      else servicosSelecionados.push(id);
       updateResumo();
       carregarHorariosDisponiveis();
     };
@@ -262,20 +517,28 @@
         const item = lista.find(s => s.id === id);
         return acc + (item ? item.tempo : 0);
       }, 0);
-
-      if(modalidadeAtual === 'delivery' && tempo > 0) {
-        tempo += 40; 
-      }
+      if(modalidadeAtual === 'delivery' && tempo > 0) tempo += 40; 
       return tempo;
     }
 
     function updateResumo() {
-      const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
-      const total = servicosSelecionados.reduce((acc, id) => {
-        const item = lista.find(s => s.id === id);
+      const listaServicos = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
+      let total = servicosSelecionados.reduce((acc, id) => {
+        const item = listaServicos.find(s => s.id === id);
         return acc + (item ? item.preco : 0);
       }, 0);
 
+      produtosSelecionados.forEach(id => {
+        const prod = produtosUpsell.find(p => p.id === id);
+        if (prod) total += prod.preco;
+      });
+
+      if (premioRoleta) {
+        if (premioRoleta.includes('5%')) total *= 0.95;
+        else if (premioRoleta.includes('10%')) total *= 0.90;
+        else if (premioRoleta.includes('15%')) total *= 0.85;
+        else if (premioRoleta.includes('R$ 5,00')) total = Math.max(0, total - 5);
+      }
       document.getElementById('total-val').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
     }
 
@@ -291,13 +554,8 @@
       const dataObj = new Date(dataInput + 'T00:00:00');
       const diaSemana = dataObj.getDay();
 
-      if (diaSemana === 2) { 
-        container.innerHTML = `<p class="col-span-full text-xs text-red-400 font-bold">Fechado às Terças-feiras. Por favor, escolha outra data.</p>`;
-        return;
-      }
-
-      if (diaSemana === 0) {
-        container.innerHTML = `<p class="col-span-full text-xs text-red-400 font-bold">Fechado aos Domingos. Por favor, escolha outra data.</p>`;
+      if (diaSemana === 2 || diaSemana === 0) { 
+        container.innerHTML = `<p class="col-span-full text-xs text-red-400 font-bold">Fechado às Terças e Domingos. Escolha outra data.</p>`;
         return;
       }
 
@@ -307,7 +565,7 @@
         return;
       }
 
-      container.innerHTML = `<p class="col-span-full text-xs text-zinc-400">Buscando horários vagos...</p>`;
+      container.innerHTML = `<p class="col-span-full text-xs text-zinc-400 animate-pulse">Buscando horários vagos...</p>`;
 
       const snapshot = await get(ref(db, 'agendamentos'));
       const agendamentos = snapshot.val() || {};
@@ -321,17 +579,10 @@
         }
       });
 
-      let slots = [];
-      if (diaSemana === 6) { 
-        slots = [...gerarSlots('08:00', '12:00'), ...gerarSlots('13:00', '17:00')];
-      } else { 
-        slots = gerarSlots('15:00', '20:00');
-      }
+      let slots = (diaSemana === 6) ? [...gerarSlots('08:00', '12:00'), ...gerarSlots('13:00', '17:00')] : gerarSlots('15:00', '20:00');
 
-      // Descobre se a data selecionada é hoje para filtrar horários passados
       const agora = new Date();
-      const dataHojeStr = agora.toISOString().split('T')[0];
-      const ehHoje = (dataInput === dataHojeStr);
+      const ehHoje = (dataInput === agora.toISOString().split('T')[0]);
       const minutosAtuais = agora.getHours() * 60 + agora.getMinutes();
 
       let html = '';
@@ -339,33 +590,24 @@
         const slotInicio = timeToMinutes(horarioStr);
         const slotFim = slotInicio + tempoNecessario;
 
-        let dentroDoExpediente = false;
-        if (diaSemana === 6) {
-          dentroDoExpediente = (slotInicio >= 480 && slotFim <= 720) || (slotInicio >= 780 && slotFim <= 1020);
-        } else {
-          dentroDoExpediente = (slotInicio >= 900 && slotFim <= 1200);
-        }
+        let dentroDoExpediente = (diaSemana === 6) ? 
+          ((slotInicio >= 480 && slotFim <= 720) || (slotInicio >= 780 && slotFim <= 1020)) : 
+          (slotInicio >= 900 && slotFim <= 1200);
 
         const temConflito = bloqueios.some(b => (slotInicio < b.fim && slotFim > b.inicio));
-
-        // Se for hoje, oculta horários que já passaram
         const jaPassou = ehHoje && (slotInicio <= minutosAtuais);
 
         if (dentroDoExpediente && !temConflito && !jaPassou) {
           const isSelected = horarioSelecionado === horarioStr;
           html += `
-            <button onclick="selecionarHorario('${horarioStr}')" class="py-2.5 px-3 rounded-xl border text-xs font-bold transition ${isSelected ? 'bg-amber-500 border-amber-500 text-zinc-950 shadow-md' : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-amber-500'}">
+            <button onclick="selecionarHorario('${horarioStr}')" class="py-2.5 px-3 rounded-xl border text-xs font-bold transition ${isSelected ? 'bg-amber-500 border-amber-500 text-zinc-950 shadow-md shadow-amber-500/20' : 'modern-card text-zinc-300 hover:border-amber-500 hover:text-white'}">
               ${horarioStr}
             </button>
           `;
         }
       });
 
-      if (!html) {
-        container.innerHTML = `<p class="col-span-full text-xs text-red-400">Nenhum horário livre para essa quantidade de serviços nesta data.</p>`;
-      } else {
-        container.innerHTML = html;
-      }
+      container.innerHTML = html || `<p class="col-span-full text-xs text-red-400">Nenhum horário livre para essa quantidade de serviços nesta data.</p>`;
     };
 
     function timeToMinutes(timeStr) {
@@ -377,8 +619,7 @@
       const res = [];
       let cur = timeToMinutes(inicioStr);
       const fim = timeToMinutes(fimStr);
-
-      while (cur <= fim) { // Alterado de < para <= para incluir o último horário limite
+      while (cur <= fim) {
         const h = Math.floor(cur / 60).toString().padStart(2, '0');
         const m = (cur % 60).toString().padStart(2, '0');
         res.push(`${h}:${m}`);
@@ -398,76 +639,61 @@
       const estilo = document.getElementById('cli-estilo').value.trim();
       const data = document.getElementById('cli-data').value;
 
-      if(!nome || !fone || !estilo || !data) {
-        alert("Por favor, preencha todos os campos obrigatórios (Nome, Telefone, Como deseja o corte e a Data).");
-        return;
-      }
-
-      if(servicosSelecionados.length === 0) {
-        alert("Selecione pelo menos um serviço.");
-        return;
-      }
-
-      if(!horarioSelecionado) {
-        alert("Por favor, escolha um dos horários disponíveis.");
+      if(!nome || !fone || !estilo || !data || servicosSelecionados.length === 0 || !horarioSelecionado) {
+        alert("Por favor, preencha todos os campos obrigatórios, escolha os serviços e o horário.");
         return;
       }
 
       const lista = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
       const itensEscolhidos = servicosSelecionados.map(id => lista.find(s => s.id === id));
-      const total = itensEscolhidos.reduce((acc, i) => acc + i.preco, 0);
-      const tempoTotal = calcularTempoTotal();
+      const produtosEscolhidos = produtosSelecionados.map(id => produtosUpsell.find(p => p.id === id));
+      
+      let total = itensEscolhidos.reduce((acc, i) => acc + i.preco, 0);
+      produtosEscolhidos.forEach(p => { if (p) total += p.preco; });
+      if (premioRoleta) {
+        if (premioRoleta.includes('5%')) total *= 0.95;
+        else if (premioRoleta.includes('10%')) total *= 0.90;
+        else if (premioRoleta.includes('15%')) total *= 0.85;
+        else if (premioRoleta.includes('R$ 5,00')) total = Math.max(0, total - 5);
+      }
+
+      let nomesServicos = itensEscolhidos.map(i => i.nome).join(', ');
+      if (produtosEscolhidos.length > 0) nomesServicos += ` + Produtos: [${produtosEscolhidos.map(p => p.nome).join(', ')}]`;
 
       let dadosAgendamento = {
-        cliente: nome,
-        telefone: fone,
-        estilo: estilo,
-        data: data,
-        horario: horarioSelecionado,
-        duracaoMinutos: tempoTotal,
-        tipo: modalidadeAtual,
-        servicos: itensEscolhidos.map(i => i.nome).join(', '),
-        total: total,
-        status: 'Pendente',
-        criadoEm: new Date().toISOString()
+        cliente: nome, telefone: fone, estilo, data, horario: horarioSelecionado,
+        duracaoMinutos: calcularTempoTotal(), tipo: modalidadeAtual,
+        servicos: nomesServicos, total, premio: premioRoleta || 'Nenhum',
+        status: 'Pendente', criadoEm: new Date().toISOString()
       };
 
       if(modalidadeAtual === 'delivery') {
-        const regiao = document.getElementById('cli-regiao').value;
-        const endereco = document.getElementById('cli-endereco').value.trim();
-        if(!endereco) {
-          alert("Por favor, informe o endereço para atendimento delivery.");
-          return;
-        }
-        dadosAgendamento.regiao = regiao;
-        dadosAgendamento.endereco = endereco;
+        dadosAgendamento.regiao = document.getElementById('cli-regiao').value;
+        dadosAgendamento.endereco = document.getElementById('cli-endereco').value.trim();
+        if(!dadosAgendamento.endereco) { alert("Informe o endereço para o delivery."); return; }
       }
 
       push(ref(db, 'agendamentos'), dadosAgendamento).then(() => {
-        const dataFormatadaBR = formatarDataBR(data);
+        const cortessFeitos = parseInt(localStorage.getItem('blequistove_fidelidade') || '2');
+        localStorage.setItem('blequistove_fidelidade', (cortessFeitos + 1).toString());
 
         let msg = `*NOVO AGENDAMENTO - BARBEARIA BLEQUISTOVE*\n\n`;
-        msg += `👤 *Cliente:* ${nome}\n`;
-        msg += `📞 *Contato:* ${fone}\n`;
-        msg += `📅 *Data:* ${dataFormatadaBR} às ${horarioSelecionado}\n`;
+        msg += `👤 *Cliente:* ${nome}\n📞 *Contato:* ${fone}\n`;
+        msg += `📅 *Data:* ${formatarDataBR(data)} às ${horarioSelecionado}\n`;
         msg += `💈 *Tipo:* ${modalidadeAtual === 'fixo' ? 'Local Fixo (Rua Santa Rosa, 857)' : 'Delivery VIP'}\n`;
-        if(modalidadeAtual === 'delivery') {
-          msg += `📍 *Região:* ${dadosAgendamento.regiao}\n`;
-          msg += `🏠 *Endereço:* ${dadosAgendamento.endereco}\n`;
-        }
+        if(modalidadeAtual === 'delivery') msg += `📍 *Região:* ${dadosAgendamento.regiao}\n🏠 *Endereço:* ${dadosAgendamento.endereco}\n`;
         msg += `✂️ *Serviços:* ${dadosAgendamento.servicos}\n`;
-        msg += `📝 *Detalhes do Corte:* ${estilo}\n`;
-        msg += `💰 *Total Estimado:* R$ ${total.toFixed(2).replace('.', ',')}`;
+        if (premioRoleta) msg += `🏷️ *Cupom Aplicado:* ${premioRoleta}\n`;
+        msg += `📝 *Detalhes:* ${estilo}\n💰 *Total:* R$ ${total.toFixed(2).replace('.', ',')}`;
 
-        const urlWhats = `https://wa.me/5548992071556?text=${encodeURIComponent(msg)}`;
-        window.open(urlWhats, '_blank');
+        window.open(`https://wa.me/5548992071556?text=${encodeURIComponent(msg)}`, '_blank');
         location.reload();
-      }).catch(err => {
-        alert("Erro ao gravar agendamento: " + err.message);
-      });
+      }).catch(err => alert("Erro: " + err.message));
     };
 
     renderServicos();
+    renderGaleria();
+    renderProdutos();
   </script>
 </body>
 </html>
