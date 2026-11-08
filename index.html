@@ -105,7 +105,7 @@
     </div>
 
     <!-- Seletor de Modalidade -->
-    <div id="seletor-modalidade-container" class="modern-card p-2 rounded-2xl flex gap-2 shadow-xl">
+    <div class="modern-card p-2 rounded-2xl flex gap-2 shadow-xl">
       <button id="btn-fixo" onclick="setModalidade('fixo')" class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-amber-500 text-zinc-950 shadow-lg shadow-amber-500/20">
         <i class="fa-solid fa-store"></i> Local Fixo (Arroio do Silva)
       </button>
@@ -188,12 +188,12 @@
         </div>
       </div>
 
-      <!-- Campos Exclusivos para Delivery com Regiões e Taxas -->
+      <!-- Campos Exclusivos para Delivery -->
       <div id="field-delivery-extra" class="hidden space-y-4 pt-4 border-t border-zinc-800/80">
         <div>
           <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Região e Taxa de Deslocamento *</label>
           <select id="cli-regiao" onchange="updateResumo()" class="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition">
-            <option value="Balneário Arroio do Silva|0">Balneário Arroio do Silva (Taxa R$ 10,00)</option>
+            <option value="Balneário Arroio do Silva|10">Balneário Arroio do Silva (Taxa R$ 10,00)</option>
             <option value="Araranguá - Próximo (Até 10km)|25">Araranguá - Próximo (Taxa R$ 25,00)</option>
             <option value="Araranguá - Distante (>10km)|45">Araranguá - Distante / Área Rural (Taxa R$ 45,00)</option>
           </select>
@@ -241,7 +241,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Configurações globais controladas pelo Firebase (como ligar/desligar delivery)
     let configBarbearia = { deliveryAtivo: true };
 
     onValue(ref(db, 'configuracoes'), (snapshot) => {
@@ -311,10 +310,9 @@
       document.getElementById('audio-label').innerText = ligado ? "Música On" : "Música Off";
     }
 
-    // Verificador de expediente e dias fechados
     function verificarStatusAgenda() {
       const agora = new Date();
-      const diaSemana = agora.getDay(); // 0 = Domingo, 2 = Terça
+      const diaSemana = agora.getDay();
       const horaMinutos = agora.getHours() * 60 + agora.getMinutes();
 
       const msgEl = document.getElementById('banner-msg');
@@ -334,7 +332,7 @@
         pontoEl.className = "w-2 h-2 rounded-full bg-emerald-400 animate-ping";
         bannerEl.className = "bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border-b border-amber-500/20 py-2 px-4 text-center";
       } else {
-        fecharBanner("🌙 Fora do Horário de Atendimento • Deixe seu agendamento agendado para amanhã!");
+        fecharBanner("🌙 Fora do Horário de Atendimento • Deixe seu agendamento para amanhã!");
       }
     }
 
@@ -415,7 +413,6 @@
     window.abrirRoleta = function() { document.getElementById('modal-roleta').classList.remove('hidden'); };
     window.fecharRoleta = function() { document.getElementById('modal-roleta').classList.add('hidden'); };
 
-    // Roleta realista: nem sempre ganha desconto
     window.girarRoleta = function() {
       const btn = document.getElementById('btn-girar-roleta');
       const wheel = document.getElementById('roleta-wheel');
@@ -425,11 +422,11 @@
 
       const resultadosPossiveis = [
         { texto: "Puxa, não foi dessa vez! Tente no próximo.", tipo: "nenhum" },
-        { texto: "5% de Desconto no Corte!", tipo: "desconto", valor: 0.05 },
+        { texto: "5% de Desconto no Corte!", tipo: "desconto" },
         { texto: "Que pena! Ficou sem desconto hoje.", tipo: "nenhum" },
-        { texto: "10% de Desconto no Total!", tipo: "desconto", valor: 0.10 },
-        { texto: "Não deu sorte agora, mas obrigado por escolher a barbearia!", tipo: "nenhum" },
-        { texto: "R$ 5,00 OFF no Atendimento!", tipo: "desconto", valor: 5 }
+        { texto: "10% de Desconto no Total!", tipo: "desconto" },
+        { texto: "Não deu sorte agora, mas obrigado!", tipo: "nenhum" },
+        { texto: "R$ 5,00 OFF no Atendimento!", tipo: "desconto" }
       ];
 
       const sorteado = resultadosPossiveis[Math.floor(Math.random() * resultadosPossiveis.length)];
@@ -588,8 +585,7 @@
       return tempo;
     }
 
-    // Cálculo exato incluindo taxa de entrega
-    function updateResumo() {
+    window.updateResumo = function() {
       const listaServicos = modalidadeAtual === 'fixo' ? tabelaFixo : tabelaDelivery;
       let total = servicosSelecionados.reduce((acc, id) => {
         const item = listaServicos.find(s => s.id === id);
@@ -601,14 +597,12 @@
         if (prod) total += prod.preco;
       });
 
-      // Adiciona taxa se for delivery
-      let taxaDelivery = 0;
       if (modalidadeAtual === 'delivery') {
         const selectRegiao = document.getElementById('cli-regiao');
         if (selectRegiao && selectRegiao.value) {
           const partes = selectRegiao.value.split('|');
-          taxaDelivery = parseFloat(partes[1]) || 0;
-          total += taxaDelivery;
+          const taxaRegiao = parseFloat(partes[1]) || 0;
+          total += taxaRegiao;
         }
       }
 
