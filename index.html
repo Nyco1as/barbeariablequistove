@@ -67,6 +67,51 @@
           <span id="audio-label" class="hidden sm:inline">Música On</span>
         </button>
 
+<script>
+  function verificarStatusAgenda() {
+    const agora = new Date();
+    const diaSemana = agora.getDay(); // 0 = Domingo, 2 = Terça
+    const hora = agora.getHours();
+    const minuto = agora.getMinutes();
+    const horaMinutos = hora * 60 + minuto;
+
+    const msgEl = document.getElementById('banner-msg');
+    const pontoEl = document.getElementById('banner-ponto');
+    const bannerEl = document.getElementById('banner-status');
+
+    // Dias fechados: Terça (2) e Domingo (0)
+    if (diaSemana === 0 || diaSemana === 2) {
+      fecharBanner("💈 Barbearia Fechada hoje • Retornamos em breve!");
+      return;
+    }
+
+    // Horários de expediente (Exemplo: Sábado das 08:00 às 17:00 / Dias úteis das 15:00 às 20:00)
+    let inicioExp = (diaSemana === 6) ? (8 * 60) : (15 * 60); // 08:00 ou 15:00
+    let fimExp = (diaSemana === 6) ? (17 * 60) : (20 * 60);    // 17:00 ou 20:00
+
+    if (horaMinutos >= inicioExp && horaMinutos <= fimExp) {
+      msgEl.innerText = "💈 Agenda Aberta • Garanta o seu horário!";
+      pontoEl.className = "w-2 h-2 rounded-full bg-emerald-400 animate-ping";
+      bannerEl.className = "bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border-b border-amber-500/20 py-2 px-4 text-center";
+    } else {
+      fecharBanner("🌙 Fora do Horário de Atendimento • Deixe seu agendamento para amanhã!");
+    }
+  }
+
+  function fecharBanner(texto) {
+    const msgEl = document.getElementById('banner-msg');
+    const pontoEl = document.getElementById('banner-ponto');
+    const bannerEl = document.getElementById('banner-status');
+
+    msgEl.innerText = texto;
+    pontoEl.className = "w-2 h-2 rounded-full bg-red-500"; // Ponto vermelho indicando fechado
+    bannerEl.className = "bg-gradient-to-r from-red-500/10 via-red-500/20 to-red-500/10 border-b border-red-500/20 py-2 px-4 text-center";
+  }
+
+  // Executa ao carregar a página
+  window.addEventListener('DOMContentLoaded', verificarStatusAgenda);
+</script>
+
         <a href="https://www.google.com/maps/search/?api=1&query=Rua+Santa+Rosa+857+Balneario+Arroio+do+Silva" target="_blank" class="px-3 py-2 rounded-xl modern-card flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition text-xs font-semibold">
           <i class="fa-solid fa-map-location-dot"></i>
           <span class="hidden sm:inline">Mapa</span>
@@ -79,13 +124,13 @@
     </div>
   </header>
 
-  <!-- Banner de Live Status -->
-  <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border-b border-amber-500/20 py-2 px-4 text-center">
-    <p class="text-xs font-semibold text-amber-400 flex items-center justify-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-      <span>💈 Agenda Aberta para Hoje • Garanta o seu horário!</span>
-    </p>
-  </div>
+  <!-- Banner de Live Status Inteligente -->
+<div id="banner-status" class="bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border-b border-amber-500/20 py-2 px-4 text-center transition-all duration-300">
+  <p id="banner-texto" class="text-xs font-semibold text-amber-400 flex items-center justify-center gap-2">
+    <span id="banner-ponto" class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+    <span id="banner-msg">Carregando status da agenda...</span>
+  </p>
+</div>
 
   <!-- Conteúdo Principal -->
   <main class="max-w-4xl mx-auto px-4 py-6 w-full space-y-6">
