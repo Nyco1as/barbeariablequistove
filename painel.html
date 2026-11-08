@@ -1,600 +1,1051 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Executivo - Barbearia Blequistove</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-    body { font-family: 'Poppins', sans-serif; background-color: #09090b; color: #f4f4f5; }
-    
-    .gold-gradient { background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%); }
-    .gold-text { background: linear-gradient(135deg, #fbbf24, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    
-    .modern-card {
-      background: linear-gradient(180deg, rgba(24, 24, 27, 0.9) 0%, rgba(9, 9, 11, 0.95) 100%);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-  </style>
-</head>
-<body class="min-h-screen selection:bg-amber-500 selection:text-zinc-950">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel Executivo - Barbearia Blequistove</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #09090b;
+        color: #f4f4f5;
+      }
 
-  <audio id="audio-notificacao" src="https://cdn.freesound.org/previews/536/536108_11861866-lq.mp3"></audio>
+      .gold-gradient {
+        background: linear-gradient(
+          135deg,
+          #f59e0b 0%,
+          #d97706 50%,
+          #b45309 100%
+        );
+      }
+      .gold-text {
+        background: linear-gradient(135deg, #fbbf24, #d97706);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
-  <!-- Login Modal -->
-  <div id="login-modal" class="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4">
-    <div class="modern-card p-8 rounded-3xl max-w-sm w-full space-y-6 text-center shadow-2xl border-amber-500/20">
-      <div class="w-16 h-16 rounded-2xl gold-gradient text-zinc-950 flex items-center justify-center mx-auto text-2xl font-black shadow-lg shadow-amber-500/20">
-        <i class="fa-solid fa-scissors"></i>
-      </div>
-      <div>
-        <h2 class="font-bold text-xl text-zinc-100">Painel do Barbeiro</h2>
-        <p class="text-xs text-zinc-400 mt-1">Acesse sua central de gestão de agendamentos</p>
-      </div>
-      
-      <form id="login-form" onsubmit="autenticarFirebase(event)" class="space-y-3.5">
-        <input type="email" id="auth-email" placeholder="E-mail cadastrado" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition">
-        <input type="password" id="auth-password" placeholder="Palavra-passe" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition">
-        
-        <button type="submit" class="w-full gold-gradient text-zinc-950 font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2 shadow-lg shadow-amber-950/40">
-          <i class="fa-solid fa-right-to-bracket"></i> Entrar no Painel
-        </button>
-      </form>
-    </div>
-  </div>
+      .modern-card {
+        background: linear-gradient(
+          180deg,
+          rgba(24, 24, 27, 0.9) 0%,
+          rgba(9, 9, 11, 0.95) 100%
+        );
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen selection:bg-amber-500 selection:text-zinc-950">
+    <audio
+      id="audio-notificacao"
+      src="https://cdn.freesound.org/previews/536/536108_11861866-lq.mp3"
+    ></audio>
 
-  <!-- Header -->
-  <header class="border-b border-zinc-800/80 bg-zinc-900/80 sticky top-0 backdrop-blur-md z-40">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <!-- Foto de Perfil do Barbeiro (Configurável) -->
-        <div class="relative w-11 h-11 rounded-2xl overflow-hidden border border-amber-500/40 shadow-lg shadow-amber-500/20 bg-zinc-900 flex items-center justify-center">
-          <img id="barber-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Avatar Barbeiro" class="w-full h-full object-cover">
+    <!-- Login Modal -->
+    <div
+      id="login-modal"
+      class="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4"
+    >
+      <div
+        class="modern-card p-8 rounded-3xl max-w-sm w-full space-y-6 text-center shadow-2xl border-amber-500/20"
+      >
+        <div
+          class="w-16 h-16 rounded-2xl gold-gradient text-zinc-950 flex items-center justify-center mx-auto text-2xl font-black shadow-lg shadow-amber-500/20"
+        >
+          <i class="fa-solid fa-scissors"></i>
         </div>
         <div>
-          <h1 class="font-bold text-base leading-tight flex items-center gap-2">
-            <span id="barber-nome-header">Painel Executivo</span>
-            <span class="text-[10px] bg-amber-500/10 text-amber-500 font-bold px-2 py-0.5 rounded-full border border-amber-500/20">PRO</span>
-          </h1>
-          <p class="text-xs text-zinc-400">Barbearia Blequistove</p>
+          <h2 class="font-bold text-xl text-zinc-100">Painel do Barbeiro</h2>
+          <p class="text-xs text-zinc-400 mt-1">
+            Acesse sua central de gestão de agendamentos
+          </p>
+        </div>
+
+        <form
+          id="login-form"
+          onsubmit="autenticarFirebase(event)"
+          class="space-y-3.5"
+        >
+          <input
+            type="email"
+            id="auth-email"
+            placeholder="E-mail cadastrado"
+            required
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition"
+          />
+          <input
+            type="password"
+            id="auth-password"
+            placeholder="Palavra-passe"
+            required
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition"
+          />
+
+          <button
+            type="submit"
+            class="w-full gold-gradient text-zinc-950 font-bold py-3.5 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2 shadow-lg shadow-amber-950/40"
+          >
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar no Painel
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header
+      class="border-b border-zinc-800/80 bg-zinc-900/80 sticky top-0 backdrop-blur-md z-40"
+    >
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div class="flex items-center gap-3">
+          <!-- Foto de Perfil do Barbeiro (Configurável) -->
+          <div
+            class="relative w-11 h-11 rounded-2xl overflow-hidden border border-amber-500/40 shadow-lg shadow-amber-500/20 bg-zinc-900 flex items-center justify-center"
+          >
+            <img
+              id="barber-avatar"
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+              alt="Avatar Barbeiro"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <h1
+              class="font-bold text-base leading-tight flex items-center gap-2"
+            >
+              <span id="barber-nome-header">Painel Executivo</span>
+              <span
+                class="text-[10px] bg-amber-500/10 text-amber-500 font-bold px-2 py-0.5 rounded-full border border-amber-500/20"
+                >PRO</span
+              >
+            </h1>
+            <p class="text-xs text-zinc-400">Barbearia Blequistove</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            onclick="ativarNotificacoes()"
+            class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 py-2.5 px-3.5 rounded-xl flex items-center gap-2 hover:bg-amber-500/20 transition font-semibold"
+          >
+            <i class="fa-solid fa-bell text-amber-400"></i> Notificações Push
+          </button>
+          <button
+            onclick="fazerLogout()"
+            class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2.5 px-3.5 rounded-xl flex items-center gap-2 transition font-medium"
+          >
+            <i class="fa-solid fa-right-from-bracket"></i> Sair
+          </button>
         </div>
       </div>
-      
-      <div class="flex items-center gap-2">
-        <button onclick="ativarNotificacoes()" class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 py-2.5 px-3.5 rounded-xl flex items-center gap-2 hover:bg-amber-500/20 transition font-semibold">
-          <i class="fa-solid fa-bell text-amber-400"></i> Notificações Push
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      <!-- Navegação por Abas -->
+      <div class="flex border-b border-zinc-800 gap-6">
+        <button
+          onclick="mudarAba('agendamentos')"
+          id="aba-agendamentos-btn"
+          class="pb-3 text-sm font-bold border-b-2 border-amber-500 text-amber-500 flex items-center gap-2"
+        >
+          <i class="fa-solid fa-calendar-days"></i> Agendamentos & Faturamento
         </button>
-        <button onclick="fazerLogout()" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2.5 px-3.5 rounded-xl flex items-center gap-2 transition font-medium">
-          <i class="fa-solid fa-right-from-bracket"></i> Sair
+        <button
+          onclick="mudarAba('gerenciador')"
+          id="aba-gerenciador-btn"
+          class="pb-3 text-sm font-bold text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 flex items-center gap-2"
+        >
+          <i class="fa-solid fa-sliders"></i> Gerenciar Perfil, Serviços & Fotos
         </button>
       </div>
-    </div>
-  </header>
 
-  <!-- Conteúdo Principal -->
-  <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
-
-    <!-- Navegação por Abas -->
-    <div class="flex border-b border-zinc-800 gap-6">
-      <button onclick="mudarAba('agendamentos')" id="aba-agendamentos-btn" class="pb-3 text-sm font-bold border-b-2 border-amber-500 text-amber-500 flex items-center gap-2">
-        <i class="fa-solid fa-calendar-days"></i> Agendamentos & Faturamento
-      </button>
-      <button onclick="mudarAba('gerenciador')" id="aba-gerenciador-btn" class="pb-3 text-sm font-bold text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 flex items-center gap-2">
-        <i class="fa-solid fa-sliders"></i> Gerenciar Perfil, Serviços & Fotos
-      </button>
-    </div>
-
-    <!-- SEÇÃO 1: AGENDAMENTOS E MÉTRICAS -->
-    <div id="secao-agendamentos" class="space-y-6">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div class="modern-card border-amber-500/30 p-4.5 rounded-2xl flex flex-col justify-between">
-          <div class="flex items-center justify-between text-amber-500">
-            <span class="text-xs font-semibold uppercase tracking-wider text-amber-400/80">Fila Atual</span>
-            <i class="fa-solid fa-clock text-lg"></i>
+      <!-- SEÇÃO 1: AGENDAMENTOS E MÉTRICAS -->
+      <div id="secao-agendamentos" class="space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+          <div
+            class="modern-card border-amber-500/30 p-4.5 rounded-2xl flex flex-col justify-between"
+          >
+            <div class="flex items-center justify-between text-amber-500">
+              <span
+                class="text-xs font-semibold uppercase tracking-wider text-amber-400/80"
+                >Fila Atual</span
+              >
+              <i class="fa-solid fa-clock text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <span
+                id="metric-pendentes"
+                class="text-3xl font-black text-amber-500"
+                >0</span
+              >
+              <span class="text-xs text-zinc-500 block mt-0.5 font-medium"
+                >clientes aguardando</span
+              >
+            </div>
           </div>
-          <div class="mt-4">
-            <span id="metric-pendentes" class="text-3xl font-black text-amber-500">0</span>
-            <span class="text-xs text-zinc-500 block mt-0.5 font-medium">clientes aguardando</span>
+
+          <!-- Controle de Ativar/Desativar Delivery -->
+          <div
+            class="modern-card p-4 rounded-2xl flex items-center justify-between border-amber-500/30 mb-4"
+          >
+            <div>
+              <h3 class="font-bold text-sm text-zinc-100">
+                <i class="fa-solid fa-motorcycle text-amber-500 mr-2"></i>
+                Status do Delivery
+              </h3>
+              <p class="text-xs text-zinc-400">
+                Ative ou desative o atendimento delivery para os clientes.
+              </p>
+            </div>
+            <button
+              id="btn-toggle-delivery"
+              onclick="alternarDelivery()"
+              class="px-4 py-2.5 rounded-xl font-bold text-xs bg-zinc-800 text-zinc-300 transition border border-zinc-700"
+            >
+              Carregando...
+            </button>
+          </div>
+
+          <div
+            class="modern-card border-emerald-500/30 p-4.5 rounded-2xl flex flex-col justify-between"
+          >
+            <div class="flex items-center justify-between text-emerald-400">
+              <span
+                class="text-xs font-semibold uppercase tracking-wider text-emerald-400/80"
+                >Atendidos</span
+              >
+              <i class="fa-solid fa-circle-check text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <span
+                id="metric-concluidos"
+                class="text-3xl font-black text-emerald-400"
+                >0</span
+              >
+              <span class="text-xs text-zinc-500 block mt-0.5 font-medium"
+                >cortes concluídos</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="modern-card p-4.5 rounded-2xl flex flex-col justify-between"
+          >
+            <div class="flex items-center justify-between text-blue-400">
+              <span
+                class="text-xs font-semibold uppercase tracking-wider text-zinc-400"
+                >Faturamento Estimado</span
+              >
+              <i class="fa-solid fa-wallet text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <span
+                id="metric-faturamento"
+                class="text-2xl font-black text-blue-400"
+                >R$ 0,00</span
+              >
+              <span class="text-xs text-zinc-500 block mt-0.5 font-medium"
+                >total acumulado</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="modern-card p-4.5 rounded-2xl flex flex-col justify-between"
+          >
+            <div class="flex items-center justify-between text-purple-400">
+              <span
+                class="text-xs font-semibold uppercase tracking-wider text-zinc-400"
+                >Delivery VIP</span
+              >
+              <i class="fa-solid fa-motorcycle text-lg"></i>
+            </div>
+            <div class="mt-4">
+              <span
+                id="metric-delivery"
+                class="text-3xl font-black text-purple-400"
+                >0</span
+              >
+              <span class="text-xs text-zinc-500 block mt-0.5 font-medium"
+                >atendimentos em domicílio</span
+              >
+            </div>
           </div>
         </div>
 
-        <div class="modern-card border-emerald-500/30 p-4.5 rounded-2xl flex flex-col justify-between">
-          <div class="flex items-center justify-between text-emerald-400">
-            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400/80">Atendidos</span>
-            <i class="fa-solid fa-circle-check text-lg"></i>
+        <!-- Barra de Filtros -->
+        <div
+          class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between modern-card p-3 rounded-2xl"
+        >
+          <div
+            class="flex gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80"
+          >
+            <button
+              onclick="setFiltroStatus('pendente')"
+              id="tab-pendente"
+              class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-amber-500 text-zinc-950 transition shadow"
+            >
+              <i class="fa-solid fa-clock"></i> Pendentes (<span
+                id="cnt-tab-pendente"
+                >0</span
+              >)
+            </button>
+            <button
+              onclick="setFiltroStatus('concluido')"
+              id="tab-concluido"
+              class="px-3.5 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition"
+            >
+              <i class="fa-solid fa-check"></i> Atendidos (<span
+                id="cnt-tab-concluido"
+                >0</span
+              >)
+            </button>
+            <button
+              onclick="setFiltroStatus('todos')"
+              id="tab-todos"
+              class="px-3.5 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition"
+            >
+              Todos (<span id="cnt-tab-todos">0</span>)
+            </button>
           </div>
-          <div class="mt-4">
-            <span id="metric-concluidos" class="text-3xl font-black text-emerald-400">0</span>
-            <span class="text-xs text-zinc-500 block mt-0.5 font-medium">cortes concluídos</span>
+
+          <div
+            class="flex gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80"
+          >
+            <button
+              onclick="setFiltroTipo('todos')"
+              id="ftip-todos"
+              class="px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-100 transition shadow"
+            >
+              Todas Modalidades
+            </button>
+            <button
+              onclick="setFiltroTipo('fixo')"
+              id="ftip-fixo"
+              class="px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition"
+            >
+              <i class="fa-solid fa-store text-blue-400"></i> Fixo
+            </button>
+            <button
+              onclick="setFiltroTipo('delivery')"
+              id="ftip-delivery"
+              class="px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition"
+            >
+              <i class="fa-solid fa-motorcycle text-amber-500"></i> Delivery
+            </button>
           </div>
         </div>
 
-        <div class="modern-card p-4.5 rounded-2xl flex flex-col justify-between">
-          <div class="flex items-center justify-between text-blue-400">
-            <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Faturamento Estimado</span>
-            <i class="fa-solid fa-wallet text-lg"></i>
-          </div>
-          <div class="mt-4">
-            <span id="metric-faturamento" class="text-2xl font-black text-blue-400">R$ 0,00</span>
-            <span class="text-xs text-zinc-500 block mt-0.5 font-medium">total acumulado</span>
-          </div>
+        <!-- Lista de Cards -->
+        <div
+          id="cards-container"
+          class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        ></div>
+      </div>
+
+      <!-- SEÇÃO 2: GERENCIADOR DO PERFIL E DO SITE -->
+      <div id="secao-gerenciador" class="space-y-6 hidden">
+        <!-- Alterar Foto de Perfil do Barbeiro -->
+        <div class="modern-card p-6 rounded-2xl space-y-4">
+          <h2
+            class="text-base font-bold text-amber-500 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-user-gear"></i> Perfil do Barbeiro (Foto e
+            Nome)
+          </h2>
+          <form
+            onsubmit="salvarPerfilBarbeiro(event)"
+            class="grid sm:grid-cols-3 gap-3"
+          >
+            <input
+              type="text"
+              id="perfil-barbeiro-nome"
+              placeholder="Seu Nome / Nome de Apresentação"
+              required
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500"
+            />
+            <input
+              type="url"
+              id="perfil-barbeiro-foto"
+              placeholder="URL da Sua Foto de Perfil (HTTPS)"
+              required
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500"
+            />
+            <button
+              type="submit"
+              class="gold-gradient text-zinc-950 font-bold py-2.5 rounded-xl text-xs hover:brightness-110 transition"
+            >
+              Atualizar Perfil
+            </button>
+          </form>
         </div>
 
-        <div class="modern-card p-4.5 rounded-2xl flex flex-col justify-between">
-          <div class="flex items-center justify-between text-purple-400">
-            <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Delivery VIP</span>
-            <i class="fa-solid fa-motorcycle text-lg"></i>
-          </div>
-          <div class="mt-4">
-            <span id="metric-delivery" class="text-3xl font-black text-purple-400">0</span>
-            <span class="text-xs text-zinc-500 block mt-0.5 font-medium">atendimentos em domicílio</span>
+        <!-- Cadastrar Novo Serviço -->
+        <div class="modern-card p-6 rounded-2xl space-y-4">
+          <h2
+            class="text-base font-bold text-amber-500 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-plus-circle"></i> Cadastrar Novo Serviço
+          </h2>
+          <form
+            onsubmit="salvarNovoServico(event)"
+            class="grid sm:grid-cols-3 gap-3"
+          >
+            <input
+              type="text"
+              id="add-servico-nome"
+              placeholder="Nome do Serviço (Ex: Barba Terapia)"
+              required
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500"
+            />
+            <input
+              type="number"
+              step="0.01"
+              id="add-servico-preco"
+              placeholder="Preço (R$)"
+              required
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500"
+            />
+            <input
+              type="number"
+              id="add-servico-tempo"
+              placeholder="Duração em Minutos (Ex: 30)"
+              required
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500"
+            />
+            <select
+              id="add-servico-tipo"
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500 sm:col-span-2"
+            >
+              <option value="fixo">Modalidade: Local Fixo</option>
+              <option value="delivery">Modalidade: Delivery VIP</option>
+            </select>
+            <button
+              type="submit"
+              class="gold-gradient text-zinc-950 font-bold py-2.5 rounded-xl text-xs hover:brightness-110 transition"
+            >
+              Salvar Serviço
+            </button>
+          </form>
+        </div>
+
+        <!-- Adicionar Foto na Galeria -->
+        <div class="modern-card p-6 rounded-2xl space-y-4">
+          <h2
+            class="text-base font-bold text-amber-500 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-image"></i> Adicionar Foto na Galeria de
+            Cortes
+          </h2>
+          <form
+            onsubmit="salvarFotoGaleria(event)"
+            class="grid sm:grid-cols-3 gap-3"
+          >
+            <input
+              type="text"
+              id="add-foto-titulo"
+              placeholder="Título (Ex: Low Fade com Risca)"
+              required
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500"
+            />
+            <input
+              type="url"
+              id="add-foto-url"
+              placeholder="URL Direta da Foto (HTTPS)"
+              required
+              class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500 sm:col-span-2"
+            />
+            <button
+              type="submit"
+              class="gold-gradient text-zinc-950 font-bold py-2.5 rounded-xl text-xs hover:brightness-110 transition sm:col-span-3"
+            >
+              Adicionar à Galeria
+            </button>
+          </form>
+        </div>
+
+        <!-- Exclusão de Serviços, Produtos e Fotos -->
+        <div class="modern-card p-6 rounded-2xl space-y-4">
+          <h2
+            class="text-base font-bold text-amber-500 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-trash-can"></i> Central de Exclusão (Serviços,
+            Produtos & Fotos)
+          </h2>
+          <p class="text-xs text-zinc-400">
+            Gerencie todos os itens do site e remova os que não deseja exibir:
+          </p>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <div>
+              <h3 class="text-xs font-bold text-zinc-300 mb-2">
+                Serviços Atuais:
+              </h3>
+              <div
+                id="lista-remocao-servicos"
+                class="space-y-1.5 max-h-60 overflow-y-auto pr-1"
+              ></div>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-zinc-300 mb-2">
+                Produtos da Loja:
+              </h3>
+              <div
+                id="lista-remocao-produtos"
+                class="space-y-1.5 max-h-60 overflow-y-auto pr-1"
+              ></div>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-zinc-300 mb-2">
+                Fotos da Galeria:
+              </h3>
+              <div
+                id="lista-remocao-galeria"
+                class="space-y-1.5 max-h-60 overflow-y-auto pr-1"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
+    </main>
 
-      <!-- Barra de Filtros -->
-      <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between modern-card p-3 rounded-2xl">
-        <div class="flex gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80">
-          <button onclick="setFiltroStatus('pendente')" id="tab-pendente" class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-amber-500 text-zinc-950 transition shadow">
-            <i class="fa-solid fa-clock"></i> Pendentes (<span id="cnt-tab-pendente">0</span>)
-          </button>
-          <button onclick="setFiltroStatus('concluido')" id="tab-concluido" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
-            <i class="fa-solid fa-check"></i> Atendidos (<span id="cnt-tab-concluido">0</span>)
-          </button>
-          <button onclick="setFiltroStatus('todos')" id="tab-todos" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
-            Todos (<span id="cnt-tab-todos">0</span>)
-          </button>
-        </div>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+        update,
+        remove,
+        set,
+      } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        <div class="flex gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800/80">
-          <button onclick="setFiltroTipo('todos')" id="ftip-todos" class="px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-100 transition shadow">
-            Todas Modalidades
-          </button>
-          <button onclick="setFiltroTipo('fixo')" id="ftip-fixo" class="px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
-            <i class="fa-solid fa-store text-blue-400"></i> Fixo
-          </button>
-          <button onclick="setFiltroTipo('delivery')" id="ftip-delivery" class="px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition">
-            <i class="fa-solid fa-motorcycle text-amber-500"></i> Delivery
-          </button>
-        </div>
-      </div>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBdDb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
+        authDomain: "barbeariablequistove-c0349.firebaseapp.com",
+        databaseURL:
+          "https://barbeariablequistove-c0349-default-rtdb.firebaseio.com",
+        projectId: "barbeariablequistove-c0349",
+        storageBucket: "barbeariablequistove-c0349.firebasestorage.app",
+        messagingSenderId: "159742381988",
+        appId: "1:159742381988:web:6e14d74afa581b9f00bb31",
+        measurementId: "G-EL0MYVYHMR",
+      };
 
-      <!-- Lista de Cards -->
-      <div id="cards-container" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"></div>
-    </div>
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getDatabase(app);
 
-    <!-- SEÇÃO 2: GERENCIADOR DO PERFIL E DO SITE -->
-    <div id="secao-gerenciador" class="space-y-6 hidden">
+      let deliveryLigado = true;
 
-      <!-- Alterar Foto de Perfil do Barbeiro -->
-      <div class="modern-card p-6 rounded-2xl space-y-4">
-        <h2 class="text-base font-bold text-amber-500 flex items-center gap-2">
-          <i class="fa-solid fa-user-gear"></i> Perfil do Barbeiro (Foto e Nome)
-        </h2>
-        <form onsubmit="salvarPerfilBarbeiro(event)" class="grid sm:grid-cols-3 gap-3">
-          <input type="text" id="perfil-barbeiro-nome" placeholder="Seu Nome / Nome de Apresentação" required class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500">
-          <input type="url" id="perfil-barbeiro-foto" placeholder="URL da Sua Foto de Perfil (HTTPS)" required class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500">
-          <button type="submit" class="gold-gradient text-zinc-950 font-bold py-2.5 rounded-xl text-xs hover:brightness-110 transition">
-            Atualizar Perfil
-          </button>
-        </form>
-      </div>
-
-      <!-- Cadastrar Novo Serviço -->
-      <div class="modern-card p-6 rounded-2xl space-y-4">
-        <h2 class="text-base font-bold text-amber-500 flex items-center gap-2">
-          <i class="fa-solid fa-plus-circle"></i> Cadastrar Novo Serviço
-        </h2>
-        <form onsubmit="salvarNovoServico(event)" class="grid sm:grid-cols-3 gap-3">
-          <input type="text" id="add-servico-nome" placeholder="Nome do Serviço (Ex: Barba Terapia)" required class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500">
-          <input type="number" step="0.01" id="add-servico-preco" placeholder="Preço (R$)" required class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500">
-          <input type="number" id="add-servico-tempo" placeholder="Duração em Minutos (Ex: 30)" required class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500">
-          <select id="add-servico-tipo" class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500 sm:col-span-2">
-            <option value="fixo">Modalidade: Local Fixo</option>
-            <option value="delivery">Modalidade: Delivery VIP</option>
-          </select>
-          <button type="submit" class="gold-gradient text-zinc-950 font-bold py-2.5 rounded-xl text-xs hover:brightness-110 transition">
-            Salvar Serviço
-          </button>
-        </form>
-      </div>
-
-      <!-- Adicionar Foto na Galeria -->
-      <div class="modern-card p-6 rounded-2xl space-y-4">
-        <h2 class="text-base font-bold text-amber-500 flex items-center gap-2">
-          <i class="fa-solid fa-image"></i> Adicionar Foto na Galeria de Cortes
-        </h2>
-        <form onsubmit="salvarFotoGaleria(event)" class="grid sm:grid-cols-3 gap-3">
-          <input type="text" id="add-foto-titulo" placeholder="Título (Ex: Low Fade com Risca)" required class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500">
-          <input type="url" id="add-foto-url" placeholder="URL Direta da Foto (HTTPS)" required class="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500 sm:col-span-2">
-          <button type="submit" class="gold-gradient text-zinc-950 font-bold py-2.5 rounded-xl text-xs hover:brightness-110 transition sm:col-span-3">
-            Adicionar à Galeria
-          </button>
-        </form>
-      </div>
-
-      <!-- Exclusão de Serviços, Produtos e Fotos -->
-      <div class="modern-card p-6 rounded-2xl space-y-4">
-        <h2 class="text-base font-bold text-amber-500 flex items-center gap-2">
-          <i class="fa-solid fa-trash-can"></i> Central de Exclusão (Serviços, Produtos & Fotos)
-        </h2>
-        <p class="text-xs text-zinc-400">Gerencie todos os itens do site e remova os que não deseja exibir:</p>
-        
-        <div class="grid md:grid-cols-3 gap-4">
-          <div>
-            <h3 class="text-xs font-bold text-zinc-300 mb-2">Serviços Atuais:</h3>
-            <div id="lista-remocao-servicos" class="space-y-1.5 max-h-60 overflow-y-auto pr-1"></div>
-          </div>
-          <div>
-            <h3 class="text-xs font-bold text-zinc-300 mb-2">Produtos da Loja:</h3>
-            <div id="lista-remocao-produtos" class="space-y-1.5 max-h-60 overflow-y-auto pr-1"></div>
-          </div>
-          <div>
-            <h3 class="text-xs font-bold text-zinc-300 mb-2">Fotos da Galeria:</h3>
-            <div id="lista-remocao-galeria" class="space-y-1.5 max-h-60 overflow-y-auto pr-1"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, update, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBdDb5b8oIfM3cCx78aiM1Ns1gPR8E0R4Q",
-      authDomain: "barbeariablequistove-c0349.firebaseapp.com",
-      databaseURL: "https://barbeariablequistove-c0349-default-rtdb.firebaseio.com",
-      projectId: "barbeariablequistove-c0349",
-      storageBucket: "barbeariablequistove-c0349.firebasestorage.app",
-      messagingSenderId: "159742381988",
-      appId: "1:159742381988:web:6e14d74afa581b9f00bb31",
-      measurementId: "G-EL0MYVYHMR"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    let agendamentosData = {};
-    let configData = {};
-    let filtroStatus = 'pendente';
-    let filtroTipo = 'todos';
-    let totalAgendamentosAnterior = 0;
-
-    function formatarDataBR(dataISO) {
-      if (!dataISO) return '';
-      const [ano, mes, dia] = dataISO.split('-');
-      return `${dia}/${mes}/${ano}`;
-    }
-
-    window.ativarNotificacoes = function() {
-      if ("Notification" in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            alert("Notificações em tempo real ativadas!");
+      // Ouve o status do delivery no Firebase
+      onValue(ref(db, "configuracoes/deliveryAtivo"), (snapshot) => {
+        deliveryLigado = snapshot.val() !== false;
+        const btn = document.getElementById("btn-toggle-delivery");
+        if (btn) {
+          if (deliveryLigado) {
+            btn.className =
+              "px-4 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white transition shadow-md";
+            btn.innerHTML =
+              '<i class="fa-solid fa-check mr-1.5"></i> Delivery Ativo';
+          } else {
+            btn.className =
+              "px-4 py-2.5 rounded-xl font-bold text-xs bg-red-600 hover:bg-red-500 text-white transition shadow-md";
+            btn.innerHTML =
+              '<i class="fa-solid fa-ban mr-1.5"></i> Delivery Desativado';
           }
-        });
-      }
-    };
-
-    function notificarNovoAgendamento(cliente, horario) {
-      const audio = document.getElementById('audio-notificacao');
-      if (audio) audio.play();
-
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("💈 NOVO AGENDAMENTO!", {
-          body: `Cliente ${cliente} agendou para às ${horario}!`,
-          icon: "https://cdn-icons-png.flaticon.com/512/3050/3050302.png"
-        });
-      }
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById('login-modal').classList.add('hidden');
-        carregarDados();
-      } else {
-        document.getElementById('login-modal').classList.remove('hidden');
-      }
-    });
-
-    window.autenticarFirebase = function(event) {
-      event.preventDefault();
-      const email = document.getElementById('auth-email').value;
-      const password = document.getElementById('auth-password').value;
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => document.getElementById('login-modal').classList.add('hidden'))
-        .catch(() => alert("Erro: E-mail ou palavra-passe incorretos."));
-    };
-
-    window.fazerLogout = function() { signOut(auth); };
-
-    function carregarDados() {
-      onValue(ref(db, 'agendamentos'), (snapshot) => {
-        const novosDados = snapshot.val() || {};
-        const qtdAtual = Object.keys(novosDados).length;
-
-        if (qtdAtual > totalAgendamentosAnterior && totalAgendamentosAnterior > 0) {
-          const ultimosKeys = Object.keys(novosDados);
-          const ultimo = novosDados[ultimosKeys[ultimosKeys.length - 1]];
-          notificarNovoAgendamento(ultimo.cliente, ultimo.horario);
         }
-        totalAgendamentosAnterior = qtdAtual;
-        agendamentosData = novosDados;
-        renderizarPainel();
       });
 
-      onValue(ref(db, 'configuracoes'), (snapshot) => {
-        configData = snapshot.val() || {};
-        if (configData.barberFoto) document.getElementById('barber-avatar').src = configData.barberFoto;
-        if (configData.barberNome) document.getElementById('barber-nome-header').innerText = configData.barberNome;
-        renderizarGerenciadorExclusao();
-      });
-    }
+      window.alternarDelivery = function () {
+        const novoStatus = !deliveryLigado;
+        set(ref(db, "configuracoes/deliveryAtivo"), novoStatus).then(() => {
+          alert(
+            novoStatus
+              ? "Delivery ativado com sucesso!"
+              : "Delivery desativado com sucesso!",
+          );
+        });
+      };
 
-    window.salvarPerfilBarbeiro = function(event) {
-      event.preventDefault();
-      const nome = document.getElementById('perfil-barbeiro-nome').value;
-      const foto = document.getElementById('perfil-barbeiro-foto').value;
+      let agendamentosData = {};
+      let configData = {};
+      let filtroStatus = "pendente";
+      let filtroTipo = "todos";
+      let totalAgendamentosAnterior = 0;
 
-      update(ref(db, 'configuracoes'), { barberNome: nome, barberFoto: foto }).then(() => {
-        alert("Perfil do barbeiro atualizado!");
-        event.target.reset();
-      });
-    };
-
-    window.mudarAba = function(aba) {
-      const btnAg = document.getElementById('aba-agendamentos-btn');
-      const btnGer = document.getElementById('aba-gerenciador-btn');
-      const secAg = document.getElementById('secao-agendamentos');
-      const secGer = document.getElementById('secao-gerenciador');
-
-      if (aba === 'agendamentos') {
-        btnAg.className = "pb-3 text-sm font-bold border-b-2 border-amber-500 text-amber-500 flex items-center gap-2";
-        btnGer.className = "pb-3 text-sm font-bold text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 flex items-center gap-2";
-        secAg.classList.remove('hidden');
-        secGer.classList.add('hidden');
-      } else {
-        btnGer.className = "pb-3 text-sm font-bold border-b-2 border-amber-500 text-amber-500 flex items-center gap-2";
-        btnAg.className = "pb-3 text-sm font-bold text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 flex items-center gap-2";
-        secGer.classList.remove('hidden');
-        secAg.classList.add('hidden');
+      function formatarDataBR(dataISO) {
+        if (!dataISO) return "";
+        const [ano, mes, dia] = dataISO.split("-");
+        return `${dia}/${mes}/${ano}`;
       }
-    };
 
-    window.salvarNovoServico = function(event) {
-      event.preventDefault();
-      const nome = document.getElementById('add-servico-nome').value;
-      const preco = parseFloat(document.getElementById('add-servico-preco').value);
-      const tempo = parseInt(document.getElementById('add-servico-tempo').value);
-      const tipo = document.getElementById('add-servico-tipo').value;
+      window.ativarNotificacoes = function () {
+        if ("Notification" in window) {
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+              alert("Notificações em tempo real ativadas!");
+            }
+          });
+        }
+      };
 
-      let lista = (tipo === 'fixo') ? (configData.tabelaFixo || []) : (configData.tabelaDelivery || []);
-      lista.push({ id: 'custom_' + Date.now(), nome, preco, tempo, desc: 'Serviço Profissional' });
+      function notificarNovoAgendamento(cliente, horario) {
+        const audio = document.getElementById("audio-notificacao");
+        if (audio) audio.play();
 
-      const patch = {};
-      if (tipo === 'fixo') patch.tabelaFixo = lista;
-      else patch.tabelaDelivery = lista;
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("💈 NOVO AGENDAMENTO!", {
+            body: `Cliente ${cliente} agendou para às ${horario}!`,
+            icon: "https://cdn-icons-png.flaticon.com/512/3050/3050302.png",
+          });
+        }
+      }
 
-      update(ref(db, 'configuracoes'), patch).then(() => {
-        alert("Novo serviço cadastrado!");
-        event.target.reset();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          document.getElementById("login-modal").classList.add("hidden");
+          carregarDados();
+        } else {
+          document.getElementById("login-modal").classList.remove("hidden");
+        }
       });
-    };
 
-    window.salvarFotoGaleria = function(event) {
-      event.preventDefault();
-      const titulo = document.getElementById('add-foto-titulo').value;
-      const foto = document.getElementById('add-foto-url').value;
+      window.autenticarFirebase = function (event) {
+        event.preventDefault();
+        const email = document.getElementById("auth-email").value;
+        const password = document.getElementById("auth-password").value;
 
-      let galeria = configData.galeriaCortes || [];
-      galeria.push({ id: 'img_' + Date.now(), titulo, foto });
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() =>
+            document.getElementById("login-modal").classList.add("hidden"),
+          )
+          .catch(() => alert("Erro: E-mail ou palavra-passe incorretos."));
+      };
 
-      update(ref(db, 'configuracoes'), { galeriaCortes: galeria }).then(() => {
-        alert("Foto adicionada à galeria!");
-        event.target.reset();
-      });
-    };
+      window.fazerLogout = function () {
+        signOut(auth);
+      };
 
-    function renderizarGerenciadorExclusao() {
-      const containerServicos = document.getElementById('lista-remocao-servicos');
-      const containerProdutos = document.getElementById('lista-remocao-produtos');
-      const containerGaleria = document.getElementById('lista-remocao-galeria');
+      function carregarDados() {
+        onValue(ref(db, "agendamentos"), (snapshot) => {
+          const novosDados = snapshot.val() || {};
+          const qtdAtual = Object.keys(novosDados).length;
 
-      const fixo = configData.tabelaFixo || [
-        { id: 'f1', nome: 'Corte Normal', preco: 30 }, { id: 'f2', nome: 'Corte Navalhado', preco: 35 },
-        { id: 'f3', nome: 'Barba', preco: 30 }, { id: 'f4', nome: 'Pezinho', preco: 15 },
-        { id: 'f5', nome: 'Sobrancelha', preco: 15 }, { id: 'f6', nome: 'Cabelo + Barba', preco: 55 }
-      ];
-      const delivery = configData.tabelaDelivery || [
-        { id: 'd1', nome: 'Corte Social / Tesoura', preco: 40 }, { id: 'd2', nome: 'Corte Navalhado / Fade', preco: 45 },
-        { id: 'd3', nome: 'Barba VIP Completa', preco: 35 }, { id: 'd7', nome: 'Combo Cabelo + Barba', preco: 70 }
-      ];
+          if (
+            qtdAtual > totalAgendamentosAnterior &&
+            totalAgendamentosAnterior > 0
+          ) {
+            const ultimosKeys = Object.keys(novosDados);
+            const ultimo = novosDados[ultimosKeys[ultimosKeys.length - 1]];
+            notificarNovoAgendamento(ultimo.cliente, ultimo.horario);
+          }
+          totalAgendamentosAnterior = qtdAtual;
+          agendamentosData = novosDados;
+          renderizarPainel();
+        });
 
-      let htmlServ = [...fixo.map(s => ({...s, modalidade: 'fixo'})), ...delivery.map(s => ({...s, modalidade: 'delivery'}))].map(s => `
+        onValue(ref(db, "configuracoes"), (snapshot) => {
+          configData = snapshot.val() || {};
+          if (configData.barberFoto)
+            document.getElementById("barber-avatar").src =
+              configData.barberFoto;
+          if (configData.barberNome)
+            document.getElementById("barber-nome-header").innerText =
+              configData.barberNome;
+          renderizarGerenciadorExclusao();
+        });
+      }
+
+      window.salvarPerfilBarbeiro = function (event) {
+        event.preventDefault();
+        const nome = document.getElementById("perfil-barbeiro-nome").value;
+        const foto = document.getElementById("perfil-barbeiro-foto").value;
+
+        update(ref(db, "configuracoes"), {
+          barberNome: nome,
+          barberFoto: foto,
+        }).then(() => {
+          alert("Perfil do barbeiro atualizado!");
+          event.target.reset();
+        });
+      };
+
+      window.mudarAba = function (aba) {
+        const btnAg = document.getElementById("aba-agendamentos-btn");
+        const btnGer = document.getElementById("aba-gerenciador-btn");
+        const secAg = document.getElementById("secao-agendamentos");
+        const secGer = document.getElementById("secao-gerenciador");
+
+        if (aba === "agendamentos") {
+          btnAg.className =
+            "pb-3 text-sm font-bold border-b-2 border-amber-500 text-amber-500 flex items-center gap-2";
+          btnGer.className =
+            "pb-3 text-sm font-bold text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 flex items-center gap-2";
+          secAg.classList.remove("hidden");
+          secGer.classList.add("hidden");
+        } else {
+          btnGer.className =
+            "pb-3 text-sm font-bold border-b-2 border-amber-500 text-amber-500 flex items-center gap-2";
+          btnAg.className =
+            "pb-3 text-sm font-bold text-zinc-400 border-b-2 border-transparent hover:text-zinc-200 flex items-center gap-2";
+          secGer.classList.remove("hidden");
+          secAg.classList.add("hidden");
+        }
+      };
+
+      window.salvarNovoServico = function (event) {
+        event.preventDefault();
+        const nome = document.getElementById("add-servico-nome").value;
+        const preco = parseFloat(
+          document.getElementById("add-servico-preco").value,
+        );
+        const tempo = parseInt(
+          document.getElementById("add-servico-tempo").value,
+        );
+        const tipo = document.getElementById("add-servico-tipo").value;
+
+        let lista =
+          tipo === "fixo"
+            ? configData.tabelaFixo || []
+            : configData.tabelaDelivery || [];
+        lista.push({
+          id: "custom_" + Date.now(),
+          nome,
+          preco,
+          tempo,
+          desc: "Serviço Profissional",
+        });
+
+        const patch = {};
+        if (tipo === "fixo") patch.tabelaFixo = lista;
+        else patch.tabelaDelivery = lista;
+
+        update(ref(db, "configuracoes"), patch).then(() => {
+          alert("Novo serviço cadastrado!");
+          event.target.reset();
+        });
+      };
+
+      window.salvarFotoGaleria = function (event) {
+        event.preventDefault();
+        const titulo = document.getElementById("add-foto-titulo").value;
+        const foto = document.getElementById("add-foto-url").value;
+
+        let galeria = configData.galeriaCortes || [];
+        galeria.push({ id: "img_" + Date.now(), titulo, foto });
+
+        update(ref(db, "configuracoes"), { galeriaCortes: galeria }).then(
+          () => {
+            alert("Foto adicionada à galeria!");
+            event.target.reset();
+          },
+        );
+      };
+
+      function renderizarGerenciadorExclusao() {
+        const containerServicos = document.getElementById(
+          "lista-remocao-servicos",
+        );
+        const containerProdutos = document.getElementById(
+          "lista-remocao-produtos",
+        );
+        const containerGaleria = document.getElementById(
+          "lista-remocao-galeria",
+        );
+
+        const fixo = configData.tabelaFixo || [
+          { id: "f1", nome: "Corte Normal", preco: 30 },
+          { id: "f2", nome: "Corte Navalhado", preco: 35 },
+          { id: "f3", nome: "Barba", preco: 30 },
+          { id: "f4", nome: "Pezinho", preco: 15 },
+          { id: "f5", nome: "Sobrancelha", preco: 15 },
+          { id: "f6", nome: "Cabelo + Barba", preco: 55 },
+        ];
+        const delivery = configData.tabelaDelivery || [
+          { id: "d1", nome: "Corte Social / Tesoura", preco: 40 },
+          { id: "d2", nome: "Corte Navalhado / Fade", preco: 45 },
+          { id: "d3", nome: "Barba VIP Completa", preco: 35 },
+          { id: "d7", nome: "Combo Cabelo + Barba", preco: 70 },
+        ];
+
+        let htmlServ = [
+          ...fixo.map((s) => ({ ...s, modalidade: "fixo" })),
+          ...delivery.map((s) => ({ ...s, modalidade: "delivery" })),
+        ]
+          .map(
+            (s) => `
         <div class="bg-zinc-950 p-2.5 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
           <span class="text-zinc-200 font-medium truncate max-w-[170px]">${s.nome} (R$ ${s.preco.toFixed(2)})</span>
           <button onclick="removerServico('${s.id}', '${s.modalidade}')" class="text-red-400 hover:text-red-300 font-bold px-2 py-1 bg-red-500/10 rounded-lg">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
-      `).join('');
-      containerServicos.innerHTML = htmlServ;
+      `,
+          )
+          .join("");
+        containerServicos.innerHTML = htmlServ;
 
-      const produtos = configData.produtosUpsell || [
-        { id: 'p1', nome: 'Pomada Matte Efeito Seco', preco: 35 },
-        { id: 'p2', nome: 'Óleo Hidratante de Barba', preco: 30 },
-        { id: 'p3', nome: 'Balm Modelador de Barba', preco: 35 }
-      ];
-      let htmlProd = produtos.map(p => `
+        const produtos = configData.produtosUpsell || [
+          { id: "p1", nome: "Pomada Matte Efeito Seco", preco: 35 },
+          { id: "p2", nome: "Óleo Hidratante de Barba", preco: 30 },
+          { id: "p3", nome: "Balm Modelador de Barba", preco: 35 },
+        ];
+        let htmlProd = produtos
+          .map(
+            (p) => `
         <div class="bg-zinc-950 p-2.5 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
           <span class="text-zinc-200 font-medium truncate max-w-[170px]">${p.nome}</span>
           <button onclick="removerProduto('${p.id}')" class="text-red-400 hover:text-red-300 font-bold px-2 py-1 bg-red-500/10 rounded-lg">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
-      `).join('');
-      containerProdutos.innerHTML = htmlProd;
+      `,
+          )
+          .join("");
+        containerProdutos.innerHTML = htmlProd;
 
-      const galeria = configData.galeriaCortes || [
-        { id: 'g1', titulo: 'Degradê Navalhado High Fade' },
-        { id: 'g2', titulo: 'Barba Alinhada & Desenho' },
-        { id: 'g3', titulo: 'Corte Mid Fade Moderno' },
-        { id: 'g4', titulo: 'Corte Social Clássico' }
-      ];
-      let htmlGal = galeria.map(g => `
+        const galeria = configData.galeriaCortes || [
+          { id: "g1", titulo: "Degradê Navalhado High Fade" },
+          { id: "g2", titulo: "Barba Alinhada & Desenho" },
+          { id: "g3", titulo: "Corte Mid Fade Moderno" },
+          { id: "g4", titulo: "Corte Social Clássico" },
+        ];
+        let htmlGal = galeria
+          .map(
+            (g) => `
         <div class="bg-zinc-950 p-2.5 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
           <span class="text-zinc-200 font-medium truncate max-w-[170px]">${g.titulo}</span>
           <button onclick="removerFotoGaleria('${g.id}')" class="text-red-400 hover:text-red-300 font-bold px-2 py-1 bg-red-500/10 rounded-lg">
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
-      `).join('');
-      containerGaleria.innerHTML = htmlGal;
-    }
+      `,
+          )
+          .join("");
+        containerGaleria.innerHTML = htmlGal;
+      }
 
-    window.removerServico = function(id, tipo) {
-      if (confirm("Deseja remover este serviço do site?")) {
-        if (tipo === 'fixo') {
-          const atual = configData.tabelaFixo || [
-            { id: 'f1', nome: 'Corte Normal', preco: 30, tempo: 45 }, { id: 'f2', nome: 'Corte Navalhado', preco: 35, tempo: 50 },
-            { id: 'f3', nome: 'Barba', preco: 30, tempo: 30 }, { id: 'f4', nome: 'Pezinho', preco: 15, tempo: 20 },
-            { id: 'f5', nome: 'Sobrancelha', preco: 15, tempo: 10 }, { id: 'f6', nome: 'Cabelo + Barba', preco: 55, tempo: 75 },
-            { id: 'f7', nome: 'Depilação Nasal', preco: 20, tempo: 5 }, { id: 'f8', nome: 'Depilação na Orelha', preco: 20, tempo: 5 },
-            { id: 'f9', nome: 'Combo Nariz + Orelha', preco: 35, tempo: 10 }
-          ];
-          update(ref(db, 'configuracoes'), { tabelaFixo: atual.filter(s => s.id !== id) });
-        } else {
-          const atual = configData.tabelaDelivery || [
-            { id: 'd1', nome: 'Corte Social / Tesoura', preco: 40, tempo: 45 }, { id: 'd2', nome: 'Corte Navalhado / Fade', preco: 45, tempo: 50 },
-            { id: 'd3', nome: 'Barba VIP Completa', preco: 35, tempo: 30 }, { id: 'd4', nome: 'Pezinho (Acabamento)', preco: 20, tempo: 20 },
-            { id: 'd5', nome: 'Sobrancelha Masculina', preco: 20, tempo: 10 }, { id: 'd6', nome: 'Depilação Nasal / Orelha', preco: 20, tempo: 5 },
-            { id: 'd7', nome: 'Combo Cabelo + Barba', preco: 70, tempo: 75 }, { id: 'd8', nome: 'Combo Higiene (Nariz + Orelha)', preco: 35, tempo: 10 },
-            { id: 'd9', nome: 'Combo Família (Pai + Filho)', preco: 75, tempo: 90 }
-          ];
-          update(ref(db, 'configuracoes'), { tabelaDelivery: atual.filter(s => s.id !== id) });
+      window.removerServico = function (id, tipo) {
+        if (confirm("Deseja remover este serviço do site?")) {
+          if (tipo === "fixo") {
+            const atual = configData.tabelaFixo || [
+              { id: "f1", nome: "Corte Normal", preco: 30, tempo: 45 },
+              { id: "f2", nome: "Corte Navalhado", preco: 35, tempo: 50 },
+              { id: "f3", nome: "Barba", preco: 30, tempo: 30 },
+              { id: "f4", nome: "Pezinho", preco: 15, tempo: 20 },
+              { id: "f5", nome: "Sobrancelha", preco: 15, tempo: 10 },
+              { id: "f6", nome: "Cabelo + Barba", preco: 55, tempo: 75 },
+              { id: "f7", nome: "Depilação Nasal", preco: 20, tempo: 5 },
+              { id: "f8", nome: "Depilação na Orelha", preco: 20, tempo: 5 },
+              { id: "f9", nome: "Combo Nariz + Orelha", preco: 35, tempo: 10 },
+            ];
+            update(ref(db, "configuracoes"), {
+              tabelaFixo: atual.filter((s) => s.id !== id),
+            });
+          } else {
+            const atual = configData.tabelaDelivery || [
+              {
+                id: "d1",
+                nome: "Corte Social / Tesoura",
+                preco: 40,
+                tempo: 45,
+              },
+              {
+                id: "d2",
+                nome: "Corte Navalhado / Fade",
+                preco: 45,
+                tempo: 50,
+              },
+              { id: "d3", nome: "Barba VIP Completa", preco: 35, tempo: 30 },
+              { id: "d4", nome: "Pezinho (Acabamento)", preco: 20, tempo: 20 },
+              { id: "d5", nome: "Sobrancelha Masculina", preco: 20, tempo: 10 },
+              {
+                id: "d6",
+                nome: "Depilação Nasal / Orelha",
+                preco: 20,
+                tempo: 5,
+              },
+              { id: "d7", nome: "Combo Cabelo + Barba", preco: 70, tempo: 75 },
+              {
+                id: "d8",
+                nome: "Combo Higiene (Nariz + Orelha)",
+                preco: 35,
+                tempo: 10,
+              },
+              {
+                id: "d9",
+                nome: "Combo Família (Pai + Filho)",
+                preco: 75,
+                tempo: 90,
+              },
+            ];
+            update(ref(db, "configuracoes"), {
+              tabelaDelivery: atual.filter((s) => s.id !== id),
+            });
+          }
         }
-      }
-    };
+      };
 
-    window.removerProduto = function(id) {
-      if (confirm("Deseja remover este produto do site?")) {
-        const atual = configData.produtosUpsell || [
-          { id: 'p1', nome: 'Pomada Matte Efeito Seco (100g)', preco: 35, icon: 'fa-pump-soap' },
-          { id: 'p2', nome: 'Óleo Hidratante para Barba (30ml)', preco: 30, icon: 'fa-bottle-droplet' },
-          { id: 'p3', nome: 'Balm Modelador de Barba (90g)', preco: 35, icon: 'fa-box-open' }
-        ];
-        update(ref(db, 'configuracoes'), { produtosUpsell: atual.filter(p => p.id !== id) });
-      }
-    };
+      window.removerProduto = function (id) {
+        if (confirm("Deseja remover este produto do site?")) {
+          const atual = configData.produtosUpsell || [
+            {
+              id: "p1",
+              nome: "Pomada Matte Efeito Seco (100g)",
+              preco: 35,
+              icon: "fa-pump-soap",
+            },
+            {
+              id: "p2",
+              nome: "Óleo Hidratante para Barba (30ml)",
+              preco: 30,
+              icon: "fa-bottle-droplet",
+            },
+            {
+              id: "p3",
+              nome: "Balm Modelador de Barba (90g)",
+              preco: 35,
+              icon: "fa-box-open",
+            },
+          ];
+          update(ref(db, "configuracoes"), {
+            produtosUpsell: atual.filter((p) => p.id !== id),
+          });
+        }
+      };
 
-    window.removerFotoGaleria = function(id) {
-      if (confirm("Deseja remover esta foto da galeria?")) {
-        const atual = configData.galeriaCortes || [
-          { id: 'g1', titulo: 'Degradê Navalhado High Fade' },
-          { id: 'g2', titulo: 'Barba Alinhada & Desenho' },
-          { id: 'g3', titulo: 'Corte Mid Fade Moderno' },
-          { id: 'g4', titulo: 'Corte Social Clássico' }
-        ];
-        update(ref(db, 'configuracoes'), { galeriaCortes: atual.filter(g => g.id !== id) });
-      }
-    };
+      window.removerFotoGaleria = function (id) {
+        if (confirm("Deseja remover esta foto da galeria?")) {
+          const atual = configData.galeriaCortes || [
+            { id: "g1", titulo: "Degradê Navalhado High Fade" },
+            { id: "g2", titulo: "Barba Alinhada & Desenho" },
+            { id: "g3", titulo: "Corte Mid Fade Moderno" },
+            { id: "g4", titulo: "Corte Social Clássico" },
+          ];
+          update(ref(db, "configuracoes"), {
+            galeriaCortes: atual.filter((g) => g.id !== id),
+          });
+        }
+      };
 
-    window.setFiltroStatus = function(st) {
-      filtroStatus = st;
-      ['pendente', 'concluido', 'todos'].forEach(s => {
-        const btn = document.getElementById(`tab-${s}`);
-        btn.className = (s === st) ? "px-3.5 py-2 rounded-lg text-xs font-semibold bg-amber-500 text-zinc-950 transition shadow" : "px-3.5 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition";
-      });
-      renderizarPainel();
-    };
+      window.setFiltroStatus = function (st) {
+        filtroStatus = st;
+        ["pendente", "concluido", "todos"].forEach((s) => {
+          const btn = document.getElementById(`tab-${s}`);
+          btn.className =
+            s === st
+              ? "px-3.5 py-2 rounded-lg text-xs font-semibold bg-amber-500 text-zinc-950 transition shadow"
+              : "px-3.5 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition";
+        });
+        renderizarPainel();
+      };
 
-    window.setFiltroTipo = function(tp) {
-      filtroTipo = tp;
-      ['todos', 'fixo', 'delivery'].forEach(t => {
-        const btn = document.getElementById(`ftip-${t}`);
-        btn.className = (t === tp) ? "px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-100 transition shadow" : "px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition";
-      });
-      renderizarPainel();
-    };
+      window.setFiltroTipo = function (tp) {
+        filtroTipo = tp;
+        ["todos", "fixo", "delivery"].forEach((t) => {
+          const btn = document.getElementById(`ftip-${t}`);
+          btn.className =
+            t === tp
+              ? "px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-100 transition shadow"
+              : "px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition";
+        });
+        renderizarPainel();
+      };
 
-    function renderizarPainel() {
-      const container = document.getElementById('cards-container');
-      const keys = Object.keys(agendamentosData);
+      function renderizarPainel() {
+        const container = document.getElementById("cards-container");
+        const keys = Object.keys(agendamentosData);
 
-      let countPendentes = 0, countConcluidos = 0, countFixo = 0, countDelivery = 0, faturamentoTotal = 0;
+        let countPendentes = 0,
+          countConcluidos = 0,
+          countFixo = 0,
+          countDelivery = 0,
+          faturamentoTotal = 0;
 
-      keys.forEach(k => {
-        const item = agendamentosData[k];
-        if (item.status === 'Concluído') countConcluidos++;
-        else countPendentes++;
-        
-        if (item.tipo === 'delivery') countDelivery++;
-        else countFixo++;
+        keys.forEach((k) => {
+          const item = agendamentosData[k];
+          if (item.status === "Concluído") countConcluidos++;
+          else countPendentes++;
 
-        faturamentoTotal += parseFloat(item.total || 0);
-      });
+          if (item.tipo === "delivery") countDelivery++;
+          else countFixo++;
 
-      document.getElementById('metric-pendentes').innerText = countPendentes;
-      document.getElementById('metric-concluidos').innerText = countConcluidos;
-      document.getElementById('metric-faturamento').innerText = `R$ ${faturamentoTotal.toFixed(2).replace('.', ',')}`;
-      document.getElementById('metric-delivery').innerText = countDelivery;
+          faturamentoTotal += parseFloat(item.total || 0);
+        });
 
-      document.getElementById('cnt-tab-pendente').innerText = countPendentes;
-      document.getElementById('cnt-tab-concluido').innerText = countConcluidos;
-      document.getElementById('cnt-tab-todos').innerText = keys.length;
+        document.getElementById("metric-pendentes").innerText = countPendentes;
+        document.getElementById("metric-concluidos").innerText =
+          countConcluidos;
+        document.getElementById("metric-faturamento").innerText =
+          `R$ ${faturamentoTotal.toFixed(2).replace(".", ",")}`;
+        document.getElementById("metric-delivery").innerText = countDelivery;
 
-      if (keys.length === 0) {
-        container.innerHTML = `<div class="col-span-full py-16 text-center text-zinc-500 text-sm">Nenhum agendamento registado no momento.</div>`;
-        return;
-      }
+        document.getElementById("cnt-tab-pendente").innerText = countPendentes;
+        document.getElementById("cnt-tab-concluido").innerText =
+          countConcluidos;
+        document.getElementById("cnt-tab-todos").innerText = keys.length;
 
-      keys.sort((a, b) => {
-        const itemA = agendamentosData[a], itemB = agendamentosData[b];
-        return `${itemA.data} ${itemA.horario}`.localeCompare(`${itemB.data} ${itemB.horario}`);
-      });
+        if (keys.length === 0) {
+          container.innerHTML = `<div class="col-span-full py-16 text-center text-zinc-500 text-sm">Nenhum agendamento registado no momento.</div>`;
+          return;
+        }
 
-      let html = '';
-      keys.forEach(key => {
-        const item = agendamentosData[key];
-        const isConcluido = item.status === 'Concluído';
-        const isDelivery = item.tipo === 'delivery';
+        keys.sort((a, b) => {
+          const itemA = agendamentosData[a],
+            itemB = agendamentosData[b];
+          return `${itemA.data} ${itemA.horario}`.localeCompare(
+            `${itemB.data} ${itemB.horario}`,
+          );
+        });
 
-        if (filtroStatus === 'pendente' && isConcluido) return;
-        if (filtroStatus === 'concluido' && !isConcluido) return;
-        if (filtroTipo !== 'todos' && item.tipo !== filtroTipo) return;
+        let html = "";
+        keys.forEach((key) => {
+          const item = agendamentosData[key];
+          const isConcluido = item.status === "Concluído";
+          const isDelivery = item.tipo === "delivery";
 
-        html += `
-          <div class="modern-card ${isConcluido ? 'opacity-75' : ''} rounded-2xl p-5 space-y-4 flex flex-col justify-between shadow-xl">
+          if (filtroStatus === "pendente" && isConcluido) return;
+          if (filtroStatus === "concluido" && !isConcluido) return;
+          if (filtroTipo !== "todos" && item.tipo !== filtroTipo) return;
+
+          html += `
+          <div class="modern-card ${isConcluido ? "opacity-75" : ""} rounded-2xl p-5 space-y-4 flex flex-col justify-between shadow-xl">
             <div class="space-y-3">
               <div class="flex justify-between items-start gap-2">
-                <span class="text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1.5 ${isDelivery ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}">
+                <span class="text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1.5 ${isDelivery ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" : "bg-blue-500/10 text-blue-400 border border-blue-500/20"}">
                   ${isDelivery ? '<i class="fa-solid fa-motorcycle"></i> DELIVERY VIP' : '<i class="fa-solid fa-store"></i> LOCAL FIXO'}
                 </span>
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-md ${isConcluido ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-md ${isConcluido ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border border-amber-500/20"}">
                   ${isConcluido ? '<i class="fa-solid fa-check"></i> Atendido' : '<i class="fa-solid fa-clock"></i> Pendente'}
                 </span>
               </div>
 
               <div>
                 <h3 class="font-bold text-lg text-zinc-100 leading-snug">${item.cliente}</h3>
-                <a href="https://wa.me/55${item.telefone.replace(/\D/g,'')}" target="_blank" class="text-xs text-emerald-400 hover:underline inline-flex items-center gap-1.5 mt-1 font-medium">
+                <a href="https://wa.me/55${item.telefone.replace(/\D/g, "")}" target="_blank" class="text-xs text-emerald-400 hover:underline inline-flex items-center gap-1.5 mt-1 font-medium">
                   <i class="fa-brands fa-whatsapp text-sm"></i> ${item.telefone}
                 </a>
               </div>
 
               <div class="bg-zinc-950/80 p-3.5 rounded-xl border border-zinc-800/80 text-xs space-y-2 text-zinc-300">
-                <p class="bg-zinc-950/80 p-2.5 rounded-xl border border-zinc-800 text-zinc-300 mt-2"><i class="fa-solid fa-scissors text-amber-500 mr-1.5"></i> <b>Como deseja:</b> ${item.estilo || 'Não informado'}</p>
+                <p class="bg-zinc-950/80 p-2.5 rounded-xl border border-zinc-800 text-zinc-300 mt-2"><i class="fa-solid fa-scissors text-amber-500 mr-1.5"></i> <b>Como deseja:</b> ${item.estilo || "Não informado"}</p>
                 <div class="flex justify-between items-center border-b border-zinc-800/80 pb-2">
                   <spa n class="text-zinc-400 font-medium"><i class="fa-regular fa-calendar"></i> ${formatarDataBR(item.data)}</span>
                   <span class="font-bold text-amber-500 text-sm"><i class="fa-regular fa-clock"></i> ${item.horario}</span>
@@ -605,45 +1056,63 @@
                   <span class="font-semibold text-zinc-200">${item.servicos}</span>
                 </div>
 
-                ${item.premio && item.premio !== 'Nenhum' ? `
+
+                ${
+                  item.premio && item.premio !== "Nenhum"
+                    ? `
                   <div class="pt-1 text-emerald-400 font-bold">
                     <i class="fa-solid fa-tags"></i> Cupom Aplicado: ${item.premio}
                   </div>
-                ` : ''}
+                `
+                    : ""
+                }
 
-                ${isDelivery ? `
+                ${
+                  isDelivery
+                    ? `
                   <div class="pt-2 border-t border-zinc-800/80 text-amber-400">
                     <span class="block font-semibold"><i class="fa-solid fa-location-dot"></i> Endereço Delivery:</span>
                     <span class="text-zinc-300">${item.endereco} (${item.regiao})</span>
                   </div>
-                ` : ''}
+                `
+                    : ""
+                }
 
                 <div class="pt-2 border-t border-zinc-800/80 flex justify-between items-center text-sm">
                   <span class="text-zinc-400 font-medium">Valor Total:</span>
-                  <span class="font-extrabold text-emerald-400">R$ ${parseFloat(item.total).toFixed(2).replace('.', ',')}</span>
+                  <span class="font-extrabold text-emerald-400">R$ ${parseFloat(item.total).toFixed(2).replace(".", ",")}</span>
                 </div>
               </div>
             </div>
 
             <div class="flex gap-2 pt-2 border-t border-zinc-800/80">
-              ${!isConcluido ? `
+              ${
+                !isConcluido
+                  ? `
                 <button onclick="mudarStatus('${key}', 'Concluído')" class="flex-1 py-2.5 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
                   <i class="fa-solid fa-check"></i> Marcar Atendido
                 </button>
-              ` : `
+              `
+                  : `
                 <button onclick="mudarStatus('${key}', 'Pendente')" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold transition">Reabrir</button>
-              `}
+              `
+              }
               <button onclick="deletarItem('${key}')" title="Excluir agendamento" class="px-3.5 py-2.5 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-xl text-xs transition"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
         `;
-      });
+        });
 
-      container.innerHTML = html;
-    }
+        container.innerHTML = html;
+      }
 
-    window.mudarStatus = function(key, novoStatus) { update(ref(db, `agendamentos/${key}`), { status: novoStatus }); };
-    window.deletarItem = function(key) { if(confirm("Tem certeza que deseja apagar este agendamento?")) remove(ref(db, `agendamentos/${key}`)); };
-  </script>
-</body>
+      window.mudarStatus = function (key, novoStatus) {
+        update(ref(db, `agendamentos/${key}`), { status: novoStatus });
+      };
+      window.deletarItem = function (key) {
+        if (confirm("Tem certeza que deseja apagar este agendamento?"))
+          remove(ref(db, `agendamentos/${key}`));
+      };
+    </script>
+  </body>
 </html>
