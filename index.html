@@ -136,7 +136,7 @@
       </a>
     </div>
 
-    <!-- Galeria de Estilos (Apontando para a pasta /img/) -->
+    <!-- Galeria de Estilos -->
     <section id="galeria-estilos" class="space-y-3">
       <h2 class="text-lg font-bold flex items-center gap-2 text-zinc-200">
         <i class="fa-solid fa-camera gold-text"></i> Galeria de Cortes & Estilos
@@ -309,14 +309,13 @@
       { id: 'd9', nome: 'Combo Família (Pai + Filho)', preco: 75, tempo: 90, desc: '2 Cortes no mesmo endereço' }
     ];
 
-    // APONTANDO PARA A PASTA /img/ COM OS NOMES EXATOS DAS FOTOS
     let galeriaCortes = [
-      { id: 'g1', titulo: 'Corte Texturizado Médio', foto: './img/cortetexturizadomedio.jpg' },
-      { id: 'g2', titulo: 'Mid Fade com Barba Alinhada', foto: './img/midfadecombarbaalinhada.jpg' },
-      { id: 'g3', titulo: 'Mid Fade Moderno', foto: './img/midfade.jpg' },
-      { id: 'g4', titulo: 'Mid Fade Estilizado', foto: './img/midfade1.jpg' },
-      { id: 'g5', titulo: 'Design de Sobrancelha (Olhar Verde)', foto: './img/designdesobrancelhaolharverde.jpg' },
-      { id: 'g6', titulo: 'Design de Sobrancelha (Olhar Castanho)', foto: './img/designdesobrancelhaolharcastanho.jpg' }
+      { id: 'g1', titulo: 'Corte Texturizado Médio', foto: './img/cortetexturizadomedio.jpg', zoom: false },
+      { id: 'g2', titulo: 'Mid Fade com Barba Alinhada', foto: './img/midfadecombarbaalinhada.jpg', zoom: false },
+      { id: 'g3', titulo: 'Mid Fade Moderno', foto: './img/midfade.jpg', zoom: false },
+      { id: 'g4', titulo: 'Mid Fade Estilizado', foto: './img/midfade1.jpg', zoom: false },
+      { id: 'g5', titulo: 'Design de Sobrancelha (Olhar Verde)', foto: './img/designdesobrancelhaolharverde.jpg', zoom: true },
+      { id: 'g6', titulo: 'Design de Sobrancelha (Olhar Castanho)', foto: './img/designdesobrancelhaolharcastanho.jpg', zoom: true }
     ];
 
     let produtosUpsell = [
@@ -394,17 +393,21 @@
 
     function renderGaleria() {
       const container = document.getElementById('galeria-container');
-      container.innerHTML = galeriaCortes.map(g => `
-        <div onclick="selecionarEstiloGaleria('${g.titulo}')" class="modern-card rounded-2xl overflow-hidden cursor-pointer group hover:scale-[1.03] transition shadow-lg border-zinc-800">
-          <div class="h-44 bg-zinc-900 overflow-hidden relative">
-            <img src="${g.foto}" alt="${g.titulo}" class="w-full h-full object-cover object-center group-hover:scale-110 transition duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent"></div>
+      container.innerHTML = galeriaCortes.map(g => {
+        // Se for sobrancelha (zoom: true), usamos object-contain com fundo para dar a distância perfeita
+        const ajusteEstilo = g.zoom ? 'object-contain p-3 bg-zinc-950' : 'object-cover object-center';
+        return `
+          <div onclick="selecionarEstiloGaleria('${g.titulo}')" class="modern-card rounded-2xl overflow-hidden cursor-pointer group hover:scale-[1.03] transition shadow-lg border-zinc-800">
+            <div class="h-48 sm:h-56 bg-zinc-950 overflow-hidden relative flex items-center justify-center">
+              <img src="${g.foto}" alt="${g.titulo}" class="w-full h-full ${ajusteEstilo} group-hover:scale-105 transition duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60 pointer-events-none"></div>
+            </div>
+            <div class="p-2.5 text-center">
+              <span class="text-xs font-semibold text-zinc-200 group-hover:text-amber-400 transition block truncate">${g.titulo}</span>
+            </div>
           </div>
-          <div class="p-2.5 text-center">
-            <span class="text-xs font-semibold text-zinc-200 group-hover:text-amber-400 transition block truncate">${g.titulo}</span>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     window.selecionarEstiloGaleria = function(estiloNome) {
