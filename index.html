@@ -79,7 +79,7 @@
     </div>
   </header>
 
-  <!-- Banner de Live Status & Escassez -->
+  <!-- Banner de Live Status -->
   <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border-b border-amber-500/20 py-2 px-4 text-center">
     <p class="text-xs font-semibold text-amber-400 flex items-center justify-center gap-2">
       <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
@@ -90,7 +90,7 @@
   <!-- Conteúdo Principal -->
   <main class="max-w-4xl mx-auto px-4 py-6 w-full space-y-6">
 
-    <!-- Cartão de Fidelidade Digital (Widget) -->
+    <!-- Cartão de Fidelidade Digital -->
     <div class="modern-card p-5 rounded-2xl border-amber-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="space-y-1 text-center md:text-left">
         <span class="text-xs font-bold text-amber-500 uppercase tracking-widest"><i class="fa-solid fa-star"></i> Clube Blequistove</span>
@@ -136,7 +136,7 @@
       </a>
     </div>
 
-    <!-- Galeria de Estilos (Com as 6 fotos dos seus clientes) -->
+    <!-- Galeria de Estilos (Apontando para a pasta /img/) -->
     <section id="galeria-estilos" class="space-y-3">
       <h2 class="text-lg font-bold flex items-center gap-2 text-zinc-200">
         <i class="fa-solid fa-camera gold-text"></i> Galeria de Cortes & Estilos
@@ -309,14 +309,14 @@
       { id: 'd9', nome: 'Combo Família (Pai + Filho)', preco: 75, tempo: 90, desc: '2 Cortes no mesmo endereço' }
     ];
 
-    // AS 6 FOTOS REAIS DOS SEUS CLIENTES (SUBSTITUIÇÃO TOTAL)
+    // APONTANDO PARA A PASTA /img/ COM OS NOMES EXATOS DAS FOTOS
     let galeriaCortes = [
-      { id: 'g1', titulo: 'Corte Texturizado Médio', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7182-jpg' },
-      { id: 'g2', titulo: 'Fade com Barba Alinhada', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7191-jpg' },
-      { id: 'g3', titulo: 'Low Fade Moderno', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7197-jpg' },
-      { id: 'g4', titulo: 'Mid Fade com Textura', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7219-jpg' },
-      { id: 'g5', titulo: 'Design de Sobrancelha Olhar Verde', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7234-jpg' },
-      { id: 'g6', titulo: 'Design de Sobrancelha Olhar Castanho', foto: 'https://lh3.googleusercontent.com/d/1O0K4C-234P7237-jpg' }
+      { id: 'g1', titulo: 'Corte Texturizado Médio', foto: './img/cortetexturizadomedio.jpg' },
+      { id: 'g2', titulo: 'Mid Fade com Barba Alinhada', foto: './img/midfadecombarbaalinhada.jpg' },
+      { id: 'g3', titulo: 'Mid Fade Moderno', foto: './img/midfade.jpg' },
+      { id: 'g4', titulo: 'Mid Fade Estilizado', foto: './img/midfade1.jpg' },
+      { id: 'g5', titulo: 'Design de Sobrancelha (Olhar Verde)', foto: './img/designdesobrancelhaolharverde.jpg' },
+      { id: 'g6', titulo: 'Design de Sobrancelha (Olhar Castanho)', foto: './img/designdesobrancelhaolharcastanho.jpg' }
     ];
 
     let produtosUpsell = [
