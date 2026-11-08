@@ -1067,16 +1067,18 @@
                     : ""
                 }
 
-                ${
-                  isDelivery
-                    ? `
-                  <div class="pt-2 border-t border-zinc-800/80 text-amber-400">
-                    <span class="block font-semibold"><i class="fa-solid fa-location-dot"></i> Endereço Delivery:</span>
-                    <span class="text-zinc-300">${item.endereco} (${item.regiao})</span>
-                  </div>
-                `
-                    : ""
-                }
+              ${
+                isDelivery
+                  ? `
+  <p>
+    <i class="fa-solid fa-map-location-dot text-amber-500 w-4"></i> <b>Endereço:</b> 
+    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.endereco + ", " + item.regiao)}" target="_blank" class="text-blue-400 underline hover:text-blue-300 font-semibold">
+      ${item.endereco} (${item.regiao}) - Taxa: R$ ${(item.taxa || 0).toFixed(2).replace(".", ",")}
+    </a>
+  </p>
+`
+                  : ""
+              }
 
                 <div class="pt-2 border-t border-zinc-800/80 flex justify-between items-center text-sm">
                   <span class="text-zinc-400 font-medium">Valor Total:</span>
